@@ -1,0 +1,3 @@
+torch==2.2.1
+pennylane==0.40.0
+gymnasium==1.1.1
