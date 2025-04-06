@@ -1,3 +1,6 @@
 torch==2.2.1
 pennylane==0.40.0
 gymnasium==1.1.1
+pygame==2.6.1
+imageio==2.37.0
+imageio-ffmpeg==0.6.0
