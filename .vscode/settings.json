@@ -23,6 +23,7 @@
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.showTerminalConfigPrompt": false,
   "files.exclude": {
+    ".windsurf-server/**": true,
     "venv": true,
     "lightning-annotations.json": true,
     ".lightning-app-sync": true,
