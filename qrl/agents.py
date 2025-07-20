@@ -34,7 +34,7 @@ class ClassicalNNAgent(nn.Module):
 
 
 class RandomQuantumAgent(nn.Module):
-    def __init__(self, input_size:int,n_layers:int=2,n_rotations:int=3, seed:int=42):
+    def __init__(self, input_size:int, output_size:int, n_layers:int=2, n_rotations:int=3, seed:int=42):
         '''
         input_size (int): It represents the observation space size and the number of qubits in the quantum circuit
         '''
@@ -45,7 +45,7 @@ class RandomQuantumAgent(nn.Module):
         def circuit(inputs, weights):
             qml.AngleEmbedding(inputs, wires=range(input_size))
             qml.RandomLayers(weights=weights, wires=range(input_size), seed=seed)
-            return qml.probs(wires=0)
+            return return [qml.expval(qml.PauliZ(i)) for i in range(output_size)]
                 
         shape = qml.RandomLayers.shape(n_layers=n_layers, n_rotations=n_rotations)
         weight_shapes = {"weights": shape}
