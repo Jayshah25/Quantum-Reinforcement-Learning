@@ -20,35 +20,35 @@ This framework was initiated by [Jay Shah](https://www.linkedin.com/in/jay-shah-
 
 ### Classic Control Environments
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="examples\images\acrobot.gif" width="150"><br/>
+      <sub><b>Acrobot</b></sub>
+    </td>
+    <td align="center">
+      <img src="examples\images\cartpole.gif" width="150"><br/>
+      <sub><b>Cartpole</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="examples\images\mountain_car.gif" width="150"><br/>
+      <sub><b>Mountain Car</b></sub>
+    </td>
+    <td align="center">
+      <img src="examples\images\mountain_car_continuous.gif" width="150"><br/>
+      <sub><b>Mountain Car Continuous</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="examples\images\pendulum.gif" width="150"><br/>
+      <sub><b>Pendulum</b></sub>
+    </td>
+  </tr>
+</table>
 
-<div align="center">
-  <div style="display: inline-block; text-align: center; margin: 10px;">
-    <img src="examples\images\acrobot.gif" width="300"/><br/>
-    <sub>Acrobot</sub>
-  </div>
-  <div style="display: inline-block; text-align: center; margin: 10px;">
-    <img src="examples\images\cartpole.gif" width="300"/><br/>
-    <sub>Cartpole</sub>
-  </div>
-</div>
-
-<div align="center">
-  <div style="display: inline-block; text-align: center; margin: 10px;">
-    <img src="examples\images\mountain_car_continuous.gif" width="300"/><br/>
-    <sub>Mountain Car Continuous</sub>
-  </div>
-  <div style="display: inline-block; text-align: center; margin: 10px;">
-    <img src="examples\images\mountain_car.gif" width="300"/><br/>
-    <sub>Mountain Car</sub>
-  </div>
-</div>
-
-<div align="center" style="margin-top: 20px;">
-  <div style="display: inline-block; text-align: center;">
-    <img src="examples\images\pendulum.gif" width="300"/><br/>
-    <sub>Pendulum</sub>
-  </div>
-</div>
 
 ## Supported RL Algorithms
 
