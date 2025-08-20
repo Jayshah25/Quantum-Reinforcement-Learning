@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qrl"               
+version = "0.1.0"
+description = "Quantum Reinforcement Learning library: environments, policies and training loops with PennyLane."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.8"
+license = { file = "LICENSE.txt" }
+authors = [{ name = "Jay Shah", email = "jay.shah@qrlqai.com" }]
+keywords = ["quantum computing", "reinforcement learning", "pennylane", "qml", "rl"]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+# keep runtime deps light; let users install torch per their platform
+dependencies = [
+  "pennylane>=0.40,<0.41",
+  "gymnasium>=1.1,<2.0",
+  "pygame>=2.6,<3.0",
+  "imageio>=2.37,<3.0",
+  "imageio-ffmpeg>=0.6,<1.0",
+  "moviepy>=2.1,<3.0",
+  "opencv-python>=4.11,<5.0",
+  "matplotlib>=3.7,<4.0"
+]
+
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "black", "mypy", "build", "twine", "pre-commit"]
+docs = ["mkdocs", "mkdocs-material"]
+viz = ["matplotlib", "tensorboard"]
+examples = ["jupyter"]
+
+[project.urls]
+Homepage = "https://github.com/Jayshah25/Quantum-Reinforcement-Learning"
+Issues   = "https://github.com/Jayshah25/Quantum-Reinforcement-Learning/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qrl*"]
+exclude = ["examples*", "videos*", "results*", "qrl_env*", "tests*"]
+
+# include small data/config files inside the package if any (adjust patterns as needed)
+[tool.setuptools.package-data]
+qrl = ["**/*.json", "**/*.yaml", "**/*.yml", "**/*.txt", "**/*.png", "**/*.jpg"]
