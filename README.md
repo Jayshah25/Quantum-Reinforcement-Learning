@@ -1,61 +1,69 @@
-# Quantum-Reinforcement-Learning
+# QRL-QAI  
 
-![QRL_LOGO](qrl_logo.png)
+![QRL Logo](qrl_logo.png)  
 
-**`quantum-reinforcement-learning`** is a python module built on top of gymansium, pennylane and pytorch frameworks. 
+### The open-source library for Quantum Reinforcement Learning  
+ 
 
-This framework was initiated by [Jay Shah](https://www.linkedin.com/in/jay-shah-qml/).
+---
 
-## Objectives of this project
+**QRL-QAI** is a Python framework built to serve as a central platform for everything **quantum reinforcement learning**.  
+Built on top of **Gymnasium**, **PennyLane**, and **PyTorch**, this package provides the tools you need to explore and develop Quantum AI.  
 
-1. Develop a python module that can serve as a central platform for experimentation of quantum reinforcement learning
+---
 
-2. Create a python module that can be used to test quantum agents against classical agents
+## 📑 Table of Contents
+- [Key Features](#-key-features)  
+- [Roadmap](#-roadmap)  
+- [Getting Started](#-getting-started)  
+- [Core Algorithms](#-core-algorithms)  
+- [References](#-references)  
+- [Contributing](#-contributing)  
+- [License](#-license)  
+- [Contact](#-contact)  
 
-3. Incorporate native quantum environments
+---
 
-4. Provide abstractions to simplify quantum reinforcement learning research
+## ✨ Key Features
+- **Native Quantum Environments** – Train and test your agents on quantum-specific environments.  
+- **A Unified Platform** – Compare quantum agents with classical agents fairly in one framework.  
+- **Simplified Abstractions** – Work with quantum circuits and environments using clean, intuitive APIs.  
 
-## Supported Environments
+---
 
-### Classic Control Environments
+## 🗺 Roadmap
+![QRL Roadmap](qrl_roadmap.png)  
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="examples\images\acrobot.gif" width="150"><br/>
-      <sub><b>Acrobot</b></sub>
-    </td>
-    <td align="center">
-      <img src="examples\images\cartpole.gif" width="150"><br/>
-      <sub><b>Cartpole</b></sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="examples\images\mountain_car.gif" width="150"><br/>
-      <sub><b>Mountain Car</b></sub>
-    </td>
-    <td align="center">
-      <img src="examples\images\mountain_car_continuous.gif" width="150"><br/>
-      <sub><b>Mountain Car Continuous</b></sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" colspan="2">
-      <img src="examples\images\pendulum.gif" width="150"><br/>
-      <sub><b>Pendulum</b></sub>
-    </td>
-  </tr>
-</table>
+---
 
+## 🚀 Getting Started
 
-## Supported RL Algorithms
+Install the package directly from PyPI:
 
-The algorithms listed below are explained in detail in `algorithms.md`.
+```bash
+pip install qrl-qai
+```
 
-1. The Cross-Entropy Method 
+## 🧠 Core Algorithms
 
-## References
+Cross-Entropy Method (CEM)
 
-* "Deep Reinforcement Learning Hands-On" (Third Edition) by Maxim Lapan.  
+## 📚 References
+
+Deep Reinforcement Learning Hands-On (Third Edition) by Maxim Lapan.
+
+## 🤝 Contributing
+
+Contributions are welcome! 🎉
+
+See our CONTRIBUTING.md for guidelines.
+
+## 📜 License
+
+This project is licensed under the Apache 2.0 License
+
+## 📬 Contact
+
+Initiated by [Jay Shah](https://www.linkedin.com/in/jay-shah-qml/)
+
+Email: jay.shah@qrlqai.com
