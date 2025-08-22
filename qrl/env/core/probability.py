@@ -129,6 +129,7 @@ class ProbabilityV0(gym.Env):
         self.params = np.random.uniform(0, 2*np.pi, size=self.n_params)
         self.current_step = 0
         self.history = []
+        self.rewards = []
 
     def cost_fn(self, params):
         probs = self.circuit(params)
@@ -153,6 +154,7 @@ class ProbabilityV0(gym.Env):
 
         done = reward < self.tolerance or self.current_step >= self.max_steps
         self.history.append(probs)
+        self.rewards.append(reward)
 
         return probs, reward, done, {}
 
@@ -161,8 +163,9 @@ class ProbabilityV0(gym.Env):
     def reset(self):
         self.params = np.random.uniform(0, 2*np.pi, size=self.n_params)
         self.current_step = 0
-        self.history = [self.circuit(self.params)]
-        return self.history[-1]
+        self.history = []
+        self.rewards = []
+        return self.params, {}
 
     def render(self, mode="human"):
         if mode == "human":
@@ -190,26 +193,19 @@ class ProbabilityV0(gym.Env):
         width = 0.4
 
         target_bar = ax.bar(x - 0.2, self.target_distribution, width=width, label="Target")
-        current_bar = ax.bar(x + 0.2, self.history[0], width=width, label="Evolving")
+        current_bar = ax.bar(x + 0.2, self.history[0], width=width, label="Prediction")
 
         ax.set_ylim(0, 1)
+        ax.set_xticks(range(len(self.history[0])))
+        ax.set_xticklabels([f"|{i}⟩" for i in range(len(self.history[0]))])
         ax.set_xlabel("Basis states")
         ax.set_ylabel("Probability")
         ax.legend()
-
-        # Precompute rewards for all steps in history
-        rewards = []
-        for probs in self.history:
-            kl_div = entropy(self.target_distribution + 1e-10, probs + 1e-10)
-            l2_error = np.linalg.norm(self.target_distribution - probs, ord=2)
-            reward_val = -(self.alpha * kl_div + (1 - self.alpha) * l2_error)
-            rewards.append(reward_val)
-
         def update(frame):
             probs = self.history[frame]
             for bar, new_height in zip(current_bar, probs):
                 bar.set_height(new_height)
-            ax.set_title(f"Step {frame} | Reward: {rewards[frame]:.4f}")
+            ax.set_title(f"Step {frame} | Reward: {np.array(self.rewards[frame].item()):.4f}")
             return current_bar
 
         ani = animation.FuncAnimation(fig, update, frames=len(self.history), blit=False)
@@ -236,13 +232,13 @@ if __name__ == "__main__":
     )
 
     # Reset environment
-    obs = env.reset()
+    params, _ = env.reset()
 
 
     # Use PennyLane's optimizer
     opt = qml.GradientDescentOptimizer(stepsize=0.2)
 
-    params = env.params.copy()
+    # params = env.params.copy()
     for step in range(env.max_steps):
         params, cost_val = opt.step_and_cost(env.cost_fn, params)
         probs = env.circuit(params)
@@ -251,6 +247,7 @@ if __name__ == "__main__":
         env.history.append(probs)
         env.params = params  # update env params
         reward = -cost_val
+        env.rewards.append(-cost_val)
         print(f"Step {step+1}: Reward = {reward:.4f}")
 
         if reward > -1e-2:  # close to perfect
@@ -260,4 +257,4 @@ if __name__ == "__main__":
     # env.render()
 
     # Animate the full evolution
-    env.animate(save_path=r"results/core/probability_evolution.mp4")
+    env.animate(save_path="results/core/probability_v0.mp4")
