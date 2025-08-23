@@ -6,7 +6,9 @@ from scipy.stats import entropy
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-class ProbabilityV0(gym.Env):
+from base__ import QuantumEnv
+
+class ProbabilityV0(QuantumEnv):
     """
     Quantum probability-matching environment for reinforcement learning.
 
@@ -248,7 +250,7 @@ if __name__ == "__main__":
         env.params = params  # update env params
         reward = -cost_val
         env.rewards.append(-cost_val)
-        print(f"Step {step+1}: Reward = {reward:.4f}")
+        print(f"Step {step}: Reward = {reward:.4f}")
 
         if reward > -1e-2:  # close to perfect
             break
