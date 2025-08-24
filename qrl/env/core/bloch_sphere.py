@@ -75,6 +75,18 @@ class BlochSphereV0(QuantumEnv):
         fig = plt.figure(figsize=(6,6))
         ax = fig.add_subplot(111, projection='3d')
         ax.set_box_aspect([1,1,1])
+        ax.view_init(elev=20, azim=-60)
+
+        # Add Qiskit-style Bloch sphere labels
+        ax.text(0, 0, 1.1, r'$|0\rangle$', fontsize=12, color='black')
+        ax.text(0, 0, -1.2, r'$|1\rangle$', fontsize=12, color='black')
+
+        ax.text(0, 1.2, 0, r'$|+i\rangle$', fontsize=12, color='black')
+        ax.text(0, -1.4, 0, r'$|-i\rangle$', fontsize=12, color='black')
+
+        ax.text(1.2, 0, 0, r'$|+\rangle$', fontsize=12, color='black')
+        ax.text(-1.4, 0, 0, r'$|-\rangle$', fontsize=12, color='black')
+
 
         # Sphere (draw once)
         u = np.linspace(0, 2*np.pi, 100)
@@ -83,10 +95,24 @@ class BlochSphereV0(QuantumEnv):
         y = np.outer(np.sin(u), np.sin(v))
         z = np.outer(np.ones_like(u), np.cos(v))
         ax.plot_surface(x, y, z, color='lightblue', alpha=0.5, edgecolor='gray', linewidth=0.1)
+        
+        # Solid lines for X, Y and Z axes
+        ax.plot([-1, 1], [0, 0], [0, 0], color="black", linewidth=1)
+        ax.plot([0, 0], [-1, 1], [0, 0], color="black", linewidth=1)
+        ax.plot([0, 0], [0, 0], [-1, 1], color="black", linewidth=1)
+
+        # Solid Planes for XY, XZ, YZ   
+        phi = np.linspace(0, 2*np.pi, 200)
+        ax.plot(np.cos(phi), np.sin(phi), 0, color="black", linewidth=0.8)
+        ax.plot(np.cos(phi), 0*np.cos(phi), np.sin(phi), color="black", linewidth=0.8)
+        ax.plot(0*np.cos(phi), np.cos(phi), np.sin(phi), color="black", linewidth=0.8)
+
 
         # Axes limits
         ax.set_xlim([-1,1]); ax.set_ylim([-1,1]); ax.set_zlim([-1,1])
-        ax.set_xlabel("X"); ax.set_ylabel("Y"); ax.set_zlabel("Z")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
 
         target_state = self._state_to_bloch(self.target)
 
