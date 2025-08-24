@@ -4,30 +4,11 @@ from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from base__ import QuantumEnv
-
-# Define gates as numpy matrices
-GATES = {
-    "I": np.eye(2),
-    "X": np.array([[0, 1], [1, 0]], dtype=complex),
-    "Y": np.array([[0, -1j], [1j, 0]], dtype=complex),
-    "Z": np.array([[1, 0], [0, -1]], dtype=complex),
-    "H": (1/np.sqrt(2)) * np.array([[1, 1], [1, -1]], dtype=complex),
-    "S": np.array([[1, 0], [0, 1j]], dtype=complex),
-    "SDG": np.array([[1, 0], [0, -1j]], dtype=complex),
-    "T": np.array([[1, 0], [0, np.exp(1j*np.pi/4)]], dtype=complex),
-    "TDG": np.array([[1, 0], [0, np.exp(-1j*np.pi/4)]], dtype=complex),
-}
-
-def RX(theta): return np.array([[np.cos(theta/2), -1j*np.sin(theta/2)],
-                                [-1j*np.sin(theta/2), np.cos(theta/2)]], dtype=complex)
-def RY(theta): return np.array([[np.cos(theta/2), -np.sin(theta/2)],
-                                [np.sin(theta/2), np.cos(theta/2)]], dtype=complex)
-def RZ(theta): return np.array([[np.exp(-1j*theta/2), 0],
-                                [0, np.exp(1j*theta/2)]], dtype=complex)
+from utils import GATES, RX, RY, RZ
 
 
 class BlochSphereV0(QuantumEnv):
-    def __init__(self, target_state, max_steps=20):
+    def __init__(self, target_state, max_steps=20, reward_tolerance=0.99):
         super().__init__()
         self.max_steps = max_steps
         self.target_state = target_state
@@ -42,6 +23,7 @@ class BlochSphereV0(QuantumEnv):
                         "RY_pi_2", "RY_pi_4", "RY_-pi_4",
                         "RZ_pi_2", "RZ_pi_4", "RZ_-pi_4"]
         self.action_space = spaces.Discrete(len(self.actions))
+        self.reward_tolerance = reward_tolerance
 
         self.history = []
 
@@ -77,12 +59,11 @@ class BlochSphereV0(QuantumEnv):
 
         new_obs = self._state_to_bloch(self.state)
 
-        fidelity = np.abs(np.vdot(self.target, self.state))**2
-        reward = fidelity - 0.01
+        reward = np.abs(np.vdot(self.target, self.state))**2
         self.history.append((new_obs, round(reward, 3), gate))
         self.steps += 1
-        done = fidelity > 0.999 or self.steps >= self.max_steps
-        
+        done = reward > self.reward_tolerance or self.steps >= self.max_steps
+
         return self._state_to_bloch(self.state), reward, done, {}
     
 
