@@ -1,3 +1,9 @@
+'''
+Implementation of ErrorChannelV0 environment
+Author: Jay Shah (@Jayshah25)
+License: Apache-2.0
+'''
+
 from gymnasium import spaces
 import numpy as np
 import pennylane as qml
@@ -7,11 +13,147 @@ from base__ import QuantumEnv
 
 
 class ErrorChannelV0(QuantumEnv):
-    """
-    Multi-qubit ErrorChannel environment with multiple simultaneous error channels.
-    - Each faulty qubit can have its own error type (bitflip, phaseflip, amp_damp).
-    - Agent chooses (gate, qubit) to correct.
-    """
+    '''
+    ## Description
+
+    The **ErrorChannelV0** environment simulates a **multi-qubit noisy quantum system** where different qubits
+    may be subject to different error channels. It is based on the `QuantumEnv` base class. The agent's task is to identify and apply corrective
+    single-qubit gates to mitigate the effects of these noise processes and restore the system state
+    to the computational basis state **|0...0⟩**.
+
+    This environment models the challenge of **quantum error mitigation/correction** in the presence of:
+    - **Bit-flip errors** (X errors),
+    - **Phase-flip errors** (Z errors),
+    - **Amplitude damping** (energy relaxation).
+
+    The agent interacts by applying Pauli gates (`X`, `Y`, or `Z`) to specific qubits. Rewards are based
+    on the probability that the corrected quantum state has returned to the target basis state.
+
+    The environment includes a rendering mode that provides a **bar plot animation** comparing the noisy,
+    corrected, and ideal probability distributions, along with the evolving circuit diagram.
+
+    ---
+
+    ## Action Space
+
+    The action space is a **MultiDiscrete( [3, n_qubits] )** space, meaning the agent chooses:
+
+    1. A **gate**: {0: `X`, 1: `Y`, 2: `Z`}  
+    2. A **target qubit**: index in `[0, n_qubits-1]`
+
+    Example (for 3 qubits):  
+    - `(0, 2)` → Apply `X` gate on qubit 2  
+    - `(2, 0)` → Apply `Z` gate on qubit 0  
+
+    ---
+
+    ## Observation Space
+
+    The observation is a probability distribution over all computational basis states
+    of the `n_qubits` system:
+
+    \[
+    \text{obs} \in [0, 1]^{2^{n\_qubits}}
+    \]
+
+    with the constraint:
+
+    \[
+    \sum_i \text{obs}[i] = 1
+    \]
+
+    For example, with 3 qubits, the observation is a length-8 vector:
+
+    | Index | Basis State | Probability |
+    |-------|-------------|-------------|
+    | 0     | `|000⟩`     | [0, 1]      |
+    | 1     | `|001⟩`     | [0, 1]      |
+    | ...   | ...         | ...         |
+    | 7     | `|111⟩`     | [0, 1]      |
+
+    ---
+
+    ## Rewards
+
+    The reward is the probability that the corrected quantum state has returned to the target state:
+
+    \[
+    reward = P(|0...0⟩)
+    \]
+
+    - Maximum reward = 1.0 (perfect correction).  
+    - Minimum reward = 0.0 (completely corrupted).  
+
+    The reward typically increases if the agent successfully counteracts the error channels.
+
+    ---
+
+    ## Starting State
+
+    At the start of each episode:
+    - A set of **faulty qubits** and their error types is defined.  
+    (If not specified, a random qubit and error channel are chosen.)
+    - Noise channels are applied to the initial state **|0...0⟩**.
+    - The agent begins with no corrections applied.
+
+    The first observation is the noisy probability distribution before any corrections.
+
+    ---
+
+    ## Episode End
+
+    The episode ends if one of the following occurs:
+
+    1. **Termination**:  
+    The system reaches the maximum number of steps (`max_steps`, default=10).
+    2. **Truncation**:  
+    No special truncation — agent plays until max steps are reached.
+
+    ---
+
+    ## Rendering
+
+    The rendering shows a **side-by-side animation** with:
+
+    1. **Left panel**: Bar chart of probabilities for each basis state:  
+    - Gray = Ideal noiseless target (|0...0⟩)  
+    - Orange = Noisy distribution  
+    - Blue = Corrected distribution  
+
+    The chart title updates with **step number, chosen correction, and reward**.
+
+    2. **Right panel**: A dynamically drawn ASCII-style **quantum circuit** reflecting
+    the applied corrections.
+
+    The animation can be displayed interactively or saved as an MP4 file.
+
+    ---
+
+    ## Arguments
+
+    - **`n_qubits`** (`int`, default=3): Number of qubits in the system.  
+    - **`faulty_errors`** (`dict`, optional): Mapping `{qubit_index: error_type}`, where `error_type` ∈ {`bitflip`, `phaseflip`, `amp_damp`}.  
+    - **`noise_prob`** (`float`, default=0.15): Probability strength of the error channels.  
+    - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  
+    - **`seed`** (`int`, optional): Random seed for reproducibility.  
+
+    Example:
+
+    ```python
+    >>> from qrl.env import ErrorChannelV0
+
+    >>> env = ErrorChannelV0(
+    ...     n_qubits=3,
+    ...     faulty_errors={0: "bitflip", 2: "amp_damp"},
+    ...     noise_prob=0.2,
+    ...     max_steps=6,
+    ...     seed=42,
+    ... )
+
+    >>> obs = env.reset()
+    >>> obs.shape
+    (8,)
+    '''
 
     metadata = {"render.modes": ["human"]}
 
@@ -213,21 +355,3 @@ class ErrorChannelV0(QuantumEnv):
 
     def render(self, save_path=None, interval=600):
         return self.animate(save_path=save_path, interval_ms=interval)
-
-
-if __name__ == "__main__":
-    env = ErrorChannelV0(
-        n_qubits=3,
-        faulty_errors={0: "bitflip", 2: "amp_damp"},
-        noise_prob=0.2,
-        max_steps=6,
-        seed=42,
-    )
-    obs = env.reset()
-    done = False
-    while not done:
-        action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
-        print(f"step={len(env.corrections)} act={env.GATE_ID2NAME[action[0]]}@q{action[1]} "
-              f"reward={reward:.3f} errors={info['faulty_errors']}")
-    env.render(save_path="results/core/error_channelV0.mp4", interval=700)

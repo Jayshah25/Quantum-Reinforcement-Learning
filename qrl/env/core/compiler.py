@@ -1,3 +1,10 @@
+'''
+Implementation of CompilerV0 environment
+Author: Jay Shah (@Jayshah25)
+License: Apache-2.0
+'''
+
+
 from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
@@ -6,6 +13,133 @@ from utils import GATES, RX, RY, RZ
 from base__ import QuantumEnv
 
 class CompilerV0(QuantumEnv):
+    """
+    ## Description
+
+    The **CompilerV0** environment is designed to simulate the task of **quantum gate compilation** for a single-qubit system.
+    It is based on the `QuantumEnv` base class. The agent's goal is to sequentially apply quantum gates to approximate a randomly chosen target **unitary operation**
+    from the special unitary group SU(2). This mimics a quantum compilation problem where one attempts to
+    rewrite a quantum operation in terms of a limited gate set.
+
+    At each step, the agent applies one of several predefined single-qubit gates, evolving the current circuit unitary.
+    The agent receives a reward proportional to the **fidelity** between the evolved unitary and the target unitary,
+    and the episode terminates when the agent either reaches a sufficiently high fidelity or exhausts the maximum step limit.
+
+    The environment includes a rendering mode that visualizes the **difference matrix** between the target and
+    the current unitary as a heatmap evolving over time.
+
+    ---
+
+    ## Action Space
+
+    The action space is **discrete**, where each action corresponds to applying a quantum gate
+    from a fixed set of single-qubit operations:
+
+    | Num | Action    | Description                        |
+    |-----|-----------|------------------------------------|
+    | 0   | `H`       | Hadamard gate                      |
+    | 1   | `X`       | Pauli-X gate                       |
+    | 2   | `Y`       | Pauli-Y gate                       |
+    | 3   | `Z`       | Pauli-Z gate                       |
+    | 4   | `S`       | Phase gate                         |
+    | 5   | `SDG`     | Conjugate transpose of Phase gate  |
+    | 6   | `T`       | π/8 gate                           |
+    | 7   | `TDG`     | Conjugate transpose of π/8 gate    |
+    | 8   | `RX_pi_2` | X-axis rotation by π/2             |
+    | 9   | `RX_pi_4` | X-axis rotation by π/4             |
+    | 10  | `RY_pi_2` | Y-axis rotation by π/2             |
+    | 11  | `RY_pi_4` | Y-axis rotation by π/4             |
+    | 12  | `RZ_pi_2` | Z-axis rotation by π/2             |
+    | 13  | `RZ_pi_4` | Z-axis rotation by π/4             |
+
+    ---
+
+    ## Observation Space
+
+    The observation is a flattened representation of the current unitary matrix, expressed in terms
+    of its **real and imaginary parts**. This results in an 8-dimensional vector:
+
+    | Num | Observation Component | Range   |
+    |-----|------------------------|---------|
+    | 0-3 | Real part of unitary   | [-1, 1] |
+    | 4-7 | Imag part of unitary   | [-1, 1] |
+
+    This encodes the full \(2 \times 2\) complex unitary matrix.
+
+    ---
+
+    ## Rewards
+
+    The reward is based on the **average gate fidelity** between the target unitary  U_{target}
+    and the current unitary U. Specifically:
+
+    \[
+    reward = \frac{1}{2} \left| \mathrm{Tr}(U_{target}^\dagger U) \right|
+    \]
+
+    - A higher reward indicates closer alignment with the target unitary.
+    - The episode terminates early if the reward exceeds `reward_tolerance` (default: 0.98).
+
+    ---
+
+    ## Starting State
+
+    At the start of each episode:
+    - The circuit unitary is initialized as the **identity matrix** \( I \).
+    - The target unitary is specified by the user at initialization.  
+    (By default, this can be drawn from a random **U3(θ, φ, λ)** decomposition in SU(2).)
+
+    The initial observation corresponds to the identity matrix.
+
+    ---
+
+    ## Episode End
+
+    The episode ends if one of the following occurs:
+
+    1. **Termination**:  
+    The fidelity between the current and target unitary exceeds the reward tolerance (`reward > 0.98` by default).
+    2. **Truncation**:  
+    The number of steps exceeds the maximum episode length (`max_steps`, default: 30).
+
+    ---
+
+    ## Rendering
+
+    The environment supports visualization of the compilation process:
+
+    - A heatmap is drawn showing the **magnitude of the difference matrix**:
+    \[
+    |U_{target} - U|
+    \]
+    at each step.
+    - The heatmap updates dynamically, and the plot title displays the **step number, last applied gate, and reward**.
+
+    The animation can be saved as an MP4 file or displayed interactively.
+
+    ---
+
+    ## Arguments
+
+    - **`target`** (`np.ndarray`): The target \(2 \times 2\) unitary matrix to compile towards.  
+    - **`max_steps`** (`int`, default=30): Maximum number of steps per episode.  
+    - **`reward_tolerance`** (`float`, default=0.98): Fidelity threshold for early termination.  
+
+    Example:
+
+    ```python
+    >>> import numpy as np
+    >>> from utils import RY, RZ
+    >>> from qrl.env import CompilerV0
+
+    >>> theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
+    >>> target = (RZ(phi) @ RY(theta) @ RZ(lam))  # Random SU(2) unitary
+    >>> env = CompilerV0(target=target)
+
+    >>> obs, _ = env.reset()
+    >>> obs.shape
+    (8,)
+    """
     def __init__(self, target, max_steps=30, reward_tolerance=0.98):
         super().__init__()
         self.max_steps = max_steps
@@ -86,28 +220,3 @@ class CompilerV0(QuantumEnv):
             ani.save(save_path, writer="ffmpeg")
         else:
             plt.show()
-
-
-if __name__ == "__main__":
-
-    theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
-    target = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
-
-    # Initialize environment with 1 qubit
-    env = CompilerV0(target=target)
-
-    # Reset
-    obs, _ = env.reset()
-    print("Initial Circuit State:", obs)
-
-    for _ in range(env.max_steps):
-        action = env.action_space.sample()
-        obs, reward, done, _ = env.step(action)
-        print(f"After {action} action -> Observation:", obs)
-        print("Reward:", reward, "Done:", done)
-
-        if done:
-            break
-
-    # Render Bloch sphere
-    env.render(save_path="results/core/compilerV0.mp4")
