@@ -45,7 +45,7 @@ class RandomQuantumAgent(nn.Module):
         def circuit(inputs, weights):
             qml.AngleEmbedding(inputs, wires=range(input_size))
             qml.RandomLayers(weights=weights, wires=range(input_size), seed=seed)
-            return return [qml.expval(qml.PauliZ(i)) for i in range(output_size)]
+            return [qml.expval(qml.PauliZ(i)) for i in range(output_size)]
                 
         shape = qml.RandomLayers.shape(n_layers=n_layers, n_rotations=n_rotations)
         weight_shapes = {"weights": shape}
