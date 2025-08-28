@@ -6,3 +6,4 @@ imageio==2.37.0
 imageio-ffmpeg==0.6.0
 moviepy==2.1.2
 opencv-python==4.11.0.86
+matplotlib==3.10.3

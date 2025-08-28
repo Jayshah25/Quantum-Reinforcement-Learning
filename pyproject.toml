@@ -3,7 +3,7 @@ requires = ["setuptools>=75", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qrl"               
+name = "qrl-qai"               
 version = "0.1.0"
 description = "Quantum Reinforcement Learning library: environments, policies and training loops with PennyLane."
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -21,7 +21,6 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-# keep runtime deps light; let users install torch per their platform
 dependencies = [
   "pennylane>=0.40,<0.41",
   "gymnasium>=1.1,<2.0",
@@ -35,10 +34,12 @@ dependencies = [
 
 
 [project.optional-dependencies]
+torch = ["torch>=2.0,<3.0"]
 dev = ["pytest", "ruff", "black", "mypy", "build", "twine", "pre-commit"]
-docs = ["mkdocs", "mkdocs-material"]
+docs = ["sphinx","furo", "sphinx-autodoc-typehints","sphinx_rtd_theme"]
 viz = ["matplotlib", "tensorboard"]
 examples = ["jupyter"]
+
 
 [project.urls]
 Homepage = "https://github.com/Jayshah25/Quantum-Reinforcement-Learning"
