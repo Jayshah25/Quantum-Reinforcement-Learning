@@ -1,3 +1,6 @@
 .lightning_studio/
 qrl_env/
 visualization.ipynb
+build/
+qrl_qai.egg-info/
+dist/
