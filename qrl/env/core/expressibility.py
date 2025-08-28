@@ -4,7 +4,7 @@ Author: Jay Shah (@Jayshah25)
 License: Apache-2.0
 '''
 
-from pennylane import numpy as np
+import numpy as np
 from typing import List, Tuple, Optional, Dict
 import pennylane as qml
 

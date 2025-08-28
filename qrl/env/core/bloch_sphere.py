@@ -6,7 +6,7 @@ License: Apache-2.0
 
 
 from gymnasium import spaces
-from pennylane import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from .base__ import QuantumEnv
