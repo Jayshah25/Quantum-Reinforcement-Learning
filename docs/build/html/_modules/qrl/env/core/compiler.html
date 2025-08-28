@@ -1,0 +1,524 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.07.19 -->
+        <title>qrl.env.core.compiler - qrl-qai 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">qrl-qai 0.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  <span class="sidebar-brand-text">qrl-qai 0.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.html">qrl.env</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of qrl.env</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.core.html">qrl.env.core</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of qrl.env.core</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.base__.html">qrl.env.core.base__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.bloch_sphere.html">qrl.env.core.bloch_sphere</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.compiler.html">qrl.env.core.compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.error_channel.html">qrl.env.core.error_channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.expressibility.html">qrl.env.core.expressibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.probability.html">qrl.env.core.probability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.utils.html">qrl.env.core.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.agents.html">qrl.agents</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of qrl.agents</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.agents.html">qrl.agents.agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.base.html">qrl.agents.base</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qrl.env.core.compiler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Implementation of CompilerV0 environment</span>
+<span class="sd">Author: Jay Shah (@Jayshah25)</span>
+<span class="sd">License: Apache-2.0</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="kn">import</span> <span class="n">spaces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">animation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATES</span><span class="p">,</span> <span class="n">RX</span><span class="p">,</span> <span class="n">RY</span><span class="p">,</span> <span class="n">RZ</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base__</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumEnv</span>
+
+<div class="viewcode-block" id="CompilerV0">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.compiler.html#qrl.env.CompilerV0">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompilerV0</span><span class="p">(</span><span class="n">QuantumEnv</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ## Description</span>
+
+<span class="sd">    The **CompilerV0** environment is designed to simulate the task of **quantum gate compilation** for a single-qubit system.</span>
+<span class="sd">    It is based on the `QuantumEnv` base class. The agent&#39;s goal is to sequentially apply quantum gates to approximate a randomly chosen target **unitary operation**</span>
+<span class="sd">    from the special unitary group SU(2). This mimics a quantum compilation problem where one attempts to</span>
+<span class="sd">    rewrite a quantum operation in terms of a limited gate set.</span>
+
+<span class="sd">    At each step, the agent applies one of several predefined single-qubit gates, evolving the current circuit unitary.</span>
+<span class="sd">    The agent receives a reward proportional to the **fidelity** between the evolved unitary and the target unitary,</span>
+<span class="sd">    and the episode terminates when the agent either reaches a sufficiently high fidelity or exhausts the maximum step limit.</span>
+
+<span class="sd">    The environment includes a rendering mode that visualizes the **difference matrix** between the target and</span>
+<span class="sd">    the current unitary as a heatmap evolving over time.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Action Space</span>
+
+<span class="sd">    The action space is **discrete**, where each action corresponds to applying a quantum gate</span>
+<span class="sd">    from a fixed set of single-qubit operations:</span>
+
+<span class="sd">    | Num | Action    | Description                        |</span>
+<span class="sd">    |-----|-----------|------------------------------------|</span>
+<span class="sd">    | 0   | `H`       | Hadamard gate                      |</span>
+<span class="sd">    | 1   | `X`       | Pauli-X gate                       |</span>
+<span class="sd">    | 2   | `Y`       | Pauli-Y gate                       |</span>
+<span class="sd">    | 3   | `Z`       | Pauli-Z gate                       |</span>
+<span class="sd">    | 4   | `S`       | Phase gate                         |</span>
+<span class="sd">    | 5   | `SDG`     | Conjugate transpose of Phase gate  |</span>
+<span class="sd">    | 6   | `T`       | π/8 gate                           |</span>
+<span class="sd">    | 7   | `TDG`     | Conjugate transpose of π/8 gate    |</span>
+<span class="sd">    | 8   | `RX_pi_2` | X-axis rotation by π/2             |</span>
+<span class="sd">    | 9   | `RX_pi_4` | X-axis rotation by π/4             |</span>
+<span class="sd">    | 10  | `RY_pi_2` | Y-axis rotation by π/2             |</span>
+<span class="sd">    | 11  | `RY_pi_4` | Y-axis rotation by π/4             |</span>
+<span class="sd">    | 12  | `RZ_pi_2` | Z-axis rotation by π/2             |</span>
+<span class="sd">    | 13  | `RZ_pi_4` | Z-axis rotation by π/4             |</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Observation Space</span>
+
+<span class="sd">    The observation is a flattened representation of the current unitary matrix, expressed in terms</span>
+<span class="sd">    of its **real and imaginary parts**. This results in an 8-dimensional vector:</span>
+
+<span class="sd">    | Num | Observation Component | Range   |</span>
+<span class="sd">    |-----|------------------------|---------|</span>
+<span class="sd">    | 0-3 | Real part of unitary   | [-1, 1] |</span>
+<span class="sd">    | 4-7 | Imag part of unitary   | [-1, 1] |</span>
+
+<span class="sd">    This encodes the full \(2 \times 2\) complex unitary matrix.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Rewards</span>
+
+<span class="sd">    The reward is based on the **average gate fidelity** between the target unitary  U_{target}</span>
+<span class="sd">    and the current unitary U. Specifically:</span>
+
+<span class="sd">    \[</span>
+<span class="sd">    reward = \frac{1}{2} \left| \mathrm{Tr}(U_{target}^\dagger U) \right|</span>
+<span class="sd">    \]</span>
+
+<span class="sd">    - A higher reward indicates closer alignment with the target unitary.</span>
+<span class="sd">    - The episode terminates early if the reward exceeds `reward_tolerance` (default: 0.98).</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Starting State</span>
+
+<span class="sd">    At the start of each episode:</span>
+<span class="sd">    - The circuit unitary is initialized as the **identity matrix** \( I \).</span>
+<span class="sd">    - The target unitary is specified by the user at initialization.  </span>
+<span class="sd">    (By default, this can be drawn from a random **U3(θ, φ, λ)** decomposition in SU(2).)</span>
+
+<span class="sd">    The initial observation corresponds to the identity matrix.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Episode End</span>
+
+<span class="sd">    The episode ends if one of the following occurs:</span>
+
+<span class="sd">    1. **Termination**:  </span>
+<span class="sd">    The fidelity between the current and target unitary exceeds the reward tolerance (`reward &gt; 0.98` by default).</span>
+<span class="sd">    2. **Truncation**:  </span>
+<span class="sd">    The number of steps exceeds the maximum episode length (`max_steps`, default: 30).</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Rendering</span>
+
+<span class="sd">    The environment supports visualization of the compilation process:</span>
+
+<span class="sd">    - A heatmap is drawn showing the **magnitude of the difference matrix**:</span>
+<span class="sd">    \[</span>
+<span class="sd">    |U_{target} - U|</span>
+<span class="sd">    \]</span>
+<span class="sd">    at each step.</span>
+<span class="sd">    - The heatmap updates dynamically, and the plot title displays the **step number, last applied gate, and reward**.</span>
+
+<span class="sd">    The animation can be saved as an MP4 file or displayed interactively.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Arguments</span>
+
+<span class="sd">    - **`target`** (`np.ndarray`): The target \(2 \times 2\) unitary matrix to compile towards.  </span>
+<span class="sd">    - **`max_steps`** (`int`, default=30): Maximum number of steps per episode.  </span>
+<span class="sd">    - **`reward_tolerance`** (`float`, default=0.98): Fidelity threshold for early termination.  </span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from utils import RY, RZ</span>
+<span class="sd">    &gt;&gt;&gt; from qrl.env import CompilerV0</span>
+
+<span class="sd">    &gt;&gt;&gt; theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)</span>
+<span class="sd">    &gt;&gt;&gt; target = (RZ(phi) @ RY(theta) @ RZ(lam))  # Random SU(2) unitary</span>
+<span class="sd">    &gt;&gt;&gt; env = CompilerV0(target=target)</span>
+
+<span class="sd">    &gt;&gt;&gt; obs, _ = env.reset()</span>
+<span class="sd">    &gt;&gt;&gt; obs.shape</span>
+<span class="sd">    (8,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">reward_tolerance</span><span class="o">=</span><span class="mf">0.98</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>  <span class="c1"># target is a 2x2 unitary matrix</span>
+        
+        <span class="c1"># Observation: real+imag flattened 2x2 unitary = 8 floats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;SDG&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;TDG&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;RX_pi_2&quot;</span><span class="p">,</span> <span class="s2">&quot;RX_pi_4&quot;</span><span class="p">,</span> <span class="s2">&quot;RY_pi_2&quot;</span><span class="p">,</span> <span class="s2">&quot;RY_pi_4&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ_pi_2&quot;</span><span class="p">,</span> <span class="s2">&quot;RZ_pi_4&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_tolerance</span> <span class="o">=</span> <span class="n">reward_tolerance</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unitary_to_obs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">U</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">U</span><span class="o">.</span><span class="n">imag</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompilerV0.reset">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.compiler.html#qrl.env.CompilerV0.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        
+        <span class="c1"># Random target unitary: sample U3(θ, φ, λ)</span>
+        <span class="c1"># theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)</span>
+        <span class="c1"># self.target = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitary_to_obs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">),</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="CompilerV0.step">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.compiler.html#qrl.env.CompilerV0.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="n">gate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="n">action</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">GATES</span><span class="p">:</span>
+            <span class="n">U_gate</span> <span class="o">=</span> <span class="n">GATES</span><span class="p">[</span><span class="n">gate</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s2">&quot;RX&quot;</span> <span class="ow">in</span> <span class="n">gate</span><span class="p">:</span>
+            <span class="n">U_gate</span> <span class="o">=</span> <span class="n">RX</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">gate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;pi&quot;</span><span class="p">,</span> <span class="s2">&quot;np.pi&quot;</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="s2">&quot;RY&quot;</span> <span class="ow">in</span> <span class="n">gate</span><span class="p">:</span>
+            <span class="n">U_gate</span> <span class="o">=</span> <span class="n">RY</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">gate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;pi&quot;</span><span class="p">,</span> <span class="s2">&quot;np.pi&quot;</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="s2">&quot;RZ&quot;</span> <span class="ow">in</span> <span class="n">gate</span><span class="p">:</span>
+            <span class="n">U_gate</span> <span class="o">=</span> <span class="n">RZ</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">gate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;pi&quot;</span><span class="p">,</span> <span class="s2">&quot;np.pi&quot;</span><span class="p">)))</span>
+        
+        <span class="c1"># Apply gate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">U_gate</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span>
+        
+        <span class="c1"># Fidelity: average gate fidelity for 1-qubit</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="n">gate</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_tolerance</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitary_to_obs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">),</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="CompilerV0.render">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.compiler.html#qrl.env.CompilerV0.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">800</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render the episode as an animation of the difference matrix.</span>
+<span class="sd">        Only shows |target - current| evolving across steps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+        <span class="c1"># Initial difference</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;magma&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;|Target - Prediction|&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">step</span><span class="p">):</span>
+            <span class="c1"># Compute difference matrix</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">im</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+
+            <span class="c1"># Update title with fidelity</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2"> | Action: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> | Reward=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">im</span><span class="p">]</span>
+
+        <span class="n">ani</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_path</span><span class="p">:</span>
+            <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Jay Shah
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

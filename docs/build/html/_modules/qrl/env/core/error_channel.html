@@ -1,0 +1,662 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.07.19 -->
+        <title>qrl.env.core.error_channel - qrl-qai 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">qrl-qai 0.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  <span class="sidebar-brand-text">qrl-qai 0.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.html">qrl.env</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of qrl.env</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.core.html">qrl.env.core</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of qrl.env.core</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.base__.html">qrl.env.core.base__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.bloch_sphere.html">qrl.env.core.bloch_sphere</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.compiler.html">qrl.env.core.compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.error_channel.html">qrl.env.core.error_channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.expressibility.html">qrl.env.core.expressibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.probability.html">qrl.env.core.probability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.utils.html">qrl.env.core.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.agents.html">qrl.agents</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of qrl.agents</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.agents.html">qrl.agents.agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.base.html">qrl.agents.base</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qrl.env.core.error_channel</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Implementation of ErrorChannelV0 environment</span>
+<span class="sd">Author: Jay Shah (@Jayshah25)</span>
+<span class="sd">License: Apache-2.0</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="kn">import</span> <span class="n">spaces</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">FuncAnimation</span><span class="p">,</span> <span class="n">FFMpegWriter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base__</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumEnv</span>
+
+
+<div class="viewcode-block" id="ErrorChannelV0">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.error_channel.html#qrl.env.ErrorChannelV0">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ErrorChannelV0</span><span class="p">(</span><span class="n">QuantumEnv</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ## Description</span>
+
+<span class="sd">    The **ErrorChannelV0** environment simulates a **multi-qubit noisy quantum system** where different qubits</span>
+<span class="sd">    may be subject to different error channels. It is based on the `QuantumEnv` base class. The agent&#39;s task is to identify and apply corrective</span>
+<span class="sd">    single-qubit gates to mitigate the effects of these noise processes and restore the system state</span>
+<span class="sd">    to the computational basis state **|0...0⟩**.</span>
+
+<span class="sd">    This environment models the challenge of **quantum error mitigation/correction** in the presence of:</span>
+<span class="sd">    - **Bit-flip errors** (X errors),</span>
+<span class="sd">    - **Phase-flip errors** (Z errors),</span>
+<span class="sd">    - **Amplitude damping** (energy relaxation).</span>
+
+<span class="sd">    The agent interacts by applying Pauli gates (`X`, `Y`, or `Z`) to specific qubits. Rewards are based</span>
+<span class="sd">    on the probability that the corrected quantum state has returned to the target basis state.</span>
+
+<span class="sd">    The environment includes a rendering mode that provides a **bar plot animation** comparing the noisy,</span>
+<span class="sd">    corrected, and ideal probability distributions, along with the evolving circuit diagram.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Action Space</span>
+
+<span class="sd">    The action space is a **MultiDiscrete( [3, n_qubits] )** space, meaning the agent chooses:</span>
+
+<span class="sd">    1. A **gate**: {0: `X`, 1: `Y`, 2: `Z`}  </span>
+<span class="sd">    2. A **target qubit**: index in `[0, n_qubits-1]`</span>
+
+<span class="sd">    Example (for 3 qubits):  </span>
+<span class="sd">    - `(0, 2)` → Apply `X` gate on qubit 2  </span>
+<span class="sd">    - `(2, 0)` → Apply `Z` gate on qubit 0  </span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Observation Space</span>
+
+<span class="sd">    The observation is a probability distribution over all computational basis states</span>
+<span class="sd">    of the `n_qubits` system:</span>
+
+<span class="sd">    \[</span>
+<span class="sd">    \text{obs} \in [0, 1]^{2^{n\_qubits}}</span>
+<span class="sd">    \]</span>
+
+<span class="sd">    with the constraint:</span>
+
+<span class="sd">    \[</span>
+<span class="sd">    \sum_i \text{obs}[i] = 1</span>
+<span class="sd">    \]</span>
+
+<span class="sd">    For example, with 3 qubits, the observation is a length-8 vector:</span>
+
+<span class="sd">    | Index | Basis State | Probability |</span>
+<span class="sd">    |-------|-------------|-------------|</span>
+<span class="sd">    | 0     | `|000⟩`     | [0, 1]      |</span>
+<span class="sd">    | 1     | `|001⟩`     | [0, 1]      |</span>
+<span class="sd">    | ...   | ...         | ...         |</span>
+<span class="sd">    | 7     | `|111⟩`     | [0, 1]      |</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Rewards</span>
+
+<span class="sd">    The reward is the probability that the corrected quantum state has returned to the target state:</span>
+
+<span class="sd">    \[</span>
+<span class="sd">    reward = P(|0...0⟩)</span>
+<span class="sd">    \]</span>
+
+<span class="sd">    - Maximum reward = 1.0 (perfect correction).  </span>
+<span class="sd">    - Minimum reward = 0.0 (completely corrupted).  </span>
+
+<span class="sd">    The reward typically increases if the agent successfully counteracts the error channels.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Starting State</span>
+
+<span class="sd">    At the start of each episode:</span>
+<span class="sd">    - A set of **faulty qubits** and their error types is defined.  </span>
+<span class="sd">    (If not specified, a random qubit and error channel are chosen.)</span>
+<span class="sd">    - Noise channels are applied to the initial state **|0...0⟩**.</span>
+<span class="sd">    - The agent begins with no corrections applied.</span>
+
+<span class="sd">    The first observation is the noisy probability distribution before any corrections.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Episode End</span>
+
+<span class="sd">    The episode ends if one of the following occurs:</span>
+
+<span class="sd">    1. **Termination**:  </span>
+<span class="sd">    The system reaches the maximum number of steps (`max_steps`, default=10).</span>
+<span class="sd">    2. **Truncation**:  </span>
+<span class="sd">    No special truncation — agent plays until max steps are reached.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Rendering</span>
+
+<span class="sd">    The rendering shows a **side-by-side animation** with:</span>
+
+<span class="sd">    1. **Left panel**: Bar chart of probabilities for each basis state:  </span>
+<span class="sd">    - Gray = Ideal noiseless target (|0...0⟩)  </span>
+<span class="sd">    - Orange = Noisy distribution  </span>
+<span class="sd">    - Blue = Corrected distribution  </span>
+
+<span class="sd">    The chart title updates with **step number, chosen correction, and reward**.</span>
+
+<span class="sd">    2. **Right panel**: A dynamically drawn ASCII-style **quantum circuit** reflecting</span>
+<span class="sd">    the applied corrections.</span>
+
+<span class="sd">    The animation can be displayed interactively or saved as an MP4 file.</span>
+
+<span class="sd">    ---</span>
+
+<span class="sd">    ## Arguments</span>
+
+<span class="sd">    - **`n_qubits`** (`int`, default=3): Number of qubits in the system.  </span>
+<span class="sd">    - **`faulty_errors`** (`dict`, optional): Mapping `{qubit_index: error_type}`, where `error_type` ∈ {`bitflip`, `phaseflip`, `amp_damp`}.  </span>
+<span class="sd">    - **`noise_prob`** (`float`, default=0.15): Probability strength of the error channels.  </span>
+<span class="sd">    - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  </span>
+<span class="sd">    - **`seed`** (`int`, optional): Random seed for reproducibility.  </span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    &gt;&gt;&gt; from qrl.env import ErrorChannelV0</span>
+
+<span class="sd">    &gt;&gt;&gt; env = ErrorChannelV0(</span>
+<span class="sd">    ...     n_qubits=3,</span>
+<span class="sd">    ...     faulty_errors={0: &quot;bitflip&quot;, 2: &quot;amp_damp&quot;},</span>
+<span class="sd">    ...     noise_prob=0.2,</span>
+<span class="sd">    ...     max_steps=6,</span>
+<span class="sd">    ...     seed=42,</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    &gt;&gt;&gt; obs = env.reset()</span>
+<span class="sd">    &gt;&gt;&gt; obs.shape</span>
+<span class="sd">    (8,)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;render.modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;human&quot;</span><span class="p">]}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_qubits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">faulty_errors</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>   <span class="c1"># {qubit_idx: error_type, ...}</span>
+        <span class="n">noise_prob</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">,</span>
+        <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span> <span class="o">=</span> <span class="n">n_qubits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_prob</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">noise_prob</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GATE_ID2NAME</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Z&quot;</span><span class="p">}</span>
+
+
+        <span class="c1"># Default: one random faulty qubit with random error type</span>
+        <span class="k">if</span> <span class="n">faulty_errors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">))</span>
+            <span class="n">et</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">&quot;bitflip&quot;</span><span class="p">,</span> <span class="s2">&quot;phaseflip&quot;</span><span class="p">,</span> <span class="s2">&quot;amp_damp&quot;</span><span class="p">])</span>
+            <span class="n">faulty_errors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="n">q</span><span class="p">],</span> <span class="p">[</span><span class="n">et</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faulty_errors</span> <span class="o">=</span> <span class="n">faulty_errors</span>
+
+        <span class="c1"># Device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dev</span> <span class="o">=</span> <span class="n">qml</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;default.mixed&quot;</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">n_qubits</span><span class="p">)</span>
+
+        <span class="c1"># Action = (gate, qubit)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">MultiDiscrete</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">])</span>
+
+        <span class="c1"># Observation = probs over 2^n states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+            <span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Target = |0...0&gt;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_probs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_qnodes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">etype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">faulty_errors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">etype</span> <span class="o">==</span> <span class="s2">&quot;bitflip&quot;</span><span class="p">:</span>
+                <span class="n">qml</span><span class="o">.</span><span class="n">BitFlip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_prob</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">etype</span> <span class="o">==</span> <span class="s2">&quot;phaseflip&quot;</span><span class="p">:</span>
+                <span class="n">qml</span><span class="o">.</span><span class="n">PhaseFlip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_prob</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">etype</span> <span class="o">==</span> <span class="s2">&quot;amp_damp&quot;</span><span class="p">:</span>
+                <span class="n">qml</span><span class="o">.</span><span class="n">AmplitudeDamping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_prob</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_gate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gate_id</span><span class="p">,</span> <span class="n">wire</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">gate_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">qml</span><span class="o">.</span><span class="n">PauliX</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="n">wire</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">gate_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">qml</span><span class="o">.</span><span class="n">PauliY</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="n">wire</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">gate_id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">qml</span><span class="o">.</span><span class="n">PauliZ</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="n">wire</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_qnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nd">@qml</span><span class="o">.</span><span class="n">qnode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">qnode_noisy</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_noise</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">qml</span><span class="o">.</span><span class="n">probs</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qnode_noisy</span> <span class="o">=</span> <span class="n">qnode_noisy</span>
+
+        <span class="nd">@qml</span><span class="o">.</span><span class="n">qnode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">qnode_corrected</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_noise</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="n">gid</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_apply_gate</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">qml</span><span class="o">.</span><span class="n">probs</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qnode_corrected</span> <span class="o">=</span> <span class="n">qnode_corrected</span>
+
+        <span class="c1"># separate copy of corrected circuit for rendering</span>
+        <span class="nd">@qml</span><span class="o">.</span><span class="n">qnode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">qnode_draw</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_noise</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="n">gid</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_apply_gate</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">qml</span><span class="o">.</span><span class="n">probs</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="p">))</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">qnode_draw</span> <span class="o">=</span> <span class="n">qnode_draw</span>
+
+
+<div class="viewcode-block" id="ErrorChannelV0.reset">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.error_channel.html#qrl.env.ErrorChannelV0.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="n">probs_noisy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_noisy</span><span class="p">()</span>
+        <span class="n">probs_corrected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">probs_noisy</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">probs_corrected</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">gate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qubit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">probs_noisy</span><span class="o">=</span><span class="n">probs_noisy</span><span class="p">,</span>
+            <span class="n">probs_corrected</span><span class="o">=</span><span class="n">probs_corrected</span><span class="p">,</span>
+            <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">probs_corrected</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ErrorChannelV0.step">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.error_channel.html#qrl.env.ErrorChannelV0.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="n">gate_id</span><span class="p">,</span> <span class="n">qubit_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">action</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">action</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">gate_id</span><span class="p">,</span> <span class="n">qubit_idx</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="p">)</span>
+
+        <span class="n">noisy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_noisy</span><span class="p">()</span>
+        <span class="n">corrected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_corrected</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="n">reward</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">corrected</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># Max can be 1, Min can be 0</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_step</span><span class="p">,</span>
+            <span class="n">gate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">GATE_ID2NAME</span><span class="p">[</span><span class="n">gate_id</span><span class="p">],</span>
+            <span class="n">qubit</span><span class="o">=</span><span class="n">qubit_idx</span><span class="p">,</span>
+            <span class="n">probs_noisy</span><span class="o">=</span><span class="n">noisy</span><span class="p">,</span>
+            <span class="n">probs_corrected</span><span class="o">=</span><span class="n">corrected</span><span class="p">,</span>
+            <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">corrected</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;faulty_errors&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">faulty_errors</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_basis_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">0</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="si">}</span><span class="s2">b</span><span class="si">}</span><span class="s2">⟩&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="ErrorChannelV0.animate">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.error_channel.html#qrl.env.ErrorChannelV0.animate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval_ms</span><span class="o">=</span><span class="mi">600</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nothing to animate.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">n_states</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_states</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_labels</span><span class="p">()</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">axL</span><span class="p">,</span> <span class="n">axR</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+        <span class="n">width</span> <span class="o">=</span> <span class="mf">0.25</span>
+        <span class="n">bars_ideal</span> <span class="o">=</span> <span class="n">axL</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_probs</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ideal&quot;</span><span class="p">)</span>
+        <span class="n">bars_noisy</span> <span class="o">=</span> <span class="n">axL</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_states</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Noisy&quot;</span><span class="p">)</span>
+        <span class="n">bars_corr</span>  <span class="o">=</span> <span class="n">axL</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_states</span><span class="p">),</span> <span class="n">width</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Corrected&quot;</span><span class="p">)</span>
+
+        <span class="n">axL</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">axL</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">axL</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">axL</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Probability&quot;</span><span class="p">)</span>
+        <span class="n">axL</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+
+        <span class="n">axR</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+        <span class="n">axR</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Circuit&quot;</span><span class="p">)</span>
+        <span class="n">text_box</span> <span class="o">=</span> <span class="n">axR</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s2">&quot;monospace&quot;</span><span class="p">)</span>
+
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">draw_circuit_on_axis</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>      
+            <span class="n">text</span> <span class="o">=</span> <span class="n">qml</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qnode_draw</span><span class="p">)(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">text_box</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+            <span class="n">noisy</span><span class="p">,</span> <span class="n">corr</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">&quot;probs_noisy&quot;</span><span class="p">],</span> <span class="n">rec</span><span class="p">[</span><span class="s2">&quot;probs_corrected&quot;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bars_noisy</span><span class="p">,</span> <span class="n">noisy</span><span class="p">):</span> <span class="n">b</span><span class="o">.</span><span class="n">set_height</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bars_corr</span><span class="p">,</span> <span class="n">corr</span><span class="p">):</span> <span class="n">b</span><span class="o">.</span><span class="n">set_height</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">rec</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">rec</span><span class="p">[</span><span class="s2">&quot;gate&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | </span><span class="si">{</span><span class="n">rec</span><span class="p">[</span><span class="s1">&#39;gate&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> on q[</span><span class="si">{</span><span class="n">rec</span><span class="p">[</span><span class="s1">&#39;qubit&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; | reward=</span><span class="si">{</span><span class="n">rec</span><span class="p">[</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">axL</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+            <span class="n">draw_circuit_on_axis</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">rec</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">bars_noisy</span><span class="p">,</span> <span class="o">*</span><span class="n">bars_corr</span><span class="p">)</span>
+
+        <span class="n">ani</span> <span class="o">=</span> <span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval_ms</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_path</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1000</span><span class="o">/</span><span class="n">interval_ms</span><span class="p">))</span>
+            <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">FFMpegWriter</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ErrorChannelV0.render">
+<a class="viewcode-back" href="../../../../api/qrl.env.core.error_channel.html#qrl.env.ErrorChannelV0.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">600</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span> <span class="n">interval_ms</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Jay Shah
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

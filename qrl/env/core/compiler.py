@@ -9,8 +9,8 @@ from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from utils import GATES, RX, RY, RZ 
-from base__ import QuantumEnv
+from .utils import GATES, RX, RY, RZ 
+from .base__ import QuantumEnv
 
 class CompilerV0(QuantumEnv):
     """

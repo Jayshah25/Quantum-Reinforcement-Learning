@@ -9,7 +9,7 @@ import numpy as np
 import pennylane as qml
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, FFMpegWriter
-from base__ import QuantumEnv
+from .base__ import QuantumEnv
 
 
 class ErrorChannelV0(QuantumEnv):

@@ -9,7 +9,7 @@ from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-from base__ import QuantumEnv
+from .base__ import QuantumEnv
 
 class ProbabilityV0(QuantumEnv):
     """

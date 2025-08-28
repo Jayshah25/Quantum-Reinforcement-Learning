@@ -13,7 +13,7 @@ from gymnasium import spaces
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.animation import FuncAnimation
-from base__ import QuantumEnv
+from .base__ import QuantumEnv
 
 
 class ExpressibilityV0(QuantumEnv):

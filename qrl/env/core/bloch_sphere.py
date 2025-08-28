@@ -9,8 +9,8 @@ from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from base__ import QuantumEnv
-from utils import GATES, RX, RY, RZ
+from .base__ import QuantumEnv
+from .utils import GATES, RX, RY, RZ
 
 
 class BlochSphereV0(QuantumEnv):

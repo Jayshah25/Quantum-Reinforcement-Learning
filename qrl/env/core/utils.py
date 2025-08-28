@@ -1,4 +1,4 @@
-from pennylane import numpy as np
+import numpy as np
 
 # Define gates as numpy matrices
 GATES = {
