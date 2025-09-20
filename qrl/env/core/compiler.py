@@ -73,9 +73,8 @@ class CompilerV0(QuantumEnv):
     The reward is based on the **average gate fidelity** between the target unitary  U_{target}
     and the current unitary U. Specifically:
 
-    \[
-    reward = \frac{1}{2} \left| \mathrm{Tr}(U_{target}^\dagger U) \right|
-    \]
+
+    reward = 0.5 |Trace((U_{target}^dagger * U))|
 
     - A higher reward indicates closer alignment with the target unitary.
     - The episode terminates early if the reward exceeds `reward_tolerance` (default: 0.98).
@@ -109,9 +108,7 @@ class CompilerV0(QuantumEnv):
     The environment supports visualization of the compilation process:
 
     - A heatmap is drawn showing the **magnitude of the difference matrix**:
-    \[
     |U_{target} - U|
-    \]
     at each step.
     - The heatmap updates dynamically, and the plot title displays the **step number, last applied gate, and reward**.
 
@@ -140,11 +137,15 @@ class CompilerV0(QuantumEnv):
     >>> obs.shape
     (8,)
     """
-    def __init__(self, target, max_steps=30, reward_tolerance=0.98):
+    def __init__(self, target_unitary, max_steps=30, reward_tolerance=0.98):
         super().__init__()
         self.max_steps = max_steps
-        self.target = target  # target is a 2x2 unitary matrix
-        
+        self.target_unitary = target_unitary  # target is a 2x2 unitary matrix
+
+        assert self.target_unitary.shape == (2, 2), "Target unitary must be a 2x2 matrix."
+        assert np.issubdtype(self.target_unitary.dtype, np.complexfloating), "Target matrix must be complex-valued."
+        assert np.allclose(self.target_unitary.conj().T @ self.target_unitary, np.eye(2, dtype=complex)), "Target matrix must be unitary."
+
         # Observation: real+imag flattened 2x2 unitary = 8 floats
         self.observation_space = spaces.Box(low=-1, high=1, shape=(8,), dtype=np.float32)
         
@@ -152,7 +153,12 @@ class CompilerV0(QuantumEnv):
                         "RX_pi_2", "RX_pi_4", "RY_pi_2", "RY_pi_4", "RZ_pi_2", "RZ_pi_4"]
         self.action_space = spaces.Discrete(len(self.actions))
         self.history = []
+
+        if reward_tolerance < 0 or reward_tolerance > 1:
+            raise ValueError("reward_tolerance must be between 0 and 1")
         self.reward_tolerance = reward_tolerance
+        self.steps = 0
+        self.U = np.eye(2, dtype=complex)
 
     def _unitary_to_obs(self, U):
         return np.concatenate([U.real.flatten(), U.imag.flatten()]).astype(np.float32)
@@ -163,7 +169,7 @@ class CompilerV0(QuantumEnv):
         
         # Random target unitary: sample U3(θ, φ, λ)
         # theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
-        # self.target = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
+        # self.target_unitary = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
         self.history = [(self.U, 'None', 'None')]
         return self._unitary_to_obs(self.U), {}
 
@@ -182,7 +188,7 @@ class CompilerV0(QuantumEnv):
         self.U = U_gate @ self.U
         
         # Fidelity: average gate fidelity for 1-qubit
-        reward = 0.5 * np.abs(np.trace(np.conj(self.target.T) @ self.U))
+        reward = 0.5 * np.abs(np.trace(np.conj(self.target_unitary.T) @ self.U))
         self.steps += 1
         self.history.append((self.U, gate, round(reward, 3)))
         done = reward > self.reward_tolerance or self.steps >= self.max_steps
@@ -198,14 +204,14 @@ class CompilerV0(QuantumEnv):
         fig, ax = plt.subplots(figsize=(5, 5))
 
         # Initial difference
-        diff = np.abs(self.target - self.history[0][0])
+        diff = np.abs(self.target_unitary - self.history[0][0])
         im = ax.imshow(diff, cmap="magma", vmin=0, vmax=1)
         cbar = plt.colorbar(im, ax=ax)
         cbar.set_label("|Target - Prediction|")
 
         def update(step):
             # Compute difference matrix
-            diff = np.abs(self.target - self.history[step][0])
+            diff = np.abs(self.target_unitary - self.history[step][0])
             im.set_array(diff)
 
             # Update title with fidelity
