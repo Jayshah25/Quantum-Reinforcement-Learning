@@ -186,8 +186,10 @@ class BlochSphereV0(QuantumEnv):
                         "RZ_pi_2", "RZ_pi_4", "RZ_-pi_4"]
         self.action_space = spaces.Discrete(len(self.actions))
         self.reward_tolerance = reward_tolerance
-
+        if self.reward_tolerance <= 0 or self.reward_tolerance > 1:
+            raise ValueError("reward_tolerance must be in (0, 1]")
         self.history = []
+        self.steps = 0
 
     def _state_to_bloch(self, state):
         rho = np.outer(state, np.conj(state))
@@ -221,7 +223,7 @@ class BlochSphereV0(QuantumEnv):
 
         new_obs = self._state_to_bloch(self.state)
 
-        reward = np.abs(np.vdot(self.target, self.state))**2
+        reward = np.abs(np.vdot(self.target_state, self.state))**2
         self.history.append((new_obs, round(reward, 3), gate))
         self.steps += 1
         done = reward > self.reward_tolerance or self.steps >= self.max_steps

@@ -25,8 +25,8 @@ class QuantumEnv(gym.Env, ABC):
         pass
 
     @abstractmethod
-    def render(self, mode="human"):
-        """Visualize current state """
+    def render(self):
+        """Animate the episode"""
         pass
 
     def close(self):
