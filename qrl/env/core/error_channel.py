@@ -8,7 +8,7 @@ from gymnasium import spaces
 import numpy as np
 import pennylane as qml
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, FFMpegWriter
+from matplotlib.animation import FuncAnimation
 from .base__ import QuantumEnv
 
 
@@ -17,16 +17,13 @@ class ErrorChannelV0(QuantumEnv):
     ## Description
 
     The **ErrorChannelV0** environment simulates a **multi-qubit noisy quantum system** where different qubits
-    may be subject to different error channels. It is based on the `QuantumEnv` base class. The agent's task is to identify and apply corrective
-    single-qubit gates to mitigate the effects of these noise processes and restore the system state
+    may be subject to error channels (bitflip errors) with varying probabilities. It is based on the `QuantumEnv` base class. 
+    The agent's task is to identify and apply corrective single-qubit gates to mitigate the effects of these noise processes and restore the system state
     to the computational basis state **|0...0⟩**.
 
-    This environment models the challenge of **quantum error mitigation/correction** in the presence of:
-    - **Bit-flip errors** (X errors),
-    - **Phase-flip errors** (Z errors),
-    - **Amplitude damping** (energy relaxation).
+    This environment models the challenge of **quantum error mitigation/correction** in the presence of **Bit-flip errors**.
 
-    The agent interacts by applying Pauli gates (`X`, `Y`, or `Z`) to specific qubits. Rewards are based
+    The agent interacts by applying X gate to specific qubits. Rewards are based
     on the probability that the corrected quantum state has returned to the target basis state.
 
     The environment includes a rendering mode that provides a **bar plot animation** comparing the noisy,
@@ -36,14 +33,13 @@ class ErrorChannelV0(QuantumEnv):
 
     ## Action Space
 
-    The action space is a **MultiDiscrete( [3, n_qubits] )** space, meaning the agent chooses:
+    The action space is a **Discrete( [n_qubits] )** space, meaning the agent chooses:
 
-    1. A **gate**: {0: `X`, 1: `Y`, 2: `Z`}  
-    2. A **target qubit**: index in `[0, n_qubits-1]`
+    1. A **target qubit**: index in `[0, n_qubits-1]` to apply the PauliX correction on.
 
     Example (for 3 qubits):  
-    - `(0, 2)` → Apply `X` gate on qubit 2  
-    - `(2, 0)` → Apply `Z` gate on qubit 0  
+    - `0` → Apply `X` gate on qubit 0  
+    - `2` → Apply `X` gate on qubit 2  
 
     ---
 
@@ -52,15 +48,11 @@ class ErrorChannelV0(QuantumEnv):
     The observation is a probability distribution over all computational basis states
     of the `n_qubits` system:
 
-    \[
-    \text{obs} \in [0, 1]^{2^{n\_qubits}}
-    \]
+    obs \in [0, 1]^{2^{n\_qubits}}
 
     with the constraint:
 
-    \[
-    \sum_i \text{obs}[i] = 1
-    \]
+    \sum_i obs[i] = 1
 
     For example, with 3 qubits, the observation is a length-8 vector:
 
@@ -75,25 +67,20 @@ class ErrorChannelV0(QuantumEnv):
 
     ## Rewards
 
-    The reward is the probability that the corrected quantum state has returned to the target state:
+    The reward is the mean squared error between the target state and the corrected state multiplied by -1:
 
-    \[
-    reward = P(|0...0⟩)
-    \]
+    reward = -MSE(|0...0⟩, |corrected_state⟩)
 
-    - Maximum reward = 1.0 (perfect correction).  
-    - Minimum reward = 0.0 (completely corrupted).  
-
-    The reward typically increases if the agent successfully counteracts the error channels.
+    - Maximum reward = 0.0 (perfect correction).  
+    - Minimum reward = -(2/2**num_qubits) (highly corrupted).  
 
     ---
 
     ## Starting State
 
     At the start of each episode:
-    - A set of **faulty qubits** and their error types is defined.  
-    (If not specified, a random qubit and error channel are chosen.)
-    - Noise channels are applied to the initial state **|0...0⟩**.
+    - A set of **faulty qubits** is defined to apply bit flip errors with varying probabilities.  
+    (If not specified, a random qubit is chosen.)
     - The agent begins with no corrections applied.
 
     The first observation is the noisy probability distribution before any corrections.
@@ -105,9 +92,9 @@ class ErrorChannelV0(QuantumEnv):
     The episode ends if one of the following occurs:
 
     1. **Termination**:  
-    The system reaches the maximum number of steps (`max_steps`, default=10).
+    The obtained reward is 0.0.
     2. **Truncation**:  
-    No special truncation — agent plays until max steps are reached.
+    The system reaches the maximum number of steps (`max_steps`, default=10)
 
     ---
 
@@ -132,8 +119,7 @@ class ErrorChannelV0(QuantumEnv):
     ## Arguments
 
     - **`n_qubits`** (`int`, default=3): Number of qubits in the system.  
-    - **`faulty_errors`** (`dict`, optional): Mapping `{qubit_index: error_type}`, where `error_type` ∈ {`bitflip`, `phaseflip`, `amp_damp`}.  
-    - **`noise_prob`** (`float`, default=0.15): Probability strength of the error channels.  
+    - **`faulty_qubits`** (`dict`, optional): Mapping of faulty qubit indices to their noise probabilities.  
     - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  
     - **`seed`** (`int`, optional): Random seed for reproducibility.  
 
@@ -144,8 +130,7 @@ class ErrorChannelV0(QuantumEnv):
 
     >>> env = ErrorChannelV0(
     ...     n_qubits=3,
-    ...     faulty_errors={0: "bitflip", 2: "amp_damp"},
-    ...     noise_prob=0.2,
+    ...     faulty_qubits={0: 0.2, 2: 0.2},
     ...     max_steps=6,
     ...     seed=42,
     ... )
@@ -160,31 +145,29 @@ class ErrorChannelV0(QuantumEnv):
     def __init__(
         self,
         n_qubits: int = 3,
-        faulty_errors: dict = None,   # {qubit_idx: error_type, ...}
-        noise_prob: float = 0.15,
+        faulty_qubits: dict = None,   # {qubit_idx: error_type, ...}
         max_steps: int = 10,
         seed: int = None,
     ):
         super().__init__()
         self.n_qubits = n_qubits
-        self.noise_prob = float(noise_prob)
         self.max_steps = max_steps
         self.rng = np.random.default_rng(seed)
         self.GATE_ID2NAME = {0: "X", 1: "Y", 2: "Z"}
 
 
-        # Default: one random faulty qubit with random error type
-        if faulty_errors is None:
-            q = int(self.rng.integers(0, n_qubits))
-            et = self.rng.choice(["bitflip", "phaseflip", "amp_damp"])
-            faulty_errors = dict(zip([q], [et]))
-        self.faulty_errors = faulty_errors
+        # Default: one random faulty qubit with random noise prob
+        if faulty_qubits is None:
+            qubit = int(self.rng.integers(0, n_qubits))
+            noise = self.rng.uniform(0.1, 0.5)  # noise prob between 0.1 and 0.5
+            faulty_qubits = dict(zip([qubit], [noise]))
+        self.faulty_qubits = faulty_qubits
 
         # Device
         self.dev = qml.device("default.mixed", wires=n_qubits)
 
         # Action = (gate, qubit)
-        self.action_space = spaces.MultiDiscrete([3, n_qubits])
+        self.action_space = spaces.MultiDiscrete([n_qubits])
 
         # Observation = probs over 2^n states
         self.observation_space = spaces.Box(
@@ -203,23 +186,20 @@ class ErrorChannelV0(QuantumEnv):
         self.reset()
 
     def _apply_noise(self):
-        for q, etype in self.faulty_errors.items():
-            if etype == "bitflip":
-                qml.BitFlip(self.noise_prob, wires=q)
-            elif etype == "phaseflip":
-                qml.PhaseFlip(self.noise_prob, wires=q)
-            elif etype == "amp_damp":
-                qml.AmplitudeDamping(self.noise_prob, wires=q)
+        for qubit, noise in self.faulty_qubits.items():
+            qml.BitFlip(noise, wires=qubit)
 
-    def _apply_gate(self, gate_id, wire):
-        if gate_id == 0:
-            qml.PauliX(wires=wire)
-        elif gate_id == 1:
-            qml.PauliY(wires=wire)
-        elif gate_id == 2:
-            qml.PauliZ(wires=wire)
+    def _apply_gate(self, wire):
+        ''' Apply single-qubit gate (bitflip correction operation) on specified wire '''
+        qml.PauliX(wires=wire)
 
     def _build_qnodes(self):
+        '''
+        Buils three QNodes:
+        1. Noisy circuit (no corrections)
+        2. Noisy + corrections circuit
+        3. Noisy + corrections circuit (for rendering)
+        '''
         @qml.qnode(self.dev)
         def qnode_noisy():
             self._apply_noise()
@@ -230,8 +210,7 @@ class ErrorChannelV0(QuantumEnv):
         def qnode_corrected(k: int):
             self._apply_noise()
             for i in range(k):
-                gid, w = self.corrections[i]
-                self._apply_gate(gid, w)
+                self._apply_gate(self.corrections[i])
             return qml.probs(wires=range(self.n_qubits))
         self.qnode_corrected = qnode_corrected
 
@@ -240,13 +219,12 @@ class ErrorChannelV0(QuantumEnv):
         def qnode_draw(k: int):
             self._apply_noise()
             for i in range(k):
-                gid, w = self.corrections[i]
-                self._apply_gate(gid, w)
-            return qml.probs(wires=range(self.n_qubits))  
+                self._apply_gate(self.corrections[i])
+            return qml.probs(wires=range(self.n_qubits))
         self.qnode_draw = qnode_draw
 
 
-    def reset(self, *, seed=None, options=None):
+    def reset(self, *, seed=None):
         if seed is not None:
             self.rng = np.random.default_rng(seed)
 
@@ -256,10 +234,12 @@ class ErrorChannelV0(QuantumEnv):
 
         probs_noisy = self.qnode_noisy()
         probs_corrected = np.array(probs_noisy, copy=True)
-        reward = float(probs_corrected[0])
+        reward = 0.0
 
         self.history.append(dict(
-            step=0, gate=None, qubit=None,
+            step=0, 
+            # gate=None, 
+            qubit=None,
             probs_noisy=probs_noisy,
             probs_corrected=probs_corrected,
             reward=reward,
@@ -268,20 +248,20 @@ class ErrorChannelV0(QuantumEnv):
         return probs_corrected.astype(np.float32)
 
     def step(self, action):
-        gate_id, qubit_idx = int(action[0]), int(action[1])
-        self.corrections.append((gate_id, qubit_idx))
+        qubit_idx = int(action)
+        self.corrections.append(qubit_idx)
         self.current_step += 1
         k = len(self.corrections)
 
-        noisy = self.qnode_noisy()
-        corrected = self.qnode_corrected(k)
+        noisy = self.qnode_noisy() # noisy circuit
+        corrected = self.qnode_corrected(k) # noisy + corrections circuit
 
-        reward = float(corrected[0]) # Max can be 1, Min can be 0
-        done = self.current_step >= self.max_steps
+        reward = -np.mean((self.target_probs - corrected)**2) # Minimum can be 0
+        done = self.current_step >= self.max_steps or reward == 0.0
 
         self.history.append(dict(
             step=self.current_step,
-            gate=self.GATE_ID2NAME[gate_id],
+            # gate=self.GATE_ID2NAME[gate_id],
             qubit=qubit_idx,
             probs_noisy=noisy,
             probs_corrected=corrected,
@@ -289,10 +269,11 @@ class ErrorChannelV0(QuantumEnv):
         ))
 
         obs = corrected.astype(np.float32)
-        info = {"faulty_errors": self.faulty_errors}
+        info = {"faulty_qubits": self.faulty_qubits}
         return obs, reward, done, info
 
     def _basis_labels(self):
+        ''' Generate labels for computational basis states '''
         return [f"|{i:0{self.n_qubits}b}⟩" for i in range(2**self.n_qubits)]
 
     def animate(self, save_path=None, interval_ms=600):
@@ -336,8 +317,8 @@ class ErrorChannelV0(QuantumEnv):
             for b, h in zip(bars_corr, corr): b.set_height(h)
 
             title = f"Step {rec['step']}"
-            if rec["gate"] is not None:
-                title += f" | {rec['gate']} on q[{rec['qubit']}]"
+            # if rec["gate"] is not None:
+            title += f" | qubit [{rec['qubit']}]"
             title += f" | reward={rec['reward']:.3f}"
             axL.set_title(title)
 
@@ -348,7 +329,7 @@ class ErrorChannelV0(QuantumEnv):
 
         if save_path:
             fps = max(1, int(1000/interval_ms))
-            ani.save(save_path, writer=FFMpegWriter(fps=fps))
+            ani.save(save_path, writer="ffmpeg", fps=fps)
             plt.close(fig)
         else:
             plt.show()
