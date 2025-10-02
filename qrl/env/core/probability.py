@@ -68,9 +68,6 @@ class ProbabilityV0(QuantumEnv):
     - Benchmarking optimization of quantum neural networks.
     
     """
-
-    metadata = {"render.modes": ["human"]}
-
     def __init__(self, 
                  n_qubits: int,
                  target_distribution: np.ndarray,
