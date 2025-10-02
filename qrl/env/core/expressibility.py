@@ -184,7 +184,7 @@ class ExpressibilityV0(QuantumEnv):
 
         self.blocks: List[str] = []
         self.device = qml.device(device_name, wires=n_qubits)
-        self.qnode = qml.QNode(self._circuit, self.device)
+        self.qnode = qml.QNode(self._circuit, self.device) #self._circuit is method defined below
 
         self.ACTION_NAMES = [
                         "RotX",
@@ -198,8 +198,15 @@ class ExpressibilityV0(QuantumEnv):
                         ]
 
         self.action_space = spaces.Discrete(len(self.ACTION_NAMES))
+
         high = np.array([
-            10_000, max_blocks, 10_000, 10_000, 1_000, 10.0, max_steps
+            10_000, # depth
+            max_blocks, # number of blocks
+            10_000, # number of two-qubit gates
+            10_000, # number of rotational trainable parameters
+            1_000, # entanglement density
+            10.0, # last value of expressibility 
+            max_steps # steps left
         ], dtype=np.float32)
         self.observation_space = spaces.Box(low=np.zeros_like(high), high=high, dtype=np.float32)
 
