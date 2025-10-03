@@ -6,7 +6,7 @@ License: Apache-2.0
 
 
 from gymnasium import spaces
-import numpy as np
+from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from .base__ import QuantumEnv
@@ -123,13 +123,14 @@ class BlochSphereV0(QuantumEnv):
     Constructor signature (as implemented):
 
     ```python
-    BlochSphereV0(target_state, max_steps=20, reward_tolerance=0.99)
+    BlochSphereV0(target_state, max_steps=20, reward_tolerance=0.99,ffmpeg=False)
     ```
 
     * `target_state`: complex 2-vector specifying the target pure state. If `None`, defaults to `|+⟩`.
     * `max_steps`: maximum number of actions per episode (truncation threshold).
     * `reward_tolerance`: fidelity threshold above which the episode is marked successful.
-
+    * `ffmpeg`: if `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
+    
     `reset()` currently ignores an `options` dict for seeding or custom initialization; this can be extended to allow randomized initial states or alternative targets.
 
     ### Example
@@ -170,11 +171,13 @@ class BlochSphereV0(QuantumEnv):
 
     """
 
-    def __init__(self, target_state, max_steps=20, reward_tolerance=0.99):
+    def __init__(self, target_state, max_steps=20, reward_tolerance=0.99, ffmpeg=False):
         super().__init__()
         self.max_steps = max_steps
         self.target_state = target_state
         self.state = np.array([1, 0], dtype=complex)  # Initial State -> |0>
+        self.writer = "ffmpeg" if ffmpeg else "pillow"
+        self.render_extension = "mp4" if ffmpeg else "gif"
 
         # Bloch vector (x, y, z)
         self.observation_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
@@ -231,7 +234,7 @@ class BlochSphereV0(QuantumEnv):
         return self._state_to_bloch(self.state), reward, done, {}
     
 
-    def render(self,save_path=None, interval=800):
+    def render(self,save_path_without_extension=None, interval=800):
         """
         history: list of bloch vectors for each step
         target_state: 3D bloch vector
@@ -302,8 +305,8 @@ class BlochSphereV0(QuantumEnv):
 
         ani = animation.FuncAnimation(fig, update, frames=len(self.history), interval=interval, repeat=False)
 
-        if save_path:
-            ani.save(save_path, writer='ffmpeg')
+        if save_path_without_extension:
+            ani.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer)
         else:
             plt.show()
 

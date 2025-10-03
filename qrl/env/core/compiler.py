@@ -6,7 +6,7 @@ License: Apache-2.0
 
 
 from gymnasium import spaces
-import numpy as np
+from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from .utils import GATES, RX, RY, RZ 
@@ -121,6 +121,7 @@ class CompilerV0(QuantumEnv):
     - **`target`** (`np.ndarray`): The target \(2 \times 2\) unitary matrix to compile towards.  
     - **`max_steps`** (`int`, default=30): Maximum number of steps per episode.  
     - **`reward_tolerance`** (`float`, default=0.98): Fidelity threshold for early termination.  
+    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
 
     Example:
 
@@ -137,7 +138,7 @@ class CompilerV0(QuantumEnv):
     >>> obs.shape
     (8,)
     """
-    def __init__(self, target_unitary, max_steps=30, reward_tolerance=0.98):
+    def __init__(self, target_unitary, max_steps=30, reward_tolerance=0.98, ffmpeg=False):
         super().__init__()
         self.max_steps = max_steps
         self.target_unitary = target_unitary  # target is a 2x2 unitary matrix
@@ -159,6 +160,8 @@ class CompilerV0(QuantumEnv):
         self.reward_tolerance = reward_tolerance
         self.steps = 0
         self.U = np.eye(2, dtype=complex)
+        self.writer = "ffmpeg" if ffmpeg else "pillow"
+        self.render_extension = "mp4" if ffmpeg else "gif"
 
     def _unitary_to_obs(self, U):
         return np.concatenate([U.real.flatten(), U.imag.flatten()]).astype(np.float32)
@@ -195,7 +198,7 @@ class CompilerV0(QuantumEnv):
 
         return self._unitary_to_obs(self.U), reward, done, {}
 
-    def render(self, save_path=None, interval=800):
+    def render(self, save_path_without_extension=None, interval=800):
         """
         Render the episode as an animation of the difference matrix.
         Only shows |target - current| evolving across steps.
@@ -222,7 +225,7 @@ class CompilerV0(QuantumEnv):
             fig, update, frames=len(self.history), interval=interval, blit=False, repeat=False
         )
 
-        if save_path:
-            ani.save(save_path, writer="ffmpeg")
+        if save_path_without_extension:
+            ani.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer)
         else:
             plt.show()

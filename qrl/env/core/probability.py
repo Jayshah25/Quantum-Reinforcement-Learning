@@ -5,7 +5,7 @@ License: Apache-2.0
 '''
 from gymnasium import spaces
 import pennylane as qml
-import numpy as np
+from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -54,6 +54,7 @@ class ProbabilityV0(QuantumEnv):
     - `tolerance (float, default=-1e3)`: Reward threshold for termination.
     - `alpha (float, default=0.5)`: Weight between KL divergence and L2 error.
     - `beta (float, default=0.01)`: Penalty weight for step count.
+    - `ffmpeg` (bool, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
 
     **Visualization**
     ----------------
@@ -82,6 +83,8 @@ class ProbabilityV0(QuantumEnv):
         self.tolerance = kwargs.get("tolerance", -1e3)
         self.alpha = kwargs.get("alpha", 0.5)  # weight for KL vs L2
         self.beta = kwargs.get("beta", 0.01)    # step penalty weight
+        self.render_extension = "mp4" if kwargs.get("ffmpeg", False) else "gif"
+        self.writer = "ffmpeg" if kwargs.get("ffmpeg", False) else "pillow"
 
         # Define PennyLane device
         self.dev = qml.device("default.qubit", wires=self.n_qubits)
@@ -153,7 +156,7 @@ class ProbabilityV0(QuantumEnv):
         self.rewards = []
         return self.params, {}
 
-    def render(self, save_path=None):
+    def render(self, save_path_without_extension=None):
         """
         Create an animation showing how the distribution evolves over steps,
         including reward values in the title.
@@ -180,8 +183,8 @@ class ProbabilityV0(QuantumEnv):
 
         ani = animation.FuncAnimation(fig, update, frames=len(self.history), blit=False)
 
-        if save_path:
-            ani.save(save_path, writer="ffmpeg", fps=2)
+        if save_path_without_extension:
+            ani.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer, fps=2)
         else:
             plt.show()
 

@@ -5,8 +5,8 @@ License: Apache-2.0
 '''
 
 from gymnasium import spaces
-import numpy as np
 import pennylane as qml
+from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from .base__ import QuantumEnv
@@ -122,6 +122,7 @@ class ErrorChannelV0(QuantumEnv):
     - **`faulty_qubits`** (`dict`, optional): Mapping of faulty qubit indices to their noise probabilities.  
     - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  
     - **`seed`** (`int`, optional): Random seed for reproducibility.  
+    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
 
     Example:
 
@@ -148,6 +149,7 @@ class ErrorChannelV0(QuantumEnv):
         faulty_qubits: dict = None,   # {qubit_idx: error_type, ...}
         max_steps: int = 10,
         seed: int = None,
+        ffmpeg: bool = False,
     ):
         super().__init__()
         self.n_qubits = n_qubits
@@ -184,6 +186,8 @@ class ErrorChannelV0(QuantumEnv):
 
         self._build_qnodes()
         self.reset()
+        self.writer = "ffmpeg" if ffmpeg else "pillow"
+        self.render_extension = "mp4" if ffmpeg else "gif"
 
     def _apply_noise(self):
         for qubit, noise in self.faulty_qubits.items():
@@ -257,7 +261,7 @@ class ErrorChannelV0(QuantumEnv):
         corrected = self.qnode_corrected(k) # noisy + corrections circuit
 
         reward = -np.mean((self.target_probs - corrected)**2) # Minimum can be 0
-        done = self.current_step >= self.max_steps or reward == 0.0
+        done = self.current_step >= self.max_steps or np.round(reward, 3) == 0.0
 
         self.history.append(dict(
             step=self.current_step,
@@ -276,7 +280,7 @@ class ErrorChannelV0(QuantumEnv):
         ''' Generate labels for computational basis states '''
         return [f"|{i:0{self.n_qubits}b}⟩" for i in range(2**self.n_qubits)]
 
-    def animate(self, save_path=None, interval_ms=600):
+    def render(self, save_path_without_extension=None, interval_ms=600):
         if not self.history:
             print("Nothing to animate.")
             return
@@ -327,12 +331,10 @@ class ErrorChannelV0(QuantumEnv):
 
         ani = FuncAnimation(fig, update, frames=len(self.history), interval=interval_ms, blit=False)
 
-        if save_path:
+        if save_path_without_extension:
             fps = max(1, int(1000/interval_ms))
-            ani.save(save_path, writer="ffmpeg", fps=fps)
+            ani.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer, fps=fps)
             plt.close(fig)
         else:
             plt.show()
 
-    def render(self, save_path=None, interval=600):
-        return self.animate(save_path=save_path, interval_ms=interval)

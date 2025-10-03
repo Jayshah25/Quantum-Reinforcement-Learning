@@ -4,9 +4,10 @@ Author: Jay Shah (@Jayshah25)
 License: Apache-2.0
 '''
 
-import numpy as np
 from typing import List, Tuple, Optional, Dict
 import pennylane as qml
+from pennylane import numpy as np
+
 
 from gymnasium import spaces
 
@@ -137,6 +138,7 @@ class ExpressibilityV0(QuantumEnv):
     - **`device_name`** (`str`, default="default.qubit"): PennyLane device backend.  
     - **`seed`** (`int`, optional): Random seed for reproducibility.  
     - **`allow_all_to_all`** (`bool`, default=False): Allow inclusion of all-to-all entangling ISWAP blocks.  
+    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
 
     Example:
 
@@ -166,6 +168,7 @@ class ExpressibilityV0(QuantumEnv):
         device_name: str = "default.qubit",
         seed: Optional[int] = None,
         allow_all_to_all: bool = False,
+        ffmpeg: bool = False,
     ):
         super().__init__()
 
@@ -215,6 +218,8 @@ class ExpressibilityV0(QuantumEnv):
         self.last_reward = 0.0
         self.info_last_hist = None
         self.history = []
+        self.writer = "ffmpeg" if ffmpeg else "pillow"
+        self.render_extension = "mp4" if ffmpeg else "gif"
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
         super().reset(seed=seed)
@@ -295,7 +300,7 @@ class ExpressibilityV0(QuantumEnv):
         return obs, reward, done, False, info
 
 
-    def render(self, save_path=None, interval=800):
+    def render(self, save_path_without_extension=None, interval=800):
         """
         Animation of Expressibility:
         1. Fidelity histogram vs Haar distribution per step.
@@ -351,8 +356,8 @@ class ExpressibilityV0(QuantumEnv):
         anim = FuncAnimation(fig, update, frames=len(self.history),
                             init_func=init, interval=interval, repeat=False)
 
-        if save_path:
-            anim.save(save_path, writer="ffmpeg")
+        if save_path_without_extension:
+            anim.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer)
         else:
             plt.show()
 
