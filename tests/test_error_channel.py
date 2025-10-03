@@ -24,24 +24,29 @@ def test_reward(error_qubit, error_prob, action_qubit, expected_reward, message)
         seed=42,
     )
     _, reward, _, _ = env.step(action_qubit)
-    assert round(reward, 2) == round(expected_reward, 2), message
+    assert np.round(reward, 2) == round(expected_reward, 2), message
 
-def test_sample_run_and_render():
-    file_path = r"results/tests/error_channel.mp4"
+@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
+    (True, r"results/tests/error_channelV0", "mp4"),
+    (False, r"results/tests/error_channelV0", "gif"),
+])
+def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
+    file_path = save_path_without_extension + "." + extension
     if os.path.exists(file_path):   # check if the file exists
-        os.remove(file_path)   
-        np.random.seed(42)  # For reproducibility
+        os.remove(file_path)
+    np.random.seed(42)  # For reproducibility
     env = ErrorChannelV0(
         n_qubits=3,
         faulty_qubits={0: 1.0, 2: 1.0},
         max_steps=6,
         seed=42,
+        ffmpeg=ffmpeg
     )
     obs = env.reset()
     done = False
     while not done:
         action = env.action_space.sample()
         _, _, done, _ = env.step(action)
-    env.render(save_path=file_path, interval=700)
+    env.render(save_path_without_extension=save_path_without_extension, interval_ms=700)
 
     assert os.path.exists(file_path), "Render did not create the expected file"

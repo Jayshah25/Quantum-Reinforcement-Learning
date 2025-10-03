@@ -334,7 +334,6 @@ class ErrorChannelV0(QuantumEnv):
         if save_path_without_extension:
             fps = max(1, int(1000/interval_ms))
             ani.save(f"{save_path_without_extension}.{self.render_extension}", writer=self.writer, fps=fps)
-            plt.close(fig)
         else:
             plt.show()
 

@@ -36,11 +36,15 @@ def test_reward_penalizes_depth(env_fixture):
     # Reward2 should be less than or equal to Reward1 because of extra depth penalty
     assert reward2 <= reward1, f"Expected reward2 <= reward1, got {reward2} > {reward1}"
 
-def test_sample_run_and_render():
-    file_path = r"results/tests/expressibility.mp4"
+@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
+    (True, r"results/tests/expressibilityV0", "mp4"),
+    (False, r"results/tests/expressibilityV0", "gif"),
+])
+def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
+    file_path = save_path_without_extension + "." + extension
     if os.path.exists(file_path):   # check if the file exists
         os.remove(file_path)   
-    env = ExpressibilityV0(n_qubits=3, n_pairs_eval=60, bins=40, seed=7)
+    env = ExpressibilityV0(n_qubits=3, n_pairs_eval=60, bins=40, seed=7,ffmpeg=ffmpeg)
     obs, _ = env.reset()
     done = False
     total = 0
@@ -48,6 +52,6 @@ def test_sample_run_and_render():
         action = env.action_space.sample()
         obs, reward, done, trunc, info = env.step(action)
         total += reward
-    env.render(file_path)
+    env.render(save_path_without_extension=save_path_without_extension)
 
     assert os.path.exists(file_path), "Render did not create the expected file"

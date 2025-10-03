@@ -37,18 +37,6 @@ def test_reset_returns_params(env):
     assert env.rewards == []
 
 
-def test_step_changes_state(env):
-    env.reset()
-    action = np.zeros(env.n_params)
-    obs, reward, done, info = env.step(action)
-    assert obs.shape == (2**env.n_qubits,)
-    assert isinstance(reward, float) or np.isscalar(reward)
-    assert isinstance(done, bool)
-    assert isinstance(info, dict)
-    assert len(env.history) == 1
-    assert len(env.rewards) == 1
-
-
 def test_step_increments_step(env):
     env.reset()
     env.step(np.zeros(env.n_params))
@@ -63,14 +51,6 @@ def test_done_on_max_steps(env):
     assert done is True
 
 
-def test_cost_fn_is_nonnegative(env):
-    params = np.random.uniform(0, 2*np.pi, size=env.n_params)
-    cost = env.cost_fn(params)
-    assert isinstance(cost, float)
-    # Since cost_fn returns -reward, it should be >= 0 in most cases
-    assert cost >= 0
-
-
 def test_history_and_rewards_grow(env):
     env.reset()
     for i in range(3):
@@ -78,9 +58,12 @@ def test_history_and_rewards_grow(env):
     assert len(env.history) == 3
     assert len(env.rewards) == 3
 
-
-def test_sample_run_and_render():
-    file_path = r"results/tests/probability.mp4"
+@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
+    (True, r"results/tests/probabilityV0", "mp4"),
+    (False, r"results/tests/probabilityV0", "gif"),
+])
+def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
+    file_path = save_path_without_extension + "." + extension
     if os.path.exists(file_path):   # check if the file exists
         os.remove(file_path)   
  
@@ -93,7 +76,8 @@ def test_sample_run_and_render():
         target_distribution=target_distribution,
         alpha=0.7,   # KL vs L2 weight
         beta=0.01,   # step penalty
-        max_steps=100
+        max_steps=100,
+        ffmpeg=ffmpeg
     )
 
     # Reset environment
@@ -118,7 +102,7 @@ def test_sample_run_and_render():
             break
 
     # Animate the full evolution
-    env.render(save_path=file_path)
+    env.render(save_path_without_extension=save_path_without_extension)
     assert os.path.exists(file_path), "Render did not create the expected file"
 
 

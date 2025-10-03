@@ -26,16 +26,20 @@ def test_reward(target_unitary, action, gate_fidelity, message):
     _, reward, _, _ = env.step(action=gate_dict[action])
     assert round(reward, 2) == round(gate_fidelity, 2), message
 
-def test_sample_run_and_render():
-    file_path = r"results/tests/compiler.mp4"
+@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
+    (True, r"results/tests/compilerV0", "mp4"),
+    (False, r"results/tests/compilerV0", "gif"),
+])
+def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
+    file_path = save_path_without_extension + "." + extension
     if os.path.exists(file_path):   # check if the file exists
-        os.remove(file_path)   
+        os.remove(file_path)
     np.random.seed(42)  # For reproducibility
     theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
     target_unitary = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
 
     # Initialize environment with 1 qubit gate
-    env = CompilerV0(target_unitary=target_unitary, max_steps=20, reward_tolerance=0.99)
+    env = CompilerV0(target_unitary=target_unitary, max_steps=20, reward_tolerance=0.99,ffmpeg=ffmpeg)
 
     # Reset
     obs, _ = env.reset()
@@ -48,6 +52,6 @@ def test_sample_run_and_render():
             break
 
     # Render Bloch sphere
-    env.render(save_path=file_path)
+    env.render(save_path_without_extension=save_path_without_extension)
 
     assert os.path.exists(file_path), "Render did not create the expected file"

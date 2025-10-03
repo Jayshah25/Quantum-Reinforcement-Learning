@@ -23,15 +23,18 @@ def test_reward(target_state, action, fidelity, message):
     _, reward, _, _ = env.step(action=gate_dict[action])
     assert round(reward, 2) == round(fidelity, 2), message
 
-
-def test_sample_run_and_render():
-    file_path = r"results/tests/bloch_sphere.mp4"
+@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
+    (True, r"results/tests/bloch_sphereV0", "mp4"),
+    (False, r"results/tests/bloch_sphereV0", "gif"),
+])
+def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
+    file_path = save_path_without_extension + "." + extension
     if os.path.exists(file_path):   # check if the file exists
-        os.remove(file_path)   
-     
+        os.remove(file_path)
+
     target_state = np.array([1/np.sqrt(2), 1/np.sqrt(2)]) # Target vector is |+>
 
-    env = BlochSphereV0(target_state=target_state,max_steps=20,reward_tolerance=0.99)
+    env = BlochSphereV0(target_state=target_state,max_steps=20,reward_tolerance=0.99,ffmpeg=ffmpeg)
 
     # Reset environment
     obs, _ = env.reset()
@@ -45,6 +48,6 @@ def test_sample_run_and_render():
             break
 
     # Render Bloch sphere
-    env.render(save_path=file_path)
+    env.render(save_path_without_extension=save_path_without_extension)
 
     assert os.path.exists(file_path), "Render did not create the expected file"
