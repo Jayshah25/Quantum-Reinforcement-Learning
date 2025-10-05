@@ -7,13 +7,11 @@ License: Apache-2.0
 from typing import List, Tuple, Optional, Dict
 import pennylane as qml
 from pennylane import numpy as np
-
-
 from gymnasium import spaces
-
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.animation import FuncAnimation
+import shutil
 from .base__ import QuantumEnv
 
 
@@ -220,6 +218,9 @@ class ExpressibilityV0(QuantumEnv):
         self.history = []
         self.writer = "ffmpeg" if ffmpeg else "pillow"
         self.render_extension = "mp4" if ffmpeg else "gif"
+        if ffmpeg==True and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
+
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
         super().reset(seed=seed)

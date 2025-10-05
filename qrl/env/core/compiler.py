@@ -9,6 +9,7 @@ from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
+import shutil
 from .utils import GATES, RX, RY, RZ 
 from .base__ import QuantumEnv
 
@@ -162,6 +163,9 @@ class CompilerV0(QuantumEnv):
         self.U = np.eye(2, dtype=complex)
         self.writer = "ffmpeg" if ffmpeg else "pillow"
         self.render_extension = "mp4" if ffmpeg else "gif"
+        if ffmpeg==True and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
+
 
     def _unitary_to_obs(self, U):
         return np.concatenate([U.real.flatten(), U.imag.flatten()]).astype(np.float32)

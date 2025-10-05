@@ -8,7 +8,7 @@ import pennylane as qml
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
+import shutil
 from .base__ import QuantumEnv
 
 class ProbabilityV0(QuantumEnv):
@@ -83,8 +83,12 @@ class ProbabilityV0(QuantumEnv):
         self.tolerance = kwargs.get("tolerance", -1e3)
         self.alpha = kwargs.get("alpha", 0.5)  # weight for KL vs L2
         self.beta = kwargs.get("beta", 0.01)    # step penalty weight
-        self.render_extension = "mp4" if kwargs.get("ffmpeg", False) else "gif"
-        self.writer = "ffmpeg" if kwargs.get("ffmpeg", False) else "pillow"
+        ffmpeg = kwargs.get("ffmpeg", False)
+        self.render_extension = "mp4" if ffmpeg else "gif"
+        self.writer = "ffmpeg" if ffmpeg else "pillow"
+        if ffmpeg==True and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
+
 
         # Define PennyLane device
         self.dev = qml.device("default.qubit", wires=self.n_qubits)

@@ -9,6 +9,7 @@ from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import shutil
 from .base__ import QuantumEnv
 from .utils import GATES, RX, RY, RZ
 
@@ -178,6 +179,9 @@ class BlochSphereV0(QuantumEnv):
         self.state = np.array([1, 0], dtype=complex)  # Initial State -> |0>
         self.writer = "ffmpeg" if ffmpeg else "pillow"
         self.render_extension = "mp4" if ffmpeg else "gif"
+
+        if ffmpeg==True and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
 
         # Bloch vector (x, y, z)
         self.observation_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)

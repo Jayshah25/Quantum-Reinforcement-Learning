@@ -9,6 +9,7 @@ import pennylane as qml
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import shutil
 from .base__ import QuantumEnv
 
 
@@ -188,6 +189,10 @@ class ErrorChannelV0(QuantumEnv):
         self.reset()
         self.writer = "ffmpeg" if ffmpeg else "pillow"
         self.render_extension = "mp4" if ffmpeg else "gif"
+
+        if ffmpeg==True and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
+
 
     def _apply_noise(self):
         for qubit, noise in self.faulty_qubits.items():
