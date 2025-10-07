@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qrl-qai"               
-version = "0.1.0"
+version = "0.2.0"
 description = "Quantum Reinforcement Learning library: environments, policies and training loops with PennyLane."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.8"
