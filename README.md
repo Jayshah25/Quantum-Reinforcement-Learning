@@ -1,13 +1,11 @@
-# QRL-QAI  
+<img src="qrl_logo_light.png" alt="QRL Logo" width="300"/>
 
-![QRL Logo](qrl_logo.png)  
-
-### The open-source library for Quantum Reinforcement Learning  
+### qrl-qai: The quantum analogue of OpenAI's gym python framework 
  
 
 ---
 
-**QRL-QAI** is a Python framework built to serve as a central platform for everything **quantum reinforcement learning**.  
+**qrl-qai** is a Python framework built to serve as a central platform for everything **quantum reinforcement learning**.  
 Built on top of **Gymnasium**, **PennyLane**, and **PyTorch**, this package provides the tools you need to explore and develop Quantum AI.  
 
 ---
