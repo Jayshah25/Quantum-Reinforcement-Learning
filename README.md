@@ -1,5 +1,12 @@
 <img src="qrl_logo_light.png" alt="QRL Logo" width="300"/>
 
+![PyPI Downloads](https://static.pepy.tech/personalized-badge/qrl-qai?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=downloads)
+[![PyPI version](https://badge.fury.io/py/qrl-qai.svg)](https://pypi.org/project/qrl-qai/)
+![Last Commit](https://img.shields.io/github/last-commit/Jayshah25/Quantum-Reinforcement-Learning)
+![License](https://img.shields.io/pypi/l/qrl-qai.svg)
+[![GitHub Repo stars](https://img.shields.io/github/stars/Jayshah25/Quantum-Reinforcement-Learning?style=social)](https://github.com/Jayshah25/Quantum-Reinforcement-Learning)
+
+
 ### qrl-qai: The quantum analogue of OpenAI's gym python framework 
  
 
