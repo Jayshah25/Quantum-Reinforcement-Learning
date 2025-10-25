@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = 'qrl-qai'
 copyright = '2025, Jay Shah'
 author = 'Jay Shah'
-release = '0.1.0'
+release = '0.2.0'
 
 # Extensions
 extensions = [

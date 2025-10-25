@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2025.07.19 -->
-        <title>qrl.env.core.expressibility - qrl-qai 0.1.0 documentation</title>
+        <title>qrl.env.core.expressibility - qrl-qai 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">qrl-qai 0.1.0 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">qrl-qai 0.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -188,7 +188,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
-  <span class="sidebar-brand-text">qrl-qai 0.1.0 documentation</span>
+  <span class="sidebar-brand-text">qrl-qai 0.2.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -256,20 +256,19 @@
 <span class="sd">License: Apache-2.0</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qml</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="kn">import</span> <span class="n">spaces</span>
-
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">FuncAnimation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base__</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumEnv</span>
 
 
 <div class="viewcode-block" id="ExpressibilityV0">
-<a class="viewcode-back" href="../../../../api/qrl.env.core.expressibility.html#qrl.env.ExpressibilityV0">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ExpressibilityV0">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExpressibilityV0</span><span class="p">(</span><span class="n">QuantumEnv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ## Description</span>
@@ -391,6 +390,7 @@
 <span class="sd">    - **`device_name`** (`str`, default=&quot;default.qubit&quot;): PennyLane device backend.  </span>
 <span class="sd">    - **`seed`** (`int`, optional): Random seed for reproducibility.  </span>
 <span class="sd">    - **`allow_all_to_all`** (`bool`, default=False): Allow inclusion of all-to-all entangling ISWAP blocks.  </span>
+<span class="sd">    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).</span>
 
 <span class="sd">    Example:</span>
 
@@ -420,6 +420,7 @@
         <span class="n">device_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default.qubit&quot;</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">allow_all_to_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ffmpeg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -438,7 +439,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">qml</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device_name</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">n_qubits</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">qnode</span> <span class="o">=</span> <span class="n">qml</span><span class="o">.</span><span class="n">QNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qnode</span> <span class="o">=</span> <span class="n">qml</span><span class="o">.</span><span class="n">QNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="c1">#self._circuit is method defined below</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ACTION_NAMES</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="s2">&quot;RotX&quot;</span><span class="p">,</span>
@@ -452,8 +453,15 @@
                         <span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ACTION_NAMES</span><span class="p">))</span>
+
         <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-            <span class="mi">10_000</span><span class="p">,</span> <span class="n">max_blocks</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">max_steps</span>
+            <span class="mi">10_000</span><span class="p">,</span> <span class="c1"># depth</span>
+            <span class="n">max_blocks</span><span class="p">,</span> <span class="c1"># number of blocks</span>
+            <span class="mi">10_000</span><span class="p">,</span> <span class="c1"># number of two-qubit gates</span>
+            <span class="mi">10_000</span><span class="p">,</span> <span class="c1"># number of rotational trainable parameters</span>
+            <span class="mi">1_000</span><span class="p">,</span> <span class="c1"># entanglement density</span>
+            <span class="mf">10.0</span><span class="p">,</span> <span class="c1"># last value of expressibility </span>
+            <span class="n">max_steps</span> <span class="c1"># steps left</span>
         <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">high</span><span class="p">),</span> <span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
@@ -462,9 +470,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_reward</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info_last_hist</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="s2">&quot;ffmpeg&quot;</span> <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;pillow&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_extension</span> <span class="o">=</span> <span class="s2">&quot;mp4&quot;</span> <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;gif&quot;</span>
+        <span class="k">if</span> <span class="n">ffmpeg</span><span class="o">==</span><span class="kc">True</span> <span class="ow">and</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False&quot;</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="ExpressibilityV0.reset">
-<a class="viewcode-back" href="../../../../api/qrl.env.core.expressibility.html#qrl.env.ExpressibilityV0.reset">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ExpressibilityV0.reset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -480,7 +493,7 @@
 
 
 <div class="viewcode-block" id="ExpressibilityV0.step">
-<a class="viewcode-back" href="../../../../api/qrl.env.core.expressibility.html#qrl.env.ExpressibilityV0.step">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ExpressibilityV0.step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 
         <span class="c1"># check if the action is supported</span>
@@ -549,8 +562,8 @@
 
 
 <div class="viewcode-block" id="ExpressibilityV0.render">
-<a class="viewcode-back" href="../../../../api/qrl.env.core.expressibility.html#qrl.env.ExpressibilityV0.render">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">800</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ExpressibilityV0.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path_without_extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">800</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Animation of Expressibility:</span>
 <span class="sd">        1. Fidelity histogram vs Haar distribution per step.</span>
@@ -606,8 +619,8 @@
         <span class="n">anim</span> <span class="o">=</span> <span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">),</span>
                             <span class="n">init_func</span><span class="o">=</span><span class="n">init</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">save_path</span><span class="p">:</span>
-            <span class="n">anim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_path_without_extension</span><span class="p">:</span>
+            <span class="n">anim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_path_without_extension</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">render_extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
@@ -758,7 +771,7 @@
         <span class="k">return</span> <span class="n">express</span><span class="p">,</span> <span class="n">kl</span><span class="p">,</span> <span class="n">hist_c</span><span class="p">,</span> <span class="n">p_haar</span>
 
 <div class="viewcode-block" id="ExpressibilityV0.action_meanings">
-<a class="viewcode-back" href="../../../../api/qrl.env.core.expressibility.html#qrl.env.ExpressibilityV0.action_meanings">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ExpressibilityV0.action_meanings">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">action_meanings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ACTION_NAMES</span><span class="p">)}</span></div>
 </div>
@@ -797,7 +810,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+</div><script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
