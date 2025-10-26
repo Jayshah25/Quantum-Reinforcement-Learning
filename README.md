@@ -22,8 +22,8 @@ You can have a look at the documentation for each version too. However, it is re
 
 | Version | Google Colab | Lightning AI Studio | Documentation |
 |----------|--------------|--------------------|---------------|
-| **0.1.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/stable/)|
-| **0.2.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground) | [Read The Docs](https://qrl-qai.readthedocs.io/en/latest/)|
+| **0.1.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.1.0/)|
+| **0.2.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.2.0/)|
 
 ---
 
