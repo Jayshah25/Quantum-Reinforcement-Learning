@@ -37,7 +37,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "black", "mypy", "build", "twine", "pre-commit"]
-docs = ["sphinx","furo", "sphinx-autodoc-typehints","sphinx_rtd_theme"]
+docs = ["sphinx","sphinx_rtd_theme","sphinx-autodoc-typehints","nbsphinx","ipython","ipykernel"]
 viz = ["matplotlib", "tensorboard"]
 examples = ["jupyter"]
 
