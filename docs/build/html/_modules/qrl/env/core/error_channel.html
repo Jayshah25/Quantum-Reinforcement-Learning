@@ -1,255 +1,97 @@
-<!doctype html>
-<html class="no-js" lang="en" data-content_root="../../../../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
-
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.07.19 -->
-        <title>qrl.env.core.error_channel - qrl-qai 0.2.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
-    
-    
 
 
-<style>
-  body {
-    --color-code-background: #f2f2f2;
-  --color-code-foreground: #1e1e1e;
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qrl.env.core.error_channel &mdash; qrl-qai 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
   
-  }
-  @media not print {
-    body[data-theme="dark"] {
-      --color-code-background: #2b2b2b;
-  --color-code-foreground: #f8f8f2;
-  
-    }
-    @media (prefers-color-scheme: dark) {
-      body:not([data-theme="light"]) {
-        --color-code-background: #2b2b2b;
-  --color-code-foreground: #f8f8f2;
-  
-      }
-    }
-  }
-</style></head>
-  <body>
-    
-    <script>
-      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
-    </script>
-    
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="svg-toc" viewBox="0 0 24 24">
-    <title>Contents</title>
-    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
-      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
-    </svg>
-  </symbol>
-  <symbol id="svg-menu" viewBox="0 0 24 24">
-    <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
-    <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </symbol>
-  <symbol id="svg-sun" viewBox="0 0 24 24">
-    <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-moon" viewBox="0 0 24 24">
-    <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
-    </svg>
-  </symbol>
-  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
-    <title>Auto light/dark, in light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
-      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
-      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
-      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
-      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
-      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
-      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
-      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
-      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
-      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
-      <circle cx="14.5" cy="9.55" r="3.6"/>
-    </svg>
-  </symbol>
-  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
-    <title>Auto light/dark, in dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
-      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
-      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
-      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
-      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
-      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
-      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
-      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
-      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
-      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
-      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
-    </svg>
-  </symbol>
-  <symbol id="svg-pencil" viewBox="0 0 24 24">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
-      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
-      <path d="M13.5 6.5l4 4" />
-      <path d="M20 21l2 -2l-2 -2" />
-      <path d="M17 17l-2 2l2 2" />
-    </svg>
-  </symbol>
-  <symbol id="svg-eye" viewBox="0 0 24 24">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-      <path
-        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
-      <path d="M20 21l2 -2l-2 -2" />
-      <path d="M17 17l-2 2l2 2" />
-    </svg>
-  </symbol>
-</svg>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
-
-<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
-
-
-
-<div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">qrl-qai 0.2.0 documentation</div></a>
-    </div>
-    <div class="header-right">
-      <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
-          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
-          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-        </button>
-      </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
-  
-  <span class="sidebar-brand-text">qrl-qai 0.2.0 documentation</span>
-  
-</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
-  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
-  <input type="hidden" name="check_keywords" value="yes">
-  <input type="hidden" name="area" value="default">
-</form>
-<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.html">qrl.env</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of qrl.env</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/generated/qrl.env.core.html">qrl.env.core</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of qrl.env.core</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.base__.html">qrl.env.core.base__</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.bloch_sphere.html">qrl.env.core.bloch_sphere</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.compiler.html">qrl.env.core.compiler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.error_channel.html">qrl.env.core.error_channel</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.expressibility.html">qrl.env.core.expressibility</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.probability.html">qrl.env.core.probability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/generated/qrl.env.core.utils.html">qrl.env.core.utils</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/generated/qrl.agents.html">qrl.agents</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of qrl.agents</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.agents.html">qrl.agents.agents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../api/generated/qrl.agents.base.html">qrl.agents.base</a></li>
-</ul>
-</li>
-</ul>
-
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            qrl-qai
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">BASICS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/error_channel.html">ErrorChannelV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/expressibility.html">ExpressibilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/compiler.html">CompilerV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/base_env.html">Base Enviornment Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/errorchannel.html">ErrorChannelV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/expressibility.html">ExpressibilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/probability.html">ProbabilityV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AGENTS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/agents.html">Agents</a></li>
+</ul>
 
-      </div>
-      
-    </div>
-  </aside>
-  <div class="main">
-    <div class="content">
-      <div class="article-container">
-        <a href="#" class="back-to-top muted-link">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
-          </svg>
-          <span>Back to top</span>
-        </a>
-        <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
-              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
-              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-            </button>
-          </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-          </label>
         </div>
-        <article role="main" id="furo-main-content">
-          <h1>Source code for qrl.env.core.error_channel</h1><div class="highlight"><pre>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">qrl-qai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">qrl.env.core.error_channel</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qrl.env.core.error_channel</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Implementation of ErrorChannelV0 environment</span>
 <span class="sd">Author: Jay Shah (@Jayshah25)</span>
@@ -266,137 +108,56 @@
 
 
 <div class="viewcode-block" id="ErrorChannelV0">
-<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ErrorChannelV0">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.error_channel.ErrorChannelV0">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ErrorChannelV0</span><span class="p">(</span><span class="n">QuantumEnv</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ## Description</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multi-qubit error mitigation environment with bit-flip noise.</span>
 
-<span class="sd">    The **ErrorChannelV0** environment simulates a **multi-qubit noisy quantum system** where different qubits</span>
-<span class="sd">    may be subject to error channels (bitflip errors) with varying probabilities. It is based on the `QuantumEnv` base class. </span>
-<span class="sd">    The agent&#39;s task is to identify and apply corrective single-qubit gates to mitigate the effects of these noise processes and restore the system state</span>
-<span class="sd">    to the computational basis state **|0...0⟩**.</span>
+<span class="sd">    ``ErrorChannelV0`` is a ``gymnasium.Env``-compatible environment that models a</span>
+<span class="sd">    noisy multi-qubit quantum system affected by independent bit-flip error channels.</span>
+<span class="sd">    Each qubit may experience noise with a different probability, and the agent’s</span>
+<span class="sd">    task is to apply corrective Pauli-X operations to recover the target computational</span>
+<span class="sd">    basis state ``|0…0⟩``.</span>
 
-<span class="sd">    This environment models the challenge of **quantum error mitigation/correction** in the presence of **Bit-flip errors**.</span>
+<span class="sd">    The environment captures a simplified quantum error mitigation scenario, where</span>
+<span class="sd">    the agent sequentially selects qubits on which to apply corrections based on</span>
+<span class="sd">    observed measurement probabilities.</span>
 
-<span class="sd">    The agent interacts by applying X gate to specific qubits. Rewards are based</span>
-<span class="sd">    on the probability that the corrected quantum state has returned to the target basis state.</span>
+<span class="sd">    Key properties</span>
+<span class="sd">    --------------</span>
+<span class="sd">    - **Action space**: Discrete choice of qubit index on which to apply an ``X`` gate.</span>
+<span class="sd">    - **Observation space**: Probability distribution over all computational basis</span>
+<span class="sd">    states (shape ``(2**n_qubits,)``).</span>
+<span class="sd">    - **Reward**: Negative mean-squared error between the corrected distribution and</span>
+<span class="sd">    the ideal ``|0…0⟩`` distribution.</span>
+<span class="sd">    - **Termination**: Success when perfect correction is achieved or truncation at</span>
+<span class="sd">    ``max_steps``.</span>
 
-<span class="sd">    The environment includes a rendering mode that provides a **bar plot animation** comparing the noisy,</span>
-<span class="sd">    corrected, and ideal probability distributions, along with the evolving circuit diagram.</span>
+<span class="sd">    Rendering</span>
+<span class="sd">    ---------</span>
+<span class="sd">    The ``render()`` method visualizes the mitigation process using a side-by-side</span>
+<span class="sd">    animation that compares ideal, noisy, and corrected probability distributions,</span>
+<span class="sd">    along with a dynamically updated circuit diagram showing applied corrections.</span>
 
-<span class="sd">    ---</span>
+<span class="sd">    Input Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_qubits : int</span>
+<span class="sd">        Number of qubits in the system.</span>
+<span class="sd">    faulty_qubits : dict[int, float] or None</span>
+<span class="sd">        Mapping from qubit indices to bit-flip probabilities.</span>
+<span class="sd">    max_steps : int</span>
+<span class="sd">        Maximum number of correction steps per episode.</span>
+<span class="sd">    seed : int or None</span>
+<span class="sd">        Random seed for reproducibility.</span>
+<span class="sd">    ffmpeg : bool</span>
+<span class="sd">        Whether to use FFmpeg to save animations as ,p4 or save it as GIFs with Pillow.</span>
 
-<span class="sd">    ## Action Space</span>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :doc:`tutorials/error_channel`</span>
+<span class="sd">        Tutorial on multi-qubit error mitigation with bit-flip noise.</span>
 
-<span class="sd">    The action space is a **Discrete( [n_qubits] )** space, meaning the agent chooses:</span>
-
-<span class="sd">    1. A **target qubit**: index in `[0, n_qubits-1]` to apply the PauliX correction on.</span>
-
-<span class="sd">    Example (for 3 qubits):  </span>
-<span class="sd">    - `0` → Apply `X` gate on qubit 0  </span>
-<span class="sd">    - `2` → Apply `X` gate on qubit 2  </span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Observation Space</span>
-
-<span class="sd">    The observation is a probability distribution over all computational basis states</span>
-<span class="sd">    of the `n_qubits` system:</span>
-
-<span class="sd">    obs \in [0, 1]^{2^{n\_qubits}}</span>
-
-<span class="sd">    with the constraint:</span>
-
-<span class="sd">    \sum_i obs[i] = 1</span>
-
-<span class="sd">    For example, with 3 qubits, the observation is a length-8 vector:</span>
-
-<span class="sd">    | Index | Basis State | Probability |</span>
-<span class="sd">    |-------|-------------|-------------|</span>
-<span class="sd">    | 0     | `|000⟩`     | [0, 1]      |</span>
-<span class="sd">    | 1     | `|001⟩`     | [0, 1]      |</span>
-<span class="sd">    | ...   | ...         | ...         |</span>
-<span class="sd">    | 7     | `|111⟩`     | [0, 1]      |</span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Rewards</span>
-
-<span class="sd">    The reward is the mean squared error between the target state and the corrected state multiplied by -1:</span>
-
-<span class="sd">    reward = -MSE(|0...0⟩, |corrected_state⟩)</span>
-
-<span class="sd">    - Maximum reward = 0.0 (perfect correction).  </span>
-<span class="sd">    - Minimum reward = -(2/2**num_qubits) (highly corrupted).  </span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Starting State</span>
-
-<span class="sd">    At the start of each episode:</span>
-<span class="sd">    - A set of **faulty qubits** is defined to apply bit flip errors with varying probabilities.  </span>
-<span class="sd">    (If not specified, a random qubit is chosen.)</span>
-<span class="sd">    - The agent begins with no corrections applied.</span>
-
-<span class="sd">    The first observation is the noisy probability distribution before any corrections.</span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Episode End</span>
-
-<span class="sd">    The episode ends if one of the following occurs:</span>
-
-<span class="sd">    1. **Termination**:  </span>
-<span class="sd">    The obtained reward is 0.0.</span>
-<span class="sd">    2. **Truncation**:  </span>
-<span class="sd">    The system reaches the maximum number of steps (`max_steps`, default=10)</span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Rendering</span>
-
-<span class="sd">    The rendering shows a **side-by-side animation** with:</span>
-
-<span class="sd">    1. **Left panel**: Bar chart of probabilities for each basis state:  </span>
-<span class="sd">    - Gray = Ideal noiseless target (|0...0⟩)  </span>
-<span class="sd">    - Orange = Noisy distribution  </span>
-<span class="sd">    - Blue = Corrected distribution  </span>
-
-<span class="sd">    The chart title updates with **step number, chosen correction, and reward**.</span>
-
-<span class="sd">    2. **Right panel**: A dynamically drawn ASCII-style **quantum circuit** reflecting</span>
-<span class="sd">    the applied corrections.</span>
-
-<span class="sd">    The animation can be displayed interactively or saved as an MP4 file.</span>
-
-<span class="sd">    ---</span>
-
-<span class="sd">    ## Arguments</span>
-
-<span class="sd">    - **`n_qubits`** (`int`, default=3): Number of qubits in the system.  </span>
-<span class="sd">    - **`faulty_qubits`** (`dict`, optional): Mapping of faulty qubit indices to their noise probabilities.  </span>
-<span class="sd">    - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  </span>
-<span class="sd">    - **`seed`** (`int`, optional): Random seed for reproducibility.  </span>
-<span class="sd">    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).</span>
-
-<span class="sd">    Example:</span>
-
-<span class="sd">    ```python</span>
-<span class="sd">    &gt;&gt;&gt; from qrl.env import ErrorChannelV0</span>
-
-<span class="sd">    &gt;&gt;&gt; env = ErrorChannelV0(</span>
-<span class="sd">    ...     n_qubits=3,</span>
-<span class="sd">    ...     faulty_qubits={0: 0.2, 2: 0.2},</span>
-<span class="sd">    ...     max_steps=6,</span>
-<span class="sd">    ...     seed=42,</span>
-<span class="sd">    ... )</span>
-
-<span class="sd">    &gt;&gt;&gt; obs = env.reset()</span>
-<span class="sd">    &gt;&gt;&gt; obs.shape</span>
-<span class="sd">    (8,)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;render.modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;human&quot;</span><span class="p">]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -448,21 +209,65 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False&quot;</span><span class="p">)</span>
 
 
+        <span class="c1"># util vars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply bit-flip noise channels to the faulty qubits.</span>
+
+<span class="sd">        For each qubit specified in ``self.faulty_qubits``, a PennyLane</span>
+<span class="sd">        ``BitFlip`` channel is applied with the corresponding noise probability.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This method applies noise operations to the quantum circuit but</span>
+<span class="sd">            does not return a value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">qubit</span><span class="p">,</span> <span class="n">noise</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">faulty_qubits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">qml</span><span class="o">.</span><span class="n">BitFlip</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">qubit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_gate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wire</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39; Apply single-qubit gate (bitflip correction operation) on specified wire &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a corrective single-qubit Pauli-X gate.</span>
+
+<span class="sd">        This operation represents a bit-flip correction applied to a specific</span>
+<span class="sd">        qubit wire.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wire : int</span>
+<span class="sd">            Index of the qubit on which the Pauli-X correction is applied.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This method applies a quantum gate but does not return a value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qml</span><span class="o">.</span><span class="n">PauliX</span><span class="p">(</span><span class="n">wires</span><span class="o">=</span><span class="n">wire</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_qnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Buils three QNodes:</span>
-<span class="sd">        1. Noisy circuit (no corrections)</span>
-<span class="sd">        2. Noisy + corrections circuit</span>
-<span class="sd">        3. Noisy + corrections circuit (for rendering)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build PennyLane QNodes for noisy and corrected circuits.</span>
+
+<span class="sd">        This method constructs and assigns three QNodes:</span>
+
+<span class="sd">        1. ``qnode_noisy``:</span>
+<span class="sd">        Circuit with noise applied and no corrections.</span>
+<span class="sd">        2. ``qnode_corrected``:</span>
+<span class="sd">        Circuit with noise followed by the currently selected correction</span>
+<span class="sd">        operations.</span>
+<span class="sd">        3. ``qnode_draw``:</span>
+<span class="sd">        A separate copy of the corrected circuit used exclusively for</span>
+<span class="sd">        rendering and visualization.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This method initializes internal QNode attributes but does not</span>
+<span class="sd">            return a value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nd">@qml</span><span class="o">.</span><span class="n">qnode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">qnode_noisy</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_apply_noise</span><span class="p">()</span>
@@ -488,8 +293,27 @@
 
 
 <div class="viewcode-block" id="ErrorChannelV0.reset">
-<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ErrorChannelV0.reset">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.error_channel.ErrorChannelV0.reset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the environment to the initial noisy state.</span>
+
+<span class="sd">        Clears the correction history, resets the step counter, and evaluates</span>
+<span class="sd">        the noisy circuit without any corrective operations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seed : int or None, optional</span>
+<span class="sd">            Random seed for reproducibility. If provided, reinitializes the</span>
+<span class="sd">            internal random number generator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        observation : np.ndarray</span>
+<span class="sd">            Initial corrected probability distribution over computational</span>
+<span class="sd">            basis states (identical to the noisy distribution at reset),</span>
+<span class="sd">            with dtype ``float32``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
@@ -512,42 +336,126 @@
 
         <span class="k">return</span> <span class="n">probs_corrected</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
 
+    
+<div class="viewcode-block" id="ErrorChannelV0.get_reward">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.error_channel.ErrorChannelV0.get_reward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a correction action and compute the reward.</span>
 
-<div class="viewcode-block" id="ErrorChannelV0.step">
-<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ErrorChannelV0.step">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="sd">        The selected qubit index is appended to the correction list, the noisy</span>
+<span class="sd">        and corrected circuits are evaluated, and the reward is computed as the</span>
+<span class="sd">        negative mean-squared error between the corrected and target probability</span>
+<span class="sd">        distributions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        action : int</span>
+<span class="sd">            Index of the qubit on which a Pauli-X correction is applied.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Reward value defined as the negative mean-squared error between</span>
+<span class="sd">            the corrected probability distribution and the target distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qubit_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qubit_idx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corrections</span><span class="p">)</span>
-
         <span class="n">noisy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_noisy</span><span class="p">()</span> <span class="c1"># noisy circuit</span>
-        <span class="n">corrected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_corrected</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="c1"># noisy + corrections circuit</span>
 
-        <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">target_probs</span> <span class="o">-</span> <span class="n">corrected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Minimum can be 0</span>
-        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnode_corrected</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="c1"># noisy + corrections circuit</span>
 
+        <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">target_probs</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Minimum can be 0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
-            <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_step</span><span class="p">,</span>
-            <span class="c1"># gate=self.GATE_ID2NAME[gate_id],</span>
-            <span class="n">qubit</span><span class="o">=</span><span class="n">qubit_idx</span><span class="p">,</span>
-            <span class="n">probs_noisy</span><span class="o">=</span><span class="n">noisy</span><span class="p">,</span>
-            <span class="n">probs_corrected</span><span class="o">=</span><span class="n">corrected</span><span class="p">,</span>
-            <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_step</span><span class="p">,</span>
+        <span class="c1"># gate=self.GATE_ID2NAME[gate_id],</span>
+        <span class="n">qubit</span><span class="o">=</span><span class="n">qubit_idx</span><span class="p">,</span>
+        <span class="n">probs_noisy</span><span class="o">=</span><span class="n">noisy</span><span class="p">,</span>
+        <span class="n">probs_corrected</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">corrected</span><span class="p">,</span>
+        <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
         <span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">reward</span></div>
 
-        <span class="n">obs</span> <span class="o">=</span> <span class="n">corrected</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ErrorChannelV0.step">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.error_channel.ErrorChannelV0.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute one environment step.</span>
+
+<span class="sd">        Applies a correction action, updates internal state and history,</span>
+<span class="sd">        computes the reward, and checks termination conditions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        action : int</span>
+<span class="sd">            Index of the qubit on which a Pauli-X correction is applied.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        observation : np.ndarray</span>
+<span class="sd">            Corrected probability distribution over computational basis states,</span>
+<span class="sd">            with dtype ``float32``.</span>
+<span class="sd">        reward : float</span>
+<span class="sd">            Negative mean-squared error between the corrected and target</span>
+<span class="sd">            distributions.</span>
+<span class="sd">        done : bool</span>
+<span class="sd">            True if the episode has terminated due to reaching the maximum</span>
+<span class="sd">            number of steps or achieving perfect correction.</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            Dictionary containing metadata about the environment, including</span>
+<span class="sd">            the mapping of faulty qubits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reward</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;faulty_qubits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">faulty_qubits</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_basis_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39; Generate labels for computational basis states &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate labels for computational basis states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            List of strings representing computational basis states in Dirac</span>
+<span class="sd">            notation (e.g., ``&quot;|000⟩&quot;``, ``&quot;|001⟩&quot;``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">0</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="si">}</span><span class="s2">b</span><span class="si">}</span><span class="s2">⟩&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n_qubits</span><span class="p">)]</span>
 
 <div class="viewcode-block" id="ErrorChannelV0.render">
-<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.ErrorChannelV0.render">[docs]</a>
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.error_channel.ErrorChannelV0.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path_without_extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval_ms</span><span class="o">=</span><span class="mi">600</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render the error-mitigation process as an animated visualization.</span>
+
+<span class="sd">        The animation consists of:</span>
+<span class="sd">        - A bar chart comparing ideal, noisy, and corrected probability</span>
+<span class="sd">        distributions for each computational basis state.</span>
+<span class="sd">        - A dynamically updated ASCII-style circuit diagram showing the</span>
+<span class="sd">        applied correction operations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        save_path_without_extension : str or None, optional</span>
+<span class="sd">            Path (without file extension) to save the animation.</span>
+<span class="sd">            If provided, the animation is saved using the configured writer</span>
+<span class="sd">            (MP4 for FFmpeg or GIF for Pillow). If None, the animation is</span>
+<span class="sd">            displayed interactively.</span>
+<span class="sd">        interval_ms : int, optional</span>
+<span class="sd">            Time between animation frames in milliseconds. Default is 600.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This method produces a visualization but does not return a value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nothing to animate.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -607,40 +515,32 @@
 
 
 </pre></div>
-        </article>
-      </div>
-      <footer>
-        
-        <div class="related-pages">
-          
-          
-        </div>
-        <div class="bottom-of-page">
-          <div class="left-details">
-            <div class="copyright">
-                Copyright &#169; 2025, Jay Shah
-            </div>
-            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-            
-            <a href="https://github.com/pradyunsg/furo">Furo</a>
-            
+
+           </div>
           </div>
-          <div class="right-details">
-            
-          </div>
-        </div>
-        
-      </footer>
-    </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jay Shah.</p>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
-    </body>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

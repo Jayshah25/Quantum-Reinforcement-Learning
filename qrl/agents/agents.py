@@ -5,12 +5,27 @@ import numpy as np
 
 class ClassicalNNAgent(nn.Module):
     def __init__(self, input_size, hidden_size, num_hidden_layers, output_size):
-        '''
-        input_size (int): It represents the observation space size
-        hidden_size (int): Number of neruons in the hidden layers
-        num_hidden_layers (int): Number of hidden layers
-        output_size (int): It represents the action space size (number of actions)
-        '''
+        """
+        Feedforward neural network agent for discrete action prediction.
+
+        ``ClassicalNNAgent`` implements a fully connected multilayer perceptron
+        (MLP) that maps observations to action logits or values. It is intended
+        for use as a baseline classical agent in reinforcement learning settings.
+
+        The network consists of an input layer, a configurable number of hidden
+        layers with ReLU activations, and a linear output layer.
+
+        Parameters
+        ----------
+        input_size : int
+            Dimensionality of the observation space.
+        hidden_size : int
+            Number of neurons in each hidden layer.
+        num_hidden_layers : int
+            Number of hidden layers in the network.
+        output_size : int
+            Dimensionality of the output space (e.g., number of actions).
+        """
         super(ClassicalNNAgent, self).__init__()
         layers = []
 
@@ -35,9 +50,32 @@ class ClassicalNNAgent(nn.Module):
 
 class RandomQuantumAgent(nn.Module):
     def __init__(self, input_size:int, output_size:int, n_layers:int=2, n_rotations:int=3, seed:int=42):
-        '''
-        input_size (int): It represents the observation space size and the number of qubits in the quantum circuit
-        '''
+        """
+        Hybrid quantum-classical agent with a random variational quantum circuit.
+
+        ``RandomQuantumAgent`` implements a PennyLane-based variational quantum
+        circuit (VQC) wrapped as a PyTorch module. The circuit uses angle
+        embedding for inputs and randomly structured layers to generate quantum
+        features, which are measured as Pauli-Z expectation values.
+
+        This agent is primarily intended as a quantum baseline or exploratory
+        agent rather than a fully trainable policy network.
+
+        Parameters
+        ----------
+        input_size : int
+            Dimensionality of the observation space and the number of qubits
+            in the quantum circuit.
+        output_size : int
+            Number of measured qubits / outputs produced by the circuit.
+        n_layers : int, optional
+            Number of random quantum layers. Default is 2.
+        n_rotations : int, optional
+            Number of rotation gates per random layer. Default is 3.
+        seed : int, optional
+            Random seed controlling the structure of the random quantum layers.
+            Default is 42.
+        """
         super(RandomQuantumAgent, self).__init__()
         dev = qml.device("default.qubit", wires=input_size)
 

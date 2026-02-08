@@ -1,4 +1,3 @@
-from .base import BaseAgent
 from .agents import (
     ClassicalNNAgent,
     RandomQuantumAgent
@@ -6,7 +5,6 @@ from .agents import (
 )
 
 __all__ = [
-    "BaseAgent",
     "ClassicalNNAgent",
     "RandomQuantumAgent",
 ]

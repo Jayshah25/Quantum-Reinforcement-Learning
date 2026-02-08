@@ -6,13 +6,16 @@ import pennylane as qml
 class QuantumEnv(gym.Env, ABC):
     """Abstract base class for all QRL quantum environments"""
 
-    metadata = {"render_modes": ["human"]}
-
     def __init__(self, n_qubits=1):
         super().__init__()
 
         self.n_qubits = n_qubits
         self.dev = qml.device("default.qubit", wires=n_qubits)
+
+    @abstractmethod
+    def get_reward(self):
+        """Get reward for current state."""
+        pass
 
     @abstractmethod
     def reset(self, seed=None, options=None):
@@ -27,7 +30,4 @@ class QuantumEnv(gym.Env, ABC):
     @abstractmethod
     def render(self):
         """Animate the episode"""
-        pass
-
-    def close(self):
         pass

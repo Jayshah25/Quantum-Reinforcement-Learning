@@ -13,61 +13,58 @@ from .base__ import QuantumEnv
 
 class ProbabilityV0(QuantumEnv):
     """
-    Reinforcement learning environment for training parameterized quantum circuits 
-    to approximate a target probability distribution over computational basis states.
-    It is based on the `QuantumEnv` base class.
+    Probability distribution matching environment for variational quantum circuits.
 
-    **Purpose**
-    ------------
-    The goal of `ProbabilityV0` is to optimize variational quantum circuits such that 
-    the measured probability distribution of outcomes matches a given target 
-    distribution. This is useful in tasks like quantum compilation, quantum generative 
-    modeling, and distribution learning.
+    ``ProbabilityV0`` is a ``gymnasium.Env``-compatible environment that trains a
+    parameterized quantum circuit to approximate a target probability distribution
+    over computational basis states. The agent optimizes continuous circuit
+    parameters so that the measurement statistics of the circuit match a specified
+    target distribution.
 
-    **Environment Dynamics**
-    ------------------------
-    - **State (observation):**
-      The current probability distribution over `2**n_qubits` basis states obtained 
-      from the quantum circuit.
+    This environment is suitable for distribution learning, quantum generative
+    modeling, and variational circuit optimization tasks.
 
-    - **Action:**
-      A continuous vector of parameter updates (`Box(low=-0.1, high=0.1, shape=(n_params,)`), 
-      which perturbs the trainable parameters of the ansatz.
+    Key properties
+    --------------
+    - **Action space**: Continuous parameter updates applied to the circuit ansatz.
+    - **Observation space**: Probability distribution over ``2**n_qubits`` basis
+    states produced by the current circuit.
+    - **Reward**: Negative weighted cost combining KL divergence and L2 distance to
+    the target distribution, with an additional step penalty.
+    - **Termination**: Success when the reward exceeds the specified tolerance or
+    truncation at ``max_steps``.
 
-    - **Reward:**
-      Defined as the *negative* of a weighted cost combining:
-        - KL divergence between the target distribution and the circuit's output.
-        - L2 distance between the target and circuit distributions.
-      The weighting is controlled by `alpha` (for KL vs. L2) and `beta` (step penalty).
+    Visualization
+    -------------
+    The ``render()`` method animates the evolution of the learned probability
+    distribution relative to the target distribution, along with the reward
+    trajectory over training steps.
 
-    - **Episode Termination:**
-      - If the reward is below the specified tolerance.
-      - If the number of steps reaches `max_steps`.
+    Input Parameters
+    ----------
+    n_qubits : int
+        Number of qubits in the circuit.
+    target_distribution : np.ndarray
+        Target probability distribution over computational basis states.
+    ansatz : callable or None
+        Custom parameterized circuit ansatz. If ``None``, a default RY-based ansatz
+        is used.
+    max_steps : int
+        Maximum number of optimization steps per episode.
+    tolerance : float
+        Reward threshold for early termination.
+    alpha : float
+        Weight balancing KL divergence and L2 distance.
+    beta : float
+        Penalty weight for step count.
+    ffmpeg : bool
+        Whether to use FFmpeg when saving animations.
 
-    **Key Parameters**
-    -----------------
-    - `n_qubits (int)`: Number of qubits in the circuit.
-    - `target_distribution (np.ndarray)`: Target probability distribution (must sum to 1).
-    - `ansatz (callable, optional)`: Custom circuit ansatz. Defaults to a simple 
-      layer of RY rotations if not provided.
-    - `max_steps (int, default=100)`: Maximum steps per episode.
-    - `tolerance (float, default=-1e3)`: Reward threshold for termination.
-    - `alpha (float, default=0.5)`: Weight between KL divergence and L2 error.
-    - `beta (float, default=0.01)`: Penalty weight for step count.
-    - `ffmpeg` (bool, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
+    See Also
+    --------
+    :doc:`tutorials/probability`
+        Tutorial on probability distribution learning with variational circuits.
 
-    **Visualization**
-    ----------------
-    - `render()`: Creates an animation showing the evolution of the learned 
-      distribution and corresponding rewards across training.
-
-
-    **Applications**
-    ----------------
-    - Distribution learning with quantum circuits.
-    - Testing expressivity of variational ansätze.
-    - Benchmarking optimization of quantum neural networks.
-    
     """
     def __init__(self, 
                  n_qubits: int,
@@ -124,7 +121,26 @@ class ProbabilityV0(QuantumEnv):
         self.history = []
         self.rewards = []
 
-    def cost_fn(self, params):
+    def get_reward(self, params):
+        """
+        Compute the reward for a given set of circuit parameters.
+
+        The reward is based on a weighted combination of:
+        - Kullback–Leibler (KL) divergence between the target distribution and
+        the circuit output distribution.
+        - L2 distance between the target and circuit distributions.
+
+        Parameters
+        ----------
+        params : np.ndarray
+            Vector of variational circuit parameters.
+
+        Returns
+        -------
+        float
+            Scalar reward value encouraging the circuit output distribution
+            to match the target distribution.
+        """
         probs = self.circuit(params)
 
         # KL divergence (target || probs)
@@ -139,11 +155,37 @@ class ProbabilityV0(QuantumEnv):
         return -reward
 
     def step(self, action):
+        """
+        Execute one optimization step.
+
+        Updates the circuit parameters using the provided action, evaluates
+        the resulting probability distribution, computes the reward, and
+        checks termination conditions.
+
+        Parameters
+        ----------
+        action : np.ndarray
+            Parameter update vector applied additively to the current
+            circuit parameters.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Probability distribution over computational basis states produced
+            by the circuit after the parameter update.
+        reward : float
+            Reward value after applying the action.
+        done : bool
+            True if the episode has terminated due to reaching the reward
+            tolerance or the maximum number of steps.
+        info : dict
+            Empty dictionary provided for compatibility with Gymnasium-style APIs.
+        """
         self.params = (self.params + action)  # keep params bounded
         self.current_step += 1
 
         probs = self.circuit(self.params)
-        reward = self.cost_fn(self.params)
+        reward = self.get_reward(self.params)
 
         done = reward < self.tolerance or self.current_step >= self.max_steps
         self.history.append(probs)
@@ -154,6 +196,19 @@ class ProbabilityV0(QuantumEnv):
 
 
     def reset(self):
+        """
+        Reset the environment to a random initial parameter configuration.
+
+        Initializes the circuit parameters randomly, clears episode history,
+        and resets the step counter.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Initial circuit parameter vector.
+        info : dict
+            Empty dictionary provided for compatibility with Gymnasium-style APIs.
+        """
         self.params = np.random.uniform(0, 2*np.pi, size=self.n_params)
         self.current_step = 0
         self.history = []
@@ -162,8 +217,24 @@ class ProbabilityV0(QuantumEnv):
 
     def render(self, save_path_without_extension=None):
         """
-        Create an animation showing how the distribution evolves over steps,
-        including reward values in the title.
+        Render the evolution of the probability distribution over training steps.
+
+        The animation shows a bar plot comparing the target probability
+        distribution with the circuit's predicted distribution at each step.
+        Reward values are displayed in the plot title.
+
+        Parameters
+        ----------
+        save_path_without_extension : str or None, optional
+            Path (without file extension) to save the animation.
+            If provided, the animation is saved using the configured writer
+            (MP4 for FFmpeg or GIF for Pillow). If None, the animation is
+            displayed interactively.
+
+        Returns
+        -------
+        None
+            This method produces a visualization but does not return a value.
         """
         fig, ax = plt.subplots(figsize=(10, 5))
         x = np.arange(2**self.n_qubits)

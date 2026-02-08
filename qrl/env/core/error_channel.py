@@ -14,135 +14,54 @@ from .base__ import QuantumEnv
 
 
 class ErrorChannelV0(QuantumEnv):
-    '''
-    ## Description
+    """
+    Multi-qubit error mitigation environment with bit-flip noise.
 
-    The **ErrorChannelV0** environment simulates a **multi-qubit noisy quantum system** where different qubits
-    may be subject to error channels (bitflip errors) with varying probabilities. It is based on the `QuantumEnv` base class. 
-    The agent's task is to identify and apply corrective single-qubit gates to mitigate the effects of these noise processes and restore the system state
-    to the computational basis state **|0...0⟩**.
+    ``ErrorChannelV0`` is a ``gymnasium.Env``-compatible environment that models a
+    noisy multi-qubit quantum system affected by independent bit-flip error channels.
+    Each qubit may experience noise with a different probability, and the agent’s
+    task is to apply corrective Pauli-X operations to recover the target computational
+    basis state ``|0…0⟩``.
 
-    This environment models the challenge of **quantum error mitigation/correction** in the presence of **Bit-flip errors**.
+    The environment captures a simplified quantum error mitigation scenario, where
+    the agent sequentially selects qubits on which to apply corrections based on
+    observed measurement probabilities.
 
-    The agent interacts by applying X gate to specific qubits. Rewards are based
-    on the probability that the corrected quantum state has returned to the target basis state.
+    Key properties
+    --------------
+    - **Action space**: Discrete choice of qubit index on which to apply an ``X`` gate.
+    - **Observation space**: Probability distribution over all computational basis
+    states (shape ``(2**n_qubits,)``).
+    - **Reward**: Negative mean-squared error between the corrected distribution and
+    the ideal ``|0…0⟩`` distribution.
+    - **Termination**: Success when perfect correction is achieved or truncation at
+    ``max_steps``.
 
-    The environment includes a rendering mode that provides a **bar plot animation** comparing the noisy,
-    corrected, and ideal probability distributions, along with the evolving circuit diagram.
+    Rendering
+    ---------
+    The ``render()`` method visualizes the mitigation process using a side-by-side
+    animation that compares ideal, noisy, and corrected probability distributions,
+    along with a dynamically updated circuit diagram showing applied corrections.
 
-    ---
+    Input Parameters
+    ----------
+    n_qubits : int
+        Number of qubits in the system.
+    faulty_qubits : dict[int, float] or None
+        Mapping from qubit indices to bit-flip probabilities.
+    max_steps : int
+        Maximum number of correction steps per episode.
+    seed : int or None
+        Random seed for reproducibility.
+    ffmpeg : bool
+        Whether to use FFmpeg to save animations as ,p4 or save it as GIFs with Pillow.
 
-    ## Action Space
+    See Also
+    --------
+    :doc:`tutorials/error_channel`
+        Tutorial on multi-qubit error mitigation with bit-flip noise.
 
-    The action space is a **Discrete( [n_qubits] )** space, meaning the agent chooses:
-
-    1. A **target qubit**: index in `[0, n_qubits-1]` to apply the PauliX correction on.
-
-    Example (for 3 qubits):  
-    - `0` → Apply `X` gate on qubit 0  
-    - `2` → Apply `X` gate on qubit 2  
-
-    ---
-
-    ## Observation Space
-
-    The observation is a probability distribution over all computational basis states
-    of the `n_qubits` system:
-
-    obs \in [0, 1]^{2^{n\_qubits}}
-
-    with the constraint:
-
-    \sum_i obs[i] = 1
-
-    For example, with 3 qubits, the observation is a length-8 vector:
-
-    | Index | Basis State | Probability |
-    |-------|-------------|-------------|
-    | 0     | `|000⟩`     | [0, 1]      |
-    | 1     | `|001⟩`     | [0, 1]      |
-    | ...   | ...         | ...         |
-    | 7     | `|111⟩`     | [0, 1]      |
-
-    ---
-
-    ## Rewards
-
-    The reward is the mean squared error between the target state and the corrected state multiplied by -1:
-
-    reward = -MSE(|0...0⟩, |corrected_state⟩)
-
-    - Maximum reward = 0.0 (perfect correction).  
-    - Minimum reward = -(2/2**num_qubits) (highly corrupted).  
-
-    ---
-
-    ## Starting State
-
-    At the start of each episode:
-    - A set of **faulty qubits** is defined to apply bit flip errors with varying probabilities.  
-    (If not specified, a random qubit is chosen.)
-    - The agent begins with no corrections applied.
-
-    The first observation is the noisy probability distribution before any corrections.
-
-    ---
-
-    ## Episode End
-
-    The episode ends if one of the following occurs:
-
-    1. **Termination**:  
-    The obtained reward is 0.0.
-    2. **Truncation**:  
-    The system reaches the maximum number of steps (`max_steps`, default=10)
-
-    ---
-
-    ## Rendering
-
-    The rendering shows a **side-by-side animation** with:
-
-    1. **Left panel**: Bar chart of probabilities for each basis state:  
-    - Gray = Ideal noiseless target (|0...0⟩)  
-    - Orange = Noisy distribution  
-    - Blue = Corrected distribution  
-
-    The chart title updates with **step number, chosen correction, and reward**.
-
-    2. **Right panel**: A dynamically drawn ASCII-style **quantum circuit** reflecting
-    the applied corrections.
-
-    The animation can be displayed interactively or saved as an MP4 file.
-
-    ---
-
-    ## Arguments
-
-    - **`n_qubits`** (`int`, default=3): Number of qubits in the system.  
-    - **`faulty_qubits`** (`dict`, optional): Mapping of faulty qubit indices to their noise probabilities.  
-    - **`max_steps`** (`int`, default=10): Maximum number of agent actions per episode.  
-    - **`seed`** (`int`, optional): Random seed for reproducibility.  
-    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
-
-    Example:
-
-    ```python
-    >>> from qrl.env import ErrorChannelV0
-
-    >>> env = ErrorChannelV0(
-    ...     n_qubits=3,
-    ...     faulty_qubits={0: 0.2, 2: 0.2},
-    ...     max_steps=6,
-    ...     seed=42,
-    ... )
-
-    >>> obs = env.reset()
-    >>> obs.shape
-    (8,)
-    '''
-
-    metadata = {"render.modes": ["human"]}
+    """
 
     def __init__(
         self,
@@ -194,21 +113,65 @@ class ErrorChannelV0(QuantumEnv):
             raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
 
 
+        # util vars
+        self.corrected = None
+
     def _apply_noise(self):
+        """
+        Apply bit-flip noise channels to the faulty qubits.
+
+        For each qubit specified in ``self.faulty_qubits``, a PennyLane
+        ``BitFlip`` channel is applied with the corresponding noise probability.
+
+        Returns
+        -------
+        None
+            This method applies noise operations to the quantum circuit but
+            does not return a value.
+        """
         for qubit, noise in self.faulty_qubits.items():
             qml.BitFlip(noise, wires=qubit)
 
     def _apply_gate(self, wire):
-        ''' Apply single-qubit gate (bitflip correction operation) on specified wire '''
+        """
+        Apply a corrective single-qubit Pauli-X gate.
+
+        This operation represents a bit-flip correction applied to a specific
+        qubit wire.
+
+        Parameters
+        ----------
+        wire : int
+            Index of the qubit on which the Pauli-X correction is applied.
+
+        Returns
+        -------
+        None
+            This method applies a quantum gate but does not return a value.
+        """
         qml.PauliX(wires=wire)
 
     def _build_qnodes(self):
-        '''
-        Buils three QNodes:
-        1. Noisy circuit (no corrections)
-        2. Noisy + corrections circuit
-        3. Noisy + corrections circuit (for rendering)
-        '''
+        """
+        Build PennyLane QNodes for noisy and corrected circuits.
+
+        This method constructs and assigns three QNodes:
+
+        1. ``qnode_noisy``:
+        Circuit with noise applied and no corrections.
+        2. ``qnode_corrected``:
+        Circuit with noise followed by the currently selected correction
+        operations.
+        3. ``qnode_draw``:
+        A separate copy of the corrected circuit used exclusively for
+        rendering and visualization.
+
+        Returns
+        -------
+        None
+            This method initializes internal QNode attributes but does not
+            return a value.
+        """
         @qml.qnode(self.dev)
         def qnode_noisy():
             self._apply_noise()
@@ -234,6 +197,25 @@ class ErrorChannelV0(QuantumEnv):
 
 
     def reset(self, *, seed=None):
+        """
+        Reset the environment to the initial noisy state.
+
+        Clears the correction history, resets the step counter, and evaluates
+        the noisy circuit without any corrective operations.
+
+        Parameters
+        ----------
+        seed : int or None, optional
+            Random seed for reproducibility. If provided, reinitializes the
+            internal random number generator.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Initial corrected probability distribution over computational
+            basis states (identical to the noisy distribution at reset),
+            with dtype ``float32``.
+        """
         if seed is not None:
             self.rng = np.random.default_rng(seed)
 
@@ -255,37 +237,118 @@ class ErrorChannelV0(QuantumEnv):
         ))
 
         return probs_corrected.astype(np.float32)
+    
+    def get_reward(self, action):
+        """
+        Apply a correction action and compute the reward.
 
-    def step(self, action):
+        The selected qubit index is appended to the correction list, the noisy
+        and corrected circuits are evaluated, and the reward is computed as the
+        negative mean-squared error between the corrected and target probability
+        distributions.
+
+        Parameters
+        ----------
+        action : int
+            Index of the qubit on which a Pauli-X correction is applied.
+
+        Returns
+        -------
+        float
+            Reward value defined as the negative mean-squared error between
+            the corrected probability distribution and the target distribution.
+        """
         qubit_idx = int(action)
         self.corrections.append(qubit_idx)
         self.current_step += 1
         k = len(self.corrections)
-
         noisy = self.qnode_noisy() # noisy circuit
-        corrected = self.qnode_corrected(k) # noisy + corrections circuit
 
-        reward = -np.mean((self.target_probs - corrected)**2) # Minimum can be 0
-        done = self.current_step >= self.max_steps or np.round(reward, 3) == 0.0
+        self.corrected = self.qnode_corrected(k) # noisy + corrections circuit
 
+        reward = -np.mean((self.target_probs - self.corrected)**2) # Minimum can be 0
         self.history.append(dict(
-            step=self.current_step,
-            # gate=self.GATE_ID2NAME[gate_id],
-            qubit=qubit_idx,
-            probs_noisy=noisy,
-            probs_corrected=corrected,
-            reward=reward,
+        step=self.current_step,
+        # gate=self.GATE_ID2NAME[gate_id],
+        qubit=qubit_idx,
+        probs_noisy=noisy,
+        probs_corrected=self.corrected,
+        reward=reward,
         ))
+        
+        return reward
 
-        obs = corrected.astype(np.float32)
+    def step(self, action):
+        """
+        Execute one environment step.
+
+        Applies a correction action, updates internal state and history,
+        computes the reward, and checks termination conditions.
+
+        Parameters
+        ----------
+        action : int
+            Index of the qubit on which a Pauli-X correction is applied.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Corrected probability distribution over computational basis states,
+            with dtype ``float32``.
+        reward : float
+            Negative mean-squared error between the corrected and target
+            distributions.
+        done : bool
+            True if the episode has terminated due to reaching the maximum
+            number of steps or achieving perfect correction.
+        info : dict
+            Dictionary containing metadata about the environment, including
+            the mapping of faulty qubits.
+        """
+        
+        reward = self.get_reward(action)
+        done = self.current_step >= self.max_steps or np.round(reward, 3) == 0.0
+        obs = self.corrected.astype(np.float32)
         info = {"faulty_qubits": self.faulty_qubits}
         return obs, reward, done, info
 
     def _basis_labels(self):
-        ''' Generate labels for computational basis states '''
+        """
+        Generate labels for computational basis states.
+
+        Returns
+        -------
+        list of str
+            List of strings representing computational basis states in Dirac
+            notation (e.g., ``"|000⟩"``, ``"|001⟩"``).
+        """
         return [f"|{i:0{self.n_qubits}b}⟩" for i in range(2**self.n_qubits)]
 
     def render(self, save_path_without_extension=None, interval_ms=600):
+        """
+        Render the error-mitigation process as an animated visualization.
+
+        The animation consists of:
+        - A bar chart comparing ideal, noisy, and corrected probability
+        distributions for each computational basis state.
+        - A dynamically updated ASCII-style circuit diagram showing the
+        applied correction operations.
+
+        Parameters
+        ----------
+        save_path_without_extension : str or None, optional
+            Path (without file extension) to save the animation.
+            If provided, the animation is saved using the configured writer
+            (MP4 for FFmpeg or GIF for Pillow). If None, the animation is
+            displayed interactively.
+        interval_ms : int, optional
+            Time between animation frames in milliseconds. Default is 600.
+
+        Returns
+        -------
+        None
+            This method produces a visualization but does not return a value.
+        """
         if not self.history:
             print("Nothing to animate.")
             return

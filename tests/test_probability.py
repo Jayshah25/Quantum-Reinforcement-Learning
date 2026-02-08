@@ -58,15 +58,18 @@ def test_history_and_rewards_grow(env):
     assert len(env.history) == 3
     assert len(env.rewards) == 3
 
-@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
-    (True, r"results/tests/probabilityV0", "mp4"),
-    (False, r"results/tests/probabilityV0", "gif"),
+@pytest.mark.parametrize("ffmpeg, save_path, file_name, extension", [
+    (True, r"results/tests", "probabilityV0", "mp4"),
+    (False, r"results/tests", "probabilityV0", "gif"),
 ])
-def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
-    file_path = save_path_without_extension + "." + extension
+def test_sample_run_and_render(ffmpeg, save_path, file_name, extension):
+    file_path = save_path + os.sep + file_name + "." + extension
     if os.path.exists(file_path):   # check if the file exists
-        os.remove(file_path)   
- 
+        os.remove(file_path) 
+
+    if not os.path.exists(save_path):  # check if the directory exists
+        os.makedirs(save_path)
+
     n_qubits = 2
     target_distribution = np.array([0.25, 0.25, 0.25, 0.25])  # Example target distribution
 
@@ -89,7 +92,7 @@ def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
 
     # params = env.params.copy()
     for step in range(env.max_steps):
-        params, cost_val = opt.step_and_cost(env.cost_fn, params)
+        params, cost_val = opt.step_and_cost(env.get_reward, params)
         probs = env.circuit(params)
 
         # Save history for rendering
@@ -102,6 +105,7 @@ def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
             break
 
     # Animate the full evolution
+    save_path_without_extension = save_path + os.sep + file_name
     env.render(save_path_without_extension=save_path_without_extension)
     assert os.path.exists(file_path), "Render did not create the expected file"
 

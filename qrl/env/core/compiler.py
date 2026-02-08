@@ -15,129 +15,49 @@ from .base__ import QuantumEnv
 
 class CompilerV0(QuantumEnv):
     """
-    ## Description
+    Single-qubit quantum gate compilation environment.
 
-    The **CompilerV0** environment is designed to simulate the task of **quantum gate compilation** for a single-qubit system.
-    It is based on the `QuantumEnv` base class. The agent's goal is to sequentially apply quantum gates to approximate a randomly chosen target **unitary operation**
-    from the special unitary group SU(2). This mimics a quantum compilation problem where one attempts to
-    rewrite a quantum operation in terms of a limited gate set.
+    ``CompilerV0`` is a ``gymnasium.Env``-compatible environment that models the
+    problem of compiling a target single-qubit unitary using a fixed, discrete
+    gate set. The agent incrementally applies quantum gates to build a circuit
+    whose resulting unitary approximates a given target operation in SU(2).
 
-    At each step, the agent applies one of several predefined single-qubit gates, evolving the current circuit unitary.
-    The agent receives a reward proportional to the **fidelity** between the evolved unitary and the target unitary,
-    and the episode terminates when the agent either reaches a sufficiently high fidelity or exhausts the maximum step limit.
+    At each step, the agent selects a gate action that left-multiplies the current
+    circuit unitary. The episode reward is based on the average gate fidelity
+    between the current unitary and the target unitary, encouraging the agent to
+    discover short, high-fidelity gate sequences.
 
-    The environment includes a rendering mode that visualizes the **difference matrix** between the target and
-    the current unitary as a heatmap evolving over time.
+    Key properties
+    --------------
+    - **Action space**: Discrete set of single-qubit gates (Clifford + rotations).
+    - **Observation space**: Flattened real and imaginary parts of the current
+      ``2×2`` unitary (shape ``(8,)``).
+    - **Reward**: Average gate fidelity with respect to the target unitary.
+    - **Termination**: Success when fidelity exceeds ``reward_tolerance`` or
+      truncation at ``max_steps``.
 
-    ---
+    Rendering
+    ---------
+    The ``render()`` method visualizes the compilation process by displaying a
+    heatmap of the magnitude of the difference matrix ``|U_target − U|`` over time,
+    annotated with the current step, last applied gate, and reward.
 
-    ## Action Space
+    Input Parameters
+    ----------
+    target : np.ndarray
+        Target ``2×2`` unitary matrix in SU(2) to compile towards.
+    max_steps : int
+        Maximum number of gate applications per episode.
+    reward_tolerance : float
+        Fidelity threshold for early termination.
+    ffmpeg : bool
+        Whether to use FFmpeg when saving animations.
 
-    The action space is **discrete**, where each action corresponds to applying a quantum gate
-    from a fixed set of single-qubit operations:
-
-    | Num | Action    | Description                        |
-    |-----|-----------|------------------------------------|
-    | 0   | `H`       | Hadamard gate                      |
-    | 1   | `X`       | Pauli-X gate                       |
-    | 2   | `Y`       | Pauli-Y gate                       |
-    | 3   | `Z`       | Pauli-Z gate                       |
-    | 4   | `S`       | Phase gate                         |
-    | 5   | `SDG`     | Conjugate transpose of Phase gate  |
-    | 6   | `T`       | π/8 gate                           |
-    | 7   | `TDG`     | Conjugate transpose of π/8 gate    |
-    | 8   | `RX_pi_2` | X-axis rotation by π/2             |
-    | 9   | `RX_pi_4` | X-axis rotation by π/4             |
-    | 10  | `RY_pi_2` | Y-axis rotation by π/2             |
-    | 11  | `RY_pi_4` | Y-axis rotation by π/4             |
-    | 12  | `RZ_pi_2` | Z-axis rotation by π/2             |
-    | 13  | `RZ_pi_4` | Z-axis rotation by π/4             |
-
-    ---
-
-    ## Observation Space
-
-    The observation is a flattened representation of the current unitary matrix, expressed in terms
-    of its **real and imaginary parts**. This results in an 8-dimensional vector:
-
-    | Num | Observation Component | Range   |
-    |-----|------------------------|---------|
-    | 0-3 | Real part of unitary   | [-1, 1] |
-    | 4-7 | Imag part of unitary   | [-1, 1] |
-
-    This encodes the full \(2 \times 2\) complex unitary matrix.
-
-    ---
-
-    ## Rewards
-
-    The reward is based on the **average gate fidelity** between the target unitary  U_{target}
-    and the current unitary U. Specifically:
-
-
-    reward = 0.5 |Trace((U_{target}^dagger * U))|
-
-    - A higher reward indicates closer alignment with the target unitary.
-    - The episode terminates early if the reward exceeds `reward_tolerance` (default: 0.98).
-
-    ---
-
-    ## Starting State
-
-    At the start of each episode:
-    - The circuit unitary is initialized as the **identity matrix** \( I \).
-    - The target unitary is specified by the user at initialization.  
-    (By default, this can be drawn from a random **U3(θ, φ, λ)** decomposition in SU(2).)
-
-    The initial observation corresponds to the identity matrix.
-
-    ---
-
-    ## Episode End
-
-    The episode ends if one of the following occurs:
-
-    1. **Termination**:  
-    The fidelity between the current and target unitary exceeds the reward tolerance (`reward > 0.98` by default).
-    2. **Truncation**:  
-    The number of steps exceeds the maximum episode length (`max_steps`, default: 30).
-
-    ---
-
-    ## Rendering
-
-    The environment supports visualization of the compilation process:
-
-    - A heatmap is drawn showing the **magnitude of the difference matrix**:
-    |U_{target} - U|
-    at each step.
-    - The heatmap updates dynamically, and the plot title displays the **step number, last applied gate, and reward**.
-
-    The animation can be saved as an MP4 file or displayed interactively.
-
-    ---
-
-    ## Arguments
-
-    - **`target`** (`np.ndarray`): The target \(2 \times 2\) unitary matrix to compile towards.  
-    - **`max_steps`** (`int`, default=30): Maximum number of steps per episode.  
-    - **`reward_tolerance`** (`float`, default=0.98): Fidelity threshold for early termination.  
-    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
-
-    Example:
-
-    ```python
-    >>> import numpy as np
-    >>> from utils import RY, RZ
-    >>> from qrl.env import CompilerV0
-
-    >>> theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
-    >>> target = (RZ(phi) @ RY(theta) @ RZ(lam))  # Random SU(2) unitary
-    >>> env = CompilerV0(target=target)
-
-    >>> obs, _ = env.reset()
-    >>> obs.shape
-    (8,)
+    See Also
+    --------
+    :doc:`tutorials/compiler`
+        Step-by-step tutorial on compiling SU(2) unitaries using ``CompilerV0``.
+    
     """
     def __init__(self, target_unitary, max_steps=30, reward_tolerance=0.98, ffmpeg=False):
         super().__init__()
@@ -168,9 +88,40 @@ class CompilerV0(QuantumEnv):
 
 
     def _unitary_to_obs(self, U):
+        """
+        Convert a 2×2 unitary matrix into a flat observation vector.
+
+        The unitary is represented by concatenating the flattened real and
+        imaginary parts of the matrix.
+
+        Parameters
+        ----------
+        U : np.ndarray
+            Complex ``2×2`` unitary matrix representing the current circuit.
+
+        Returns
+        -------
+        np.ndarray
+            Flattened observation vector of shape ``(8,)`` containing
+            ``[Re(U).flatten(), Im(U).flatten()]`` with dtype ``float32``.
+        """
         return np.concatenate([U.real.flatten(), U.imag.flatten()]).astype(np.float32)
 
     def reset(self):
+        """
+        Reset the environment to the initial compilation state.
+
+        The circuit unitary is reset to the identity matrix, the step counter
+        is cleared, and the history buffer is reinitialized.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Flattened observation corresponding to the identity unitary,
+            shape ``(8,)``.
+        info : dict
+            Empty dictionary provided for compatibility with the Gymnasium API.
+        """
         self.steps = 0
         self.U = np.eye(2, dtype=complex)
         
@@ -179,8 +130,27 @@ class CompilerV0(QuantumEnv):
         # self.target_unitary = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
         self.history = [(self.U, 'None', 'None')]
         return self._unitary_to_obs(self.U), {}
+    
+    def get_reward(self, action):
+        """
+        Apply a quantum gate action and compute the compilation reward.
 
-    def step(self, action):
+        This method left-multiplies the current circuit unitary by the unitary
+        corresponding to the selected action and evaluates the average gate
+        fidelity with respect to the target unitary.
+
+        Parameters
+        ----------
+        action : int
+            Index of the selected action in ``self.actions``.
+
+        Returns
+        -------
+        float
+            Average gate fidelity between the current unitary and the target
+            unitary, defined as
+            ``0.5 * |Tr(U_target† · U)|`` for a single-qubit system.
+        """
         gate = self.actions[action]
         if gate in GATES:
             U_gate = GATES[gate]
@@ -196,6 +166,34 @@ class CompilerV0(QuantumEnv):
         
         # Fidelity: average gate fidelity for 1-qubit
         reward = 0.5 * np.abs(np.trace(np.conj(self.target_unitary.T) @ self.U))
+        return reward
+
+    def step(self, action):
+        """
+        Execute one compilation step.
+
+        Applies the selected gate, updates the internal circuit unitary and
+        history, computes the reward, and checks termination conditions.
+
+        Parameters
+        ----------
+        action : int
+            Index of the selected action in ``self.actions``.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Updated flattened unitary observation, shape ``(8,)``.
+        reward : float
+            Average gate fidelity after applying the action.
+        done : bool
+            True if the episode has terminated due to reaching the fidelity
+            threshold or the maximum number of steps.
+        info : dict
+            Empty dictionary provided for compatibility with the Gymnasium API.
+        """
+        gate = self.actions[action]
+        reward = self.get_reward(action)
         self.steps += 1
         self.history.append((self.U, gate, round(reward, 3)))
         done = reward > self.reward_tolerance or self.steps >= self.max_steps
@@ -204,8 +202,26 @@ class CompilerV0(QuantumEnv):
 
     def render(self, save_path_without_extension=None, interval=800):
         """
-        Render the episode as an animation of the difference matrix.
-        Only shows |target - current| evolving across steps.
+        Render the compilation process as an animation of the difference matrix.
+
+        The visualization shows the magnitude of the element-wise difference
+        ``|U_target - U|`` as a heatmap that evolves over time, along with
+        annotations indicating the current step, applied action, and reward.
+
+        Parameters
+        ----------
+        save_path_without_extension : str or None, optional
+            Path (without file extension) to save the animation.
+            If provided, the animation is saved using the configured writer
+            (MP4 for FFmpeg or GIF for Pillow). If None, the animation is
+            displayed interactively.
+        interval : int, optional
+            Delay between animation frames in milliseconds. Default is 800.
+
+        Returns
+        -------
+        None
+            This method produces a visualization but does not return a value.
         """
 
         fig, ax = plt.subplots(figsize=(5, 5))

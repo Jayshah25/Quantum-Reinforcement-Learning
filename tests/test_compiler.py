@@ -26,14 +26,17 @@ def test_reward(target_unitary, action, gate_fidelity, message):
     _, reward, _, _ = env.step(action=gate_dict[action])
     assert round(reward, 2) == round(gate_fidelity, 2), message
 
-@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
-    (True, r"results/tests/compilerV0", "mp4"),
-    (False, r"results/tests/compilerV0", "gif"),
+@pytest.mark.parametrize("ffmpeg, save_path, file_name, extension", [
+    (True, r"results/tests", "compilerV0", "mp4"),
+    (False, r"results/tests", "compilerV0", "gif"),
 ])
-def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
-    file_path = save_path_without_extension + "." + extension
+def test_sample_run_and_render(ffmpeg, save_path, file_name, extension):
+    file_path = save_path + os.sep + file_name + "." + extension
     if os.path.exists(file_path):   # check if the file exists
         os.remove(file_path)
+    if not os.path.exists(save_path):  # check if the directory exists
+        os.makedirs(save_path)
+
     np.random.seed(42)  # For reproducibility
     theta, phi, lam = np.random.uniform(0, 2*np.pi, 3)
     target_unitary = (RZ(phi) @ RY(theta) @ RZ(lam))  # general SU(2)
@@ -52,6 +55,7 @@ def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
             break
 
     # Render Bloch sphere
+    save_path_without_extension = save_path + os.sep + file_name
     env.render(save_path_without_extension=save_path_without_extension)
 
     assert os.path.exists(file_path), "Render did not create the expected file"

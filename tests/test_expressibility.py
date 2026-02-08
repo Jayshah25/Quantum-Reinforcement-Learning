@@ -19,39 +19,44 @@ def test_reward_penalizes_depth(env_fixture):
     obs, _ = env.reset()
 
     # Step with a RotX (depth = 1)
-    obs1, reward1, done1, _, info1 = env.step(0)
+    obs1, reward1, done1, info1 = env.step(0)
 
     # Step with another RotX (depth = 2)
-    obs2, reward2, done2, _, info2 = env.step(0)
+    obs2, reward2, done2, info2 = env.step(0)
 
     # Reward2 should be less than or equal to Reward1 because of extra depth penalty
     assert reward2 <= reward1, f"Expected reward2 <= reward1, got {reward2} > {reward1}"
 
     # Step with a RotX (depth = 1)
-    obs1, reward1, done1, _, info1 = env.step(0)
+    obs1, reward1, done1, info1 = env.step(0)
 
     # Step with another RotX (depth = 2)
-    obs2, reward2, done2, _, info2 = env.step(0)
+    obs2, reward2, done2, info2 = env.step(0)
 
     # Reward2 should be less than or equal to Reward1 because of extra depth penalty
     assert reward2 <= reward1, f"Expected reward2 <= reward1, got {reward2} > {reward1}"
 
-@pytest.mark.parametrize("ffmpeg, save_path_without_extension, extension", [
-    (True, r"results/tests/expressibilityV0", "mp4"),
-    (False, r"results/tests/expressibilityV0", "gif"),
+@pytest.mark.parametrize("ffmpeg, save_path, file_name, extension", [
+    (True, r"results/tests", "expressibilityV0", "mp4"),
+    (False, r"results/tests", "expressibilityV0", "gif"),
 ])
-def test_sample_run_and_render(ffmpeg, save_path_without_extension, extension):
-    file_path = save_path_without_extension + "." + extension
+def test_sample_run_and_render(ffmpeg, save_path, file_name, extension):
+    file_path = save_path + os.sep + file_name + "." + extension
     if os.path.exists(file_path):   # check if the file exists
-        os.remove(file_path)   
+        os.remove(file_path) 
+        
+    if not os.path.exists(save_path):  # check if the directory exists
+        os.makedirs(save_path)
+  
     env = ExpressibilityV0(n_qubits=3, n_pairs_eval=60, bins=40, seed=7,ffmpeg=ffmpeg)
     obs, _ = env.reset()
     done = False
     total = 0
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, trunc, info = env.step(action)
+        obs, reward, done, info = env.step(action)
         total += reward
+    save_path_without_extension = save_path + os.sep + file_name
     env.render(save_path_without_extension=save_path_without_extension)
 
     assert os.path.exists(file_path), "Render did not create the expected file"

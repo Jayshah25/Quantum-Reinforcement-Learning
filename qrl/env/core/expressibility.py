@@ -17,141 +17,72 @@ from .base__ import QuantumEnv
 
 class ExpressibilityV0(QuantumEnv):
     """
-    ## Description
+    Parameterized circuit expressibility optimization environment.
 
-    The **ExpressibilityV0** environment simulates the task of building **parameterized quantum circuits**
-    that achieve **high expressibility**. It is based on the `QuantumEnv` base class. In variational quantum algorithms (VQAs), 
-    the expressibility of an ansatz measures how well the circuit can explore the Hilbert space of possible quantum states.
-    This environment challenges an agent to construct expressive circuits while balancing circuit depth
-    and gate costs.
+    ``ExpressibilityV0`` is a ``gymnasium.Env``-compatible environment that models
+    the construction of parameterized quantum circuits with high expressibility.
+    In the context of variational quantum algorithms, expressibility measures how
+    well an ansatz can explore the Hilbert space of quantum states relative to the
+    Haar-random distribution.
 
-    At each step, the agent adds or removes blocks (rotation or entangling layers) or decides to
-    terminate construction. The reward is based on how closely the circuit's fidelity distribution
-    matches the Haar-random distribution (an idealized benchmark of maximum expressibility), penalized
-    by circuit depth and two-qubit gate counts.
+    The agent incrementally builds a circuit by adding or removing predefined
+    rotation and entangling blocks, or by explicitly terminating construction.
+    Rewards encourage circuits whose fidelity distribution closely matches the
+    Haar distribution, while penalizing excessive circuit depth and two-qubit gate
+    usage.
 
-    The environment includes a rendering mode that animates:
-    1. The evolving **fidelity distribution vs Haar distribution**, and  
-    2. The **block diagram** of the constructed circuit architecture.  
+    Key properties
+    --------------
+    - **Action space**: Discrete set of architectural edits (add/remove blocks or
+    terminate construction).
+    - **Observation space**: Vector of circuit statistics summarizing depth,
+    parameter count, entanglement, and recent expressibility estimates
+    (shape ``(7,)``).
+    - **Reward**: Negative KL divergence to the Haar distribution with regularization
+    penalties for depth and two-qubit gates.
+    - **Termination**: Explicit termination by the agent or truncation at
+    ``max_steps``.
 
-    ---
+    Rendering
+    ---------
+    The ``render()`` method visualizes expressibility optimization via a two-panel
+    animation showing the circuit’s fidelity distribution compared to the
+    Haar-random distribution alongside a block-level diagram of the evolving
+    circuit architecture.
 
-    ## Action Space
+    Input Parameters
+    ----------
+    n_qubits : int
+        Number of qubits in the circuit.
+    max_blocks : int
+        Maximum number of blocks allowed in the circuit.
+    max_steps : int
+        Maximum number of construction steps per episode.
+    n_pairs_eval : int
+        Number of random state pairs used to estimate expressibility.
+    bins : int
+        Number of histogram bins for fidelity distributions.
+    lambda_depth : float
+        Penalty weight for circuit depth.
+    lambda_2q : float
+        Penalty weight for two-qubit gate usage.
+    terminate_bonus : float
+        Bonus reward for explicit termination.
+    device_name : str
+        PennyLane device backend used for simulation.
+    seed : int or None
+        Random seed for reproducibility.
+    allow_all_to_all : bool
+        Whether to allow all-to-all entangling blocks.
+    ffmpeg : bool
+        Whether to use FFmpeg when saving animations.
 
-    The action space is a **Discrete(8)** space, where each action corresponds to a modification of
-    the circuit architecture:
+    See Also
+    --------
+    :doc:`tutorials/expressibility`
+        Tutorial on optimizing ansatz expressibility with block-based circuits.
 
-    | ID | Action          | Description                                     |
-    |----|-----------------|-------------------------------------------------|
-    | 0  | `RotX`          | Add single-qubit RX rotations on all qubits     |
-    | 1  | `RotY`          | Add single-qubit RY rotations on all qubits     |
-    | 2  | `RotZ`          | Add single-qubit RZ rotations on all qubits     |
-    | 3  | `RotXYZ`        | Add RX, RY, RZ rotations on all qubits          |
-    | 4  | `EntRingCNOT`   | Add a ring of CNOT entanglers                   |
-    | 5  | `EntLadderCZ`   | Add ladder-style CZ entanglers                  |
-    | 6  | `RemoveLast`    | Remove the most recently added block            |
-    | 7  | `Terminate`     | Stop circuit construction and end the episode   |
-
-    ---
-
-    ## Observation Space
-
-    The observation is a **7-dimensional vector** summarizing circuit statistics:
-    [depth, n_blocks, n_twoq, n_params, ent_density, last_express, steps_left]
-
-    Where:
-    - **`depth`**: Total circuit depth  
-    - **`n_blocks`**: Number of blocks in the circuit  
-    - **`n_twoq`**: Number of two-qubit gates  
-    - **`n_params`**: Number of trainable rotation parameters  
-    - **`ent_density`**: Entangling density relative to possible qubit connections  
-    - **`last_express`**: Last computed expressibility score  
-    - **`steps_left`**: Remaining steps before max_steps is reached  
-
-    ---
-
-    ## Rewards
-
-    The reward encourages high expressibility while penalizing excessive depth and two-qubit usage:
-
-    \[
-    reward = - KL(P_C \,\|\, P_{Haar}) \;-\; \lambda_{depth}\cdot depth \;-\; \lambda_{2q}\cdot n_{twoq}
-    \]
-
-    Where:
-    - **KL**: Kullback-Leibler divergence between circuit fidelity distribution `P_C`
-    and Haar-random distribution `P_Haar`.  
-    - **λ_depth, λ_2q**: Regularization weights for penalizing large depth and two-qubit gates.  
-    - **Terminate bonus**: A small positive reward (`terminate_bonus`) is added if the agent terminates explicitly.  
-
-    Interpretation:
-    - High reward = Circuit closely mimics Haar distribution, shallow, and efficient.  
-    - Low reward = Circuit deviates significantly from Haar distribution or becomes overly complex.  
-
-    ---
-
-    ## Starting State
-
-    At the beginning of each episode:
-    - The circuit is empty (`blocks = []`).
-    - The observation corresponds to a circuit with zero depth, parameters, and entangling density.
-    - The first reward is undefined until the agent applies at least one block.
-
-    ---
-
-    ## Episode End
-
-    The episode ends under either condition:
-    1. **Termination**: Agent selects `Terminate` action (ID=7).  
-    2. **Truncation**: Maximum number of steps (`max_steps`, default=20) is reached.  
-
-    ---
-
-    ## Rendering
-
-    The rendering shows a **two-panel animation**:
-
-    1. **Left panel**:  
-    - Histogram of circuit fidelity distribution vs. Haar-random distribution.  
-    - The closer the two curves overlap, the more expressive the circuit is.  
-
-    2. **Right panel**:  
-    - Block diagram of the constructed circuit architecture, showing the sequence of blocks.  
-
-    The figure title includes **reward and expressibility score** for the current step.  
-    The animation can be displayed interactively or saved as an MP4 file.
-
-    ---
-
-    ## Arguments
-
-    - **`n_qubits`** (`int`, default=4): Number of qubits.  
-    - **`max_blocks`** (`int`, default=12): Maximum number of blocks allowed in the circuit.  
-    - **`max_steps`** (`int`, default=20): Maximum steps per episode.  
-    - **`n_pairs_eval`** (`int`, default=120): Number of random state pairs used to evaluate expressibility.  
-    - **`bins`** (`int`, default=50): Number of histogram bins for fidelity distribution.  
-    - **`lambda_depth`** (`float`, default=0.002): Penalty weight for depth.  
-    - **`lambda_2q`** (`float`, default=0.002): Penalty weight for two-qubit gates.  
-    - **`terminate_bonus`** (`float`, default=0.1): Bonus reward for explicit termination.  
-    - **`device_name`** (`str`, default="default.qubit"): PennyLane device backend.  
-    - **`seed`** (`int`, optional): Random seed for reproducibility.  
-    - **`allow_all_to_all`** (`bool`, default=False): Allow inclusion of all-to-all entangling ISWAP blocks.  
-    - **`ffmpeg`** (`bool`, default=False): If `True`, uses FFmpeg for saving animations; otherwise uses Pillow (GIF).
-
-    Example:
-
-    ```python
-    >>> from qrl.env import ExpressibilityV0
-
-    >>> env = ExpressibilityV0(n_qubits=3, n_pairs_eval=60, bins=40, seed=7)
-    >>> obs, _ = env.reset()
-    >>> obs.shape
-    (7,)
     """
-
-    metadata = {"render_modes": ["human"], "name": "ExpressibilityV0"}
-
-
 
     def __init__(
         self,
@@ -220,27 +151,36 @@ class ExpressibilityV0(QuantumEnv):
         self.render_extension = "mp4" if ffmpeg else "gif"
         if ffmpeg==True and shutil.which("ffmpeg") is None:
             raise ValueError("ffmpeg not found on system. Please install ffmpeg or set ffmpeg=False")
+        
+        # utils
+        self.done = None
+        self.terminated = None
+        self.obs = None
+        self.info = None
 
+    def get_reward(self, action):
+        """
 
-    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
-        super().reset(seed=seed)
-        if seed is not None:
-            self._rng = np.random.default_rng(seed)
-        self.blocks = []
-        self.current_step = 0
-        self.last_express = None
-        self.last_reward = 0.0
-        self.info_last_hist = None
-        obs = self._make_obs()
-        self.history = []
-        return obs, {}
+        The selected action modifies the circuit architecture by adding,
+        removing, or terminating block construction. Expressibility is
+        evaluated after the update, and a reward is computed based on the
+        circuit's deviation from the Haar distribution and architectural
+        penalties.
 
-    def step(self, action: int):
+        Parameters
+        ----------
+        action : int
+            Index of the selected architectural action.
 
-        # check if the action is supported
+        Returns
+        -------
+        reward : float
+            Reward value combining expressibility and architectural penalties.
+        """
+
         assert self.action_space.contains(action)
-        done = False
-        terminated = False
+        self.done = False
+        self.terminated = False
 
         # available actions
         if action == 0 and len(self.blocks) < self.max_blocks:
@@ -258,13 +198,13 @@ class ExpressibilityV0(QuantumEnv):
         elif action == 6 and self.blocks:
             self.blocks.pop()
         elif action == 7:
-            done = True
-            terminated = True
+            self.done = True
+            self.terminated = True
 
         # update current step
         self.current_step += 1
         if self.current_step >= self.max_steps:
-            done = True
+            self.done = True
 
         # get expressibility for the current circuit
         express, kl, hist_c, hist_haar = self._expressibility()
@@ -274,19 +214,21 @@ class ExpressibilityV0(QuantumEnv):
         depth, n_blocks, n_twoq, n_params, ent_density = self._arch_stats()
 
         reward = -kl - self.lambda_depth * depth - self.lambda_2q * n_twoq
-        if terminated:
+        if self.terminated:
             reward += self.terminate_bonus
 
         self.last_reward = reward
 
-        obs = self._make_obs()
-        info = {
+        # check if the action is supported
+        self.obs = self._make_obs()
+        self.info = {
             "kl": float(kl),
             "expressibility": float(express),
             "depth": int(depth),
             "n_twoq": int(n_twoq),
             "params": int(n_params),
             "blocks": list(self.blocks),
+            "terminated": self.terminated
         }
 
         # store info for visualization in render()
@@ -298,14 +240,95 @@ class ExpressibilityV0(QuantumEnv):
             "express": self.last_express,
             })
 
-        return obs, reward, done, False, info
+        return reward
+
+    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
+        """
+        Reset the environment to an empty circuit.
+
+        Clears the current circuit architecture, resets internal counters, and
+        initializes the observation vector corresponding to an empty ansatz.
+
+        Parameters
+        ----------
+        seed : int or None, optional
+            Random seed for reproducibility. If provided, reinitializes the
+            internal random number generator.
+        options : dict or None, optional
+            Additional reset options (currently unused, included for
+            Gymnasium compatibility).
+
+        Returns
+        -------
+        observation : np.ndarray
+            Initial observation vector describing an empty circuit, shape ``(7,)``.
+        info : dict
+            Empty dictionary provided for Gymnasium API compatibility.
+        """
+        super().reset(seed=seed)
+        if seed is not None:
+            self._rng = np.random.default_rng(seed)
+        self.blocks = []
+        self.current_step = 0
+        self.last_express = None
+        self.last_reward = 0.0
+        self.info_last_hist = None
+        obs = self._make_obs()
+        self.history = []
+        return obs, {}
+
+    def step(self, action: int):
+        """
+        Execute one architecture-modification step by calling the get_reward method.
+
+        Parameters
+        ----------
+        action : int
+            Index of the selected architectural action.
+
+        Returns
+        -------
+        observation : np.ndarray
+            Updated observation vector summarizing circuit statistics,
+            shape ``(7,)``.
+        reward : float
+            Reward value combining expressibility and architectural penalties.
+        done : bool
+            True if the episode ended due to termination by agent or truncation, 
+            False otherwise.
+        info : dict
+            Diagnostic information including expressibility, KL divergence,
+            depth, parameter count, current block sequence, and 
+            terminated (true if agent explicitly terminated, false if episode ended due to max steps).
+        """
+
+        reward = self.get_reward(action)
+        return self.obs, reward, self.done, self.info
 
 
     def render(self, save_path_without_extension=None, interval=800):
         """
-        Animation of Expressibility:
-        1. Fidelity histogram vs Haar distribution per step.
-        2. Block diagram evolution of circuit architecture.
+        Render the expressibility optimization process as an animation.
+
+        The animation shows:
+        1. A histogram of circuit fidelity distribution compared to the
+        Haar-random distribution.
+        2. A block-diagram visualization of the evolving circuit architecture.
+
+        Parameters
+        ----------
+        save_path_without_extension : str or None, optional
+            Path (without file extension) to save the animation.
+            If provided, the animation is saved using the configured writer
+            (MP4 for FFmpeg or GIF for Pillow). If None, the animation is
+            displayed interactively.
+        interval : int, optional
+            Delay between animation frames in milliseconds. Default is 800.
+
+        Returns
+        -------
+        None
+            This method produces a visualization but does not return a value.
         """
 
         if not hasattr(self, "history") or len(self.history) == 0:
@@ -363,16 +386,18 @@ class ExpressibilityV0(QuantumEnv):
             plt.show()
 
     def _make_obs(self):
-        '''
-        Returns the current observation vector [depth, n_blocks, n_twoq, n_params, ent_density, last_ex, steps_left], where
-        depth is the circuit depth,
-        n_blocks is the number of blocks in the circuit,
-        n_twoq is the number of two-qubit gates,
-        n_params is the number of rotational parameters,
-        ent_density is the entangling density,
-        last_ex is the last expressibility value,
-        steps_left is the number of steps left with respect to the maximum number of steps.
-        '''
+        """
+        Construct the current observation vector.
+
+        The observation encodes summary statistics of the circuit architecture
+        and training progress.
+
+        Returns
+        -------
+        np.ndarray
+            Observation vector of shape ``(7,)`` containing:
+            ``[depth, n_blocks, n_twoq, n_params, ent_density, last_express, steps_left]``.
+        """
         depth, n_blocks, n_twoq, n_params, ent_density = self._arch_stats()
         last_ex = self.last_express if self.last_express is not None else 0.0
         steps_left = max(self.max_steps - self.current_step, 0)
@@ -382,12 +407,22 @@ class ExpressibilityV0(QuantumEnv):
         return vec
 
     def _arch_stats(self) -> Tuple[int, int, int, int, float]:
-        '''
+        """
         Compute architecture statistics for the current circuit.
-        Returns depth, n_blocks (number of blocks in the circuit), 
-        n_twoq (number of two qubit gates), 
-        n_params (number of rotational parameters), ent_density (entangling density)
-        '''
+
+        Returns
+        -------
+        depth : int
+            Total circuit depth.
+        n_blocks : int
+            Number of blocks in the circuit.
+        n_twoq : int
+            Total number of two-qubit gates.
+        n_params : int
+            Number of trainable rotation parameters.
+        ent_density : float
+            Normalized entangling density of the circuit.
+        """
         depth = 0
         n_twoq = 0 # number of two-qubit gates
         n_params = 0
@@ -423,7 +458,23 @@ class ExpressibilityV0(QuantumEnv):
         return depth, n_blocks, n_twoq, n_params, float(ent_density)
 
     def _circuit(self, thetas=None):
-        '''represents the quantum circuit with the given parameters theta'''
+        """
+        Construct and execute the quantum circuit for given parameters.
+
+        The circuit structure is determined by the current block sequence.
+        If parameters are not provided, they are sampled randomly.
+
+        Parameters
+        ----------
+        thetas : np.ndarray or None, optional
+            Vector of rotation parameters. If None, parameters are sampled
+            from a standard normal distribution.
+
+        Returns
+        -------
+        np.ndarray
+            Statevector of the constructed quantum circuit.
+        """
         if thetas is None:
             thetas = self._rng.standard_normal(self._count_rot_params())
         idx = 0
@@ -452,7 +503,15 @@ class ExpressibilityV0(QuantumEnv):
         return qml.state()
 
     def _count_rot_params(self) -> int:
-        '''Count the number of rotational/trainable/variational parameters in the circuit.'''
+        """
+        Count the number of trainable rotation parameters in the circuit.
+
+        Returns
+        -------
+        int
+            Total number of variational parameters required by the current
+            block sequence.
+        """
         count = 0
         for b in self.blocks:
             if b=="RotX":
@@ -466,6 +525,24 @@ class ExpressibilityV0(QuantumEnv):
         return count
 
     def _expressibility(self) -> Tuple[float, float, np.ndarray, np.ndarray]:
+        """
+        Estimate the expressibility of the current circuit architecture.
+
+        Expressibility is evaluated by comparing the fidelity distribution
+        of randomly sampled circuit states against the Haar-random
+        distribution.
+
+        Returns
+        -------
+        expressibility : float
+            Expressibility score defined as the negative KL divergence.
+        kl : float
+            Kullback–Leibler divergence between circuit and Haar distributions.
+        hist_c : np.ndarray
+            Histogram of circuit fidelity distribution.
+        p_haar : np.ndarray
+            Haar-random fidelity distribution.
+        """
         n_pairs = max(2, self.n_pairs_eval)
         fidelities = np.empty(n_pairs, dtype=np.float64)
         n_params = self._count_rot_params()
@@ -508,6 +585,15 @@ class ExpressibilityV0(QuantumEnv):
         return express, kl, hist_c, p_haar
 
     def action_meanings(self):
+        """
+        Return a mapping from action indices to action names.
+
+        Returns
+        -------
+        dict
+            Dictionary mapping integer action indices to human-readable
+            architectural action names.
+        """
         return {i: n for i, n in enumerate(self.ACTION_NAMES)}
 
 
