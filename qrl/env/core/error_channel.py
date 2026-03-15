@@ -10,7 +10,7 @@ from pennylane import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import shutil
-from .base__ import QuantumEnv
+from ._base import QuantumEnv
 
 
 class ErrorChannelV0(QuantumEnv):

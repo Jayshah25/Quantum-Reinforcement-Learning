@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import shutil
 from .utils import GATES, RX, RY, RZ 
-from .base__ import QuantumEnv
+from ._base import QuantumEnv
 
 class CompilerV0(QuantumEnv):
     """

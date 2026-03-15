@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.animation import FuncAnimation
 import shutil
-from .base__ import QuantumEnv
+from ._base import QuantumEnv
 
 
 class ExpressibilityV0(QuantumEnv):

@@ -7,9 +7,9 @@ try:
 except PackageNotFoundError:
     __version__ = "0.1.0.dev0"
 
-__all__ = ["__version__", "env", "agents"]
+__all__ = ["__version__", "env", "agents", "algorithms"]
 
 def __getattr__(name):
-    if name in ("env", "agents"):
+    if name in ("env", "agents", "algorithms"):
         return importlib.import_module(f".{name}", __name__)
     raise AttributeError(name)
