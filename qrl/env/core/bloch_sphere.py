@@ -9,9 +9,16 @@ from gymnasium import spaces
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import matplotlib.patches as mpatches
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
+import matplotlib.lines as mlines
+import networkx as nx
 import shutil
+import warnings
+from typing import Literal, Optional
 from ._base import QuantumEnv
-from .utils import GATES, RX, RY, RZ
+from .utils import GATES, RX, RY, RZ, STATE_LABELS, STATE_BLOCH, STATE_VECTORS, ACTION_NAMES, _TRANSITIONS, _GRAPH_POS
 
 
 class BlochSphereV0(QuantumEnv):
@@ -286,4 +293,504 @@ class BlochSphereV0(QuantumEnv):
             plt.show()
 
 
+class BlochSphereV1(QuantumEnv):
+    """
+    Discrete Bloch sphere environment — 6 states, 4 actions.
+ 
+    Fully compatible with ``ValueIteration`` and ``QIteration`` from
+    ``qrl.agents`` — no wrapper required.
+ 
+    Parameters
+    ----------
+    target_state : int, optional
+        Target state index (0-5). Defaults to 2 (|+⟩). The mapping is:
+        - 0: |0⟩
+        - 1: |1⟩
+        - 2: |+⟩
+        - 3: |-⟩
+        - 4: |+i⟩
+        - 5: |-i⟩
+    max_steps : int
+        Maximum steps per episode. Default 10.
+    reward_tolerance : float
+        Fidelity threshold for success. Must be in (0, 1]. Default 0.99.
+    ffmpeg : bool
+        Use ffmpeg for bloch render animations (MP4). Default False (GIF).
+    """
+ 
+    metadata = {"render_modes": ["graph", "bloch"]}
+ 
+    def __init__(
+        self,
+        target_state: int = 2,
+        max_steps: int = 10,
+        reward_tolerance: float = 0.99,
+        ffmpeg: bool = False,
+    ) -> None:
+        super().__init__()
 
+        # define constants
+        # self.STEP_PENALTY = 0.01
+        # self.SUCCESS_BONUS = 1.0
+ 
+        if not (0 <= target_state <= 5):
+            raise ValueError("target_state must be an integer in [0, 5].")
+        if not (0 < reward_tolerance <= 1):
+            raise ValueError("reward_tolerance must be in (0, 1].")
+        if ffmpeg and shutil.which("ffmpeg") is None:
+            raise ValueError("ffmpeg not found. Install it or set ffmpeg=False.")
+ 
+        self.target_state_index = target_state
+        self.max_steps          = max_steps
+        self.reward_tolerance   = reward_tolerance
+        self.writer             = "ffmpeg" if ffmpeg else "pillow"
+        self.render_extension   = "mp4"    if ffmpeg else "gif"
+        self.fig_array_list     = []
+        self.observation_space = spaces.Discrete(6)
+        self.action_space      = spaces.Discrete(4)
+ 
+        self._state_index: int  = 0
+        self._statevector       = STATE_VECTORS[0].copy()
+        self.steps: int         = 0
+        self.history: list[int] = []   # sequence of state indices
+        self.terminated: bool | None = None
+        self.truncated: bool | None = None
+    
+    def reset(self, *, seed=None, options=None):
+        super().reset(seed=seed)
+        self._state_index = 0
+        self._statevector = STATE_VECTORS[0].copy()
+        self.steps        = 0
+        self.history      = [0]
+        self.terminated   = False   
+        self.truncated    = False   
+        return 0, self._info()
+
+    def get_reward(self):
+        self.terminated = self._fidelity() >= self.reward_tolerance
+        self.truncated  = self.steps >= self.max_steps
+        return 1.0 if self.terminated else 0.0 
+
+    def step(self, action: int):
+        """
+        Apply a gate and advance the episode.
+ 
+        Parameters
+        ----------
+        action : int   Index into ACTION_NAMES (0=H, 1=X, 2=Z, 3=S).
+ 
+        Returns
+        -------
+        observation  : int    New state index.
+        reward       : float  Fidelity − step_penalty (+ bonus if solved).
+        terminated   : bool   Fidelity ≥ reward_tolerance.
+        truncated    : bool   steps ≥ max_steps.
+        info         : dict   {fidelity, gate, bloch_vector}.
+        """
+        gate_name         = ACTION_NAMES[action]
+        U                 = GATES[gate_name]
+        self._statevector = U @ self._statevector
+        self._state_index = int(_TRANSITIONS[self._state_index, action])
+        self.steps       += 1
+        self.history.append(self._state_index)
+ 
+        reward = self.get_reward()
+ 
+        return self._state_index, float(reward), self.terminated, self.truncated, self._info(gate_name)
+ 
+ 
+    def _fidelity(self) -> float:
+        target_sv = STATE_VECTORS[self.target_state_index]
+        return float(np.abs(np.vdot(target_sv, self._statevector)) ** 2)
+ 
+    def _info(self, gate: str = "reset") -> dict:
+        return {
+            "fidelity":     self._fidelity(),
+            "gate":         gate,
+            "bloch_vector": STATE_BLOCH[self._state_index].copy(),
+        }
+ 
+    # reneder graph
+
+    def _render_graph(self, agent=None, show_true_dynamics: bool = True) -> None:
+        """
+        Draw the state-transition graph. When agent is provided, adds a second
+        panel showing the agent's learned model:
+ 
+          Left  — true environment dynamics, episode trajectory overlaid.
+          Right — agent panel:
+                    • Node color  : learned state value V(s) or max_a Q(s,a)
+                                    on a warm colormap (high = warm, low = cool)
+                    • Edge opacity: proportional to empirical visit count
+                    • Bold edges  : greedy policy argmax_a Q(s,a)
+ 
+        Layout (both panels mirror the Bloch sphere):
+ 
+                   |0⟩
+              |-⟩       |+⟩
+             |-i⟩       |+i⟩
+                   |1⟩
+        """
+ 
+        BG      = "#1a1a1a"   # figure / axes background
+        FG      = "#e0e0e0"   # titles, node labels, generic text
+        EDGE_FG = "#444440"   # base edge color on dark bg
+        LBL_FG  = "#999994"   # edge label color (base graph)
+ 
+        has_agent  = agent is not None 
+        if not has_agent:
+            raise ValueError("No agent provided.")
+        n_panels = (1 if show_true_dynamics else 0) + (1 if has_agent else 0)# number of panels: 1 for true dynamics, 1 for agent1 # number of panels: 1 for true dynamics, 1 for agent
+        fig_w = 10 * n_panels
+        fig, axes = plt.subplots(1, n_panels, figsize=(fig_w, 8), facecolor=BG) # figure and axes
+        if n_panels == 1:
+            axes = [axes]
+        ax_true  = axes[0] if show_true_dynamics else None
+        ax_agent = axes[-1] if has_agent  else None
+        for _ax in axes:
+            _ax.set_facecolor(BG) # set background color for each axis
+ 
+        # shared graph structure of true environment dynamics and agent
+        G = nx.MultiDiGraph() # MultiDiGraph is a directed graph with multiple edges between two nodes
+        G.add_nodes_from(range(6)) # add nodes to the graph
+        edge_gates: dict[tuple[int, int], list[str]] = {}
+        for s in range(6):
+            for a, name in enumerate(ACTION_NAMES):
+                dst = int(_TRANSITIONS[s, a])
+                edge_gates.setdefault((s, dst), []).append(name)
+        for (s, d), gnames in edge_gates.items():
+            G.add_edge(s, d, label=",".join(gnames))
+ 
+        pos = _GRAPH_POS
+ 
+        # arc midpoint helper to place text labels at the true arc midpoint for each edge
+        _graph_center = np.mean(np.array(list(pos.values())), axis=0)
+ 
+        def _arc_midpoint(src, dst, rad=0.10):
+            """
+            Return the (x, y) midpoint of the arc networkx draws.
+ 
+            Regular edges: quadratic Bezier B(t=0.5) with control point
+            offset perpendicularly from the edge midpoint by rad × |P2-P0|.
+ 
+            Self-loops (src == dst): networkx draws a small tangent loop.
+            We offset the label outward from the graph center so it sits
+            on top of the visible loop, not on the node itself.
+            """
+            p0 = np.array(pos[src])
+            p2 = np.array(pos[dst])
+ 
+            # self-loop
+            if src == dst:
+                outward = p0 - _graph_center
+                norm = np.linalg.norm(outward)
+                outward = outward / norm if norm > 1e-9 else np.array([0.0, 1.0])
+                return p0 + outward * 0.52
+ 
+            # regular arc 
+            mid    = (p0 + p2) / 2.0
+            diff   = p2 - p0
+            length = np.linalg.norm(diff)
+            perp   = np.array([-diff[1], diff[0]]) / length
+            pc     = mid + rad * length * perp
+            return 0.25 * p0 + 0.5 * pc + 0.25 * p2
+ 
+        def _label_edges(ax, edge_label_map, rad=0.10,
+                         font_size=7, font_color=LBL_FG):
+            """
+            Place text labels at the true arc midpoint for each edge.
+            edge_label_map: dict with keys that are either (src, dst) pairs
+            or (src, dst, key) triples (networkx MultiDiGraph convention).
+            """
+            for edge_key, label in edge_label_map.items():
+                src, dst = edge_key[0], edge_key[1]
+                mx, my = _arc_midpoint(src, dst, rad)
+                ax.text(
+                    mx, my, label,
+                    fontsize=font_size, color=font_color,
+                    ha="center", va="center",
+                    bbox=dict(boxstyle="round,pad=0.15",
+                              fc=BG, ec="none", alpha=0.8),
+                )
+ 
+        # helper: draw one graph panel 
+        def _draw_base(ax, node_colors, title):
+            ax.set_aspect("equal")
+            ax.axis("off")
+            ax.set_title(title, fontsize=11, pad=10, color=FG)
+            nx.draw_networkx_nodes(
+                G, pos, ax=ax,
+                node_size=1600, node_color=node_colors,
+                edgecolors="#888780", linewidths=1.2,
+            )
+            nx.draw_networkx_labels(
+                G, pos, ax=ax, labels=STATE_LABELS, font_size=10, font_color="#111111",
+            )
+            nx.draw_networkx_edges(
+                G, pos, ax=ax,
+                edge_color=EDGE_FG, width=0.8, arrowsize=12,
+                arrowstyle="-|>", connectionstyle="arc3,rad=0.10",
+                min_source_margin=30, min_target_margin=30,
+            )
+            _label_edges(
+                ax,
+                edge_label_map=nx.get_edge_attributes(G, "label"),
+                font_size=7, font_color="#888780",
+            )
+ 
+        # LEFT PANEL: true dynamics (optional) 
+        if show_true_dynamics and ax_true is not None:
+            true_colors = []
+            for n in range(6):
+                if n == self._state_index and n == self.target_state_index:
+                    true_colors.append("#F5C518")
+                elif n == self._state_index:
+                    true_colors.append("#E24B4A")
+                elif n == self.target_state_index:
+                    true_colors.append("#3B8BD4")
+                else:
+                    true_colors.append("#D3D1C7")
+ 
+            _draw_base(ax_true, true_colors, "True environment dynamics")
+ 
+            # trajectory overlay
+            if len(self.history) > 1:
+                traj_edges = list(zip(self.history[:-1], self.history[1:]))
+                unique_traj = list(dict.fromkeys(traj_edges))                
+                nx.draw_networkx_edges(
+                    G, pos, ax=ax_true,
+                    edgelist=unique_traj,
+                    edge_color="#BA7517", width=2.8, arrowsize=18,
+                    arrowstyle="-|>", connectionstyle="arc3,rad=0.10",
+                    min_source_margin=30, min_target_margin=30,
+                )
+ 
+ 
+            # left legend
+            left_legend = [
+                mpatches.Patch(facecolor="#E24B4A", edgecolor="#888780", label="Current"),
+                mpatches.Patch(facecolor="#3B8BD4", edgecolor="#888780", label="Target"),
+                mpatches.Patch(facecolor="#F5C518", edgecolor="#888780", label="Current = target"),
+                mpatches.Patch(facecolor="#D3D1C7", edgecolor="#888780", label="Other"),
+            ]
+            if len(self.history) > 1:
+                left_legend.append(mpatches.Patch(facecolor="#BA7517", label="Trajectory"))
+            ax_true.legend(handles=left_legend, loc="lower right", fontsize=8, framealpha=0.85,
+                              facecolor="#2a2a2a", edgecolor="#555550", labelcolor=FG)
+ 
+        # RIGHT PANEL: agent's learned model 
+        if has_agent:
+            # for class ValueIteration from qrl.algorithms.classical
+            if hasattr(agent, "_V"):
+                values     = agent._V.cpu().numpy().astype(float)
+                agent_type = "VI"
+            # for class QValueIteration from qrl.algorithms.classical
+            elif hasattr(agent, "_Q"):
+                values     = agent._Q.max(dim=1).values.cpu().numpy().astype(float)
+                agent_type = "QI"
+            else:
+                warnings.warn("No value function found in agent, using default values.", UserWarning,stacklevel=2)
+                values     = np.zeros(6)
+                agent_type = "VI"
+            counts_sa   = agent._counts.sum(dim=2).cpu().numpy()
+            total_steps = int(counts_sa.sum())
+            try:
+                policy = agent.get_policy().cpu().numpy()
+            except Exception:
+                policy = np.zeros(6, dtype=int)
+            panel_title = f"Agent's learned model  ({total_steps} total steps)"
+ 
+ 
+            # node colors from value function 
+            cmap      = cm.get_cmap("YlOrRd")
+            v_min, v_max = values.min(), values.max()
+            v_range   = v_max - v_min if v_max > v_min else 1.0
+            agent_node_colors = []
+            for n in range(6):
+                if n == self.target_state_index:
+                    agent_node_colors.append("#3B8BD4")   # target always blue
+                else:
+                    norm_v = (values[n] - v_min) / v_range
+                    agent_node_colors.append(cmap(norm_v)) # color the nodes based on the value function
+ 
+            # draw base (gray edges, value-colored nodes) 
+            ax_agent.set_aspect("equal")
+            ax_agent.axis("off")
+            ax_agent.set_title(panel_title, fontsize=9, pad=10, color=FG)
+            nx.draw_networkx_nodes(
+                G, pos, ax=ax_agent,
+                node_size=1600, node_color=agent_node_colors,
+                edgecolors="#888780", linewidths=1.2,
+            )
+            # Value annotations below each node label
+            val_sym = "V" if agent_type == "VI" else "Q"
+            value_labels = {
+                n: f"{STATE_LABELS[n]}\n{val_sym}={values[n]:.2f}" for n in range(6)
+            }
+            nx.draw_networkx_labels(
+                G, pos, ax=ax_agent,
+                labels=value_labels, font_size=8, font_color="#111111",
+            )
+ 
+            # draw edges with opacity from visit count 
+            max_count = counts_sa.max() if counts_sa.max() > 0 else 1.0
+            greedy_edges, explored_edges, unexplored_edges = [], [], []
+ 
+            for s in range(6):
+                for a, name in enumerate(ACTION_NAMES):
+                    dst   = int(_TRANSITIONS[s, a])
+                    count = counts_sa[s, a]
+                    edge  = (s, dst)
+                    if a == policy[s]:
+                        greedy_edges.append((edge, name, count))
+                    elif count > 0:
+                        explored_edges.append((edge, count / max_count))
+                    else:
+                        unexplored_edges.append(edge)
+ 
+            # Unexplored: very faint
+            if unexplored_edges:
+                nx.draw_networkx_edges(
+                    G, pos, ax=ax_agent,
+                    edgelist=unexplored_edges,
+                    edge_color="#666660", alpha=0.15, width=0.5,
+                    arrowsize=8, arrowstyle="-|>",
+                    connectionstyle="arc3,rad=0.10",
+                    min_source_margin=30, min_target_margin=30,
+                )
+ 
+            # Explored non-greedy: alpha proportional to visit count
+            # Draw in buckets by alpha level
+            alpha_buckets: dict[float, list] = {}
+            for edge, norm_count in explored_edges:
+                alpha = round(0.2 + 0.6 * norm_count, 1)
+                alpha_buckets.setdefault(alpha, []).append(edge)
+            for alpha, edgelist in alpha_buckets.items():
+                nx.draw_networkx_edges(
+                    G, pos, ax=ax_agent,
+                    edgelist=edgelist,
+                    edge_color="#aaaaaa", alpha=alpha, width=1.0,
+                    arrowsize=12, arrowstyle="-|>",
+                    connectionstyle="arc3,rad=0.10",
+                    min_source_margin=30, min_target_margin=30,
+                )
+ 
+            # Greedy policy: bold teal, labeled with gate name
+            greedy_edgelist = [e for e, _, _ in greedy_edges]
+            greedy_labels   = {e: name for e, name, _ in greedy_edges}
+            if greedy_edgelist:
+                nx.draw_networkx_edges(
+                    G, pos, ax=ax_agent,
+                    edgelist=greedy_edgelist,
+                    edge_color="#0F6E56", width=3.0, arrowsize=20,
+                    arrowstyle="-|>", connectionstyle="arc3,rad=0.10",
+                    min_source_margin=30, min_target_margin=30,
+                )
+                _label_edges(
+                    ax_agent, greedy_labels,
+                    font_size=8, font_color="#5DCAA5",
+                )
+ 
+            # colorbar for value function 
+            # Label: show which quantity is actually displayed
+            value_label = "V(s)" if agent_type == "VI" else "max_a Q(s,a)"
+ 
+            # Ticks: min and max only, annotated with the owning state name
+            min_state = int(np.argmin(values))
+            max_state = int(np.argmax(values))
+            def _plain(lbl):
+                return lbl.replace("$","").replace("\\rangle",">").replace("{","").replace("}","")
+            min_tick = f"{_plain(STATE_LABELS[min_state])}  {v_min:.2f}"
+            max_tick = f"{_plain(STATE_LABELS[max_state])}  {v_max:.2f}"
+ 
+            sm = cm.ScalarMappable(
+                cmap=cmap,
+                norm=mcolors.Normalize(vmin=v_min, vmax=v_max),
+            )
+            sm.set_array([])
+            cbar = fig.colorbar(sm, ax=ax_agent, fraction=0.03, pad=0.04)
+            cbar.set_label(value_label, fontsize=8, color=FG)
+            cbar.set_ticks([v_min, v_max])
+            cbar.set_ticklabels([min_tick, max_tick])
+            cbar.ax.tick_params(labelsize=7, colors=FG)
+            cbar.ax.yaxis.set_tick_params(color=FG)
+            plt.setp(cbar.ax.yaxis.get_ticklabels(), color=FG)
+ 
+            # right legend 
+            right_legend = [
+                mpatches.Patch(facecolor="#3B8BD4", edgecolor="#888780", label="Target state"),
+                mlines.Line2D([], [], color="#0F6E56", linewidth=2.5,  label="Greedy policy"),
+                mlines.Line2D([], [], color="#888780", linewidth=1.0,  label="Explored (alpha ∝ visits)"),
+                mlines.Line2D([], [], color="#D3D1C7", linewidth=0.5,  label="Unexplored"),
+            ]
+            ax_agent.legend(handles=right_legend, loc="lower right", fontsize=8, framealpha=0.85,
+                              facecolor="#2a2a2a", edgecolor="#555550", labelcolor=FG)
+ 
+        fig.tight_layout()
+        fig_array = self._fig_to_array(fig)
+        self.fig_array_list.append(fig_array)
+        plt.close(fig)
+ 
+    # render: learning animation 
+
+    def _fig_to_array(self, fig):
+        fig.canvas.draw()
+        w, h = fig.canvas.get_width_height()
+        return np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(h, w, 3)
+ 
+    def render(self, save_path_without_extension, interval=600, ffmpeg=False):
+        if not self.fig_array_list:
+            raise ValueError("No frames to render. Call _render_graph() first.")
+
+        # Match figure size exactly to the frame pixel dimensions
+        h, w = self.fig_array_list[0].shape[:2]
+        dpi  = 100
+        fig, ax = plt.subplots(figsize=(w / dpi, h / dpi), dpi=dpi)
+        fig.subplots_adjust(left=0, right=1, top=1, bottom=0)  # remove all padding
+        ax.axis("off")
+        im = ax.imshow(self.fig_array_list[0])
+
+        def _update(i):
+            im.set_data(self.fig_array_list[i])
+            return [im]
+
+        ani = animation.FuncAnimation(
+            fig, _update,
+            frames=len(self.fig_array_list),
+            interval=interval,
+            blit=True,
+        )
+        ext = "mp4" if ffmpeg else "gif"
+        ani.save(
+            f"{save_path_without_extension}.{ext}",
+            writer="ffmpeg" if ffmpeg else "pillow",
+            dpi=dpi,
+        )
+        plt.close(fig)
+
+    @property
+    def state_index(self) -> int:
+        """Current state index (0-5)."""
+        return self._state_index
+ 
+    @property
+    def bloch_vector(self) -> np.ndarray:
+        """Current Bloch vector (x, y, z)."""
+        return STATE_BLOCH[self._state_index].copy()
+ 
+    @staticmethod
+    def transition_table() -> np.ndarray:
+        """
+        Return the (6, 4) integer transition table T where T[s, a] = s'.
+ 
+        Rows = states 0-5, columns = actions 0-3 (H, X, Z, S).
+        """
+        return _TRANSITIONS.copy()
+ 
+    def __repr__(self) -> str:
+        return (
+            f"BlochSphereV1("
+            f"state={STATE_LABELS[self._state_index]}, "
+            f"target={STATE_LABELS[self.target_state_index]}, "
+            f"steps={self.steps}/{self.max_steps})"
+        )
