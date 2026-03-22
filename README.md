@@ -9,31 +9,26 @@
 
 ### qrl-qai: The quantum analogue of OpenAI's gym python framework 
  
+contact: jay.shah@qrlqai.com
 
 ---
 
 **qrl-qai** is a python framework built on top of **Gymnasium**, **PennyLane**, and **PyTorch** to serve as a central platform for everything **quantum reinforcement learning**.
 
-The current release (0.3.0) offers 5 native quantum RL style environments:
+The current release (1.0.0) offers 2 RL algorithms (ValueIteration and QValueIteration) and 6 native quantum RL style environments (BlochSphereV0, BlochSphereV1, CompilerV0, ErrorChannelV0, ExpressibilityV0, ProbabilityV0).
 
-* **BlochSphereV0**
-* **CompilerV0**
-* **ErrorChannelV0**
-* **ExpressibilityV0**
-* **ProbabilityV0**
-
-Check out the [Quickstart](https://qrl-qai.readthedocs.io/en/v0.3.0/getting_started/quickstart.html) guide to get started.
-
-Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.
-
-Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!
+Check out the [Quickstart](https://qrl-qai.readthedocs.io/en/v1.0.0/getting_started/quickstart.html) guide to get started.
 
 | Version | Google Colab | Lightning AI Studio | Documentation |
 |----------|--------------|--------------------|---------------|
 | **0.1.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.1.0/)|
 | **0.2.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.2.0/)|
 | **0.3.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.3.0/)|
-| **1.0.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1wsThxxrvHh0Vboftay-eFbCrdVzKO-I3?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/templates/qrl-qai-playground-1-0-0) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.2.0/)|
+| **1.0.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1wsThxxrvHh0Vboftay-eFbCrdVzKO-I3?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/templates/qrl-qai-playground-1-0-0) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v1.0.0/)|
+
+Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.
+
+Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!
 
 ---
 
