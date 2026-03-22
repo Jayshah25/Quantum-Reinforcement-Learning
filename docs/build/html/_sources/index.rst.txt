@@ -8,19 +8,9 @@ Welcome to qrl-qai’s documentation!
 
 **qrl-qai** is a python framework built on top of **Gymnasium**, **PennyLane**, and **PyTorch** to serve as a central platform for everything **quantum reinforcement learning**.
 
-The current release (0.3.0) offers 5 native quantum RL style environments:
-
-* **BlochSphereV0**
-* **CompilerV0**
-* **ErrorChannelV0**
-* **ExpressibilityV0**
-* **ProbabilityV0**
+The current release (1.0.0) offers 2 RL algorithms (ValueIteration and QValueIteration) and 6 native quantum RL style environments (BlochSphereV0, BlochSphereV1, CompilerV0, ErrorChannelV0, ExpressibilityV0, ProbabilityV0).
 
 Check out the Installation and Quickstart guides to get started.
-
-Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.
-
-Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!
 
 .. list-table::
    :header-rows: 1
@@ -38,6 +28,9 @@ Lightnining AI Studio contains a Streamlit playground for no-code experimentatio
    * - **0.3.0**
      - \-
      - \-
+   * - **1.0.0**
+     - |colab|
+     - |lightning|
 
 
 .. |colab| image:: https://colab.research.google.com/assets/colab-badge.svg
@@ -45,6 +38,12 @@ Lightnining AI Studio contains a Streamlit playground for no-code experimentatio
 
 .. |lightning| image:: https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white
    :target: https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground
+
+
+Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.
+
+Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!
+
 
 
 .. toctree::
@@ -60,11 +59,24 @@ Lightnining AI Studio contains a Streamlit playground for no-code experimentatio
    :titlesonly:
    :caption: TUTORIALS
 
-   tutorials/bloch_sphere
-   tutorials/probability
+   tutorials/value_iteration
+   tutorials/qvalue_iteration
+   tutorials/bloch_sphere_v0
+   tutorials/bloch_sphere_v1
+   tutorials/compiler
    tutorials/error_channel
    tutorials/expressibility
-   tutorials/compiler
+   tutorials/probability
+
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+   :caption: ALGORITHMS
+
+   api/base_iteration
+   api/value_iteration
+   api/qvalue_iteration
 
 .. toctree::
    :maxdepth: 2
@@ -72,7 +84,8 @@ Lightnining AI Studio contains a Streamlit playground for no-code experimentatio
    :caption: ENVIRONMENTS
 
    api/base_env
-   api/blochsphere
+   api/blochsphereV0
+   api/blochsphereV1
    api/compiler
    api/errorchannel
    api/expressibility

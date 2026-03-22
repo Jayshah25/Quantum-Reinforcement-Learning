@@ -9,7 +9,7 @@ import torch
 
 class BaseIteration:
     """
-    Shared base class for tabular model-based RL agents (Value Iteration, Q-Iteration).
+    Shared base class for tabular model-based RL agents (Value Iteration, QValueIteration).
 
     Maintains empirical estimates of the transition probability P(s'|s,a) and
     mean reward R(s,a,s') from environment interaction. Subclasses implement

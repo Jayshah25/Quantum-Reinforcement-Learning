@@ -6,19 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to qrl-qai’s documentation! &mdash; qrl-qai 0.2.0 documentation</title>
+  <title>Welcome to qrl-qai’s documentation! &mdash; qrl-qai 1.0.0rc0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=938c9ccc"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=d3b94175"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -51,16 +49,26 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere.html">BlochSphereV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/qvalue_iteration.html">QValue Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere_v0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere_v1.html">BlochSphereV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/error_channel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/expressibility.html">ExpressibilityV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/probability.html">ProbabilityV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ALGORITHMS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/base_iteration.html">Base Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/qvalue_iteration.html">QValue Iteration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/base_env.html">Base Enviornment Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/blochsphereV0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/blochsphereV1.html">BlochSphereV1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/errorchannel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/expressibility.html">ExpressibilityV0</a></li>
@@ -98,17 +106,8 @@
   <section id="welcome-to-qrl-qais-documentation">
 <h1>Welcome to qrl-qai’s documentation!<a class="headerlink" href="#welcome-to-qrl-qais-documentation" title="Link to this heading"></a></h1>
 <p><strong>qrl-qai</strong> is a python framework built on top of <strong>Gymnasium</strong>, <strong>PennyLane</strong>, and <strong>PyTorch</strong> to serve as a central platform for everything <strong>quantum reinforcement learning</strong>.</p>
-<p>The current release (0.3.0) offers 5 native quantum RL style environments:</p>
-<ul class="simple">
-<li><p><strong>BlochSphereV0</strong></p></li>
-<li><p><strong>CompilerV0</strong></p></li>
-<li><p><strong>ErrorChannelV0</strong></p></li>
-<li><p><strong>ExpressibilityV0</strong></p></li>
-<li><p><strong>ProbabilityV0</strong></p></li>
-</ul>
+<p>The current release (1.0.0) offers 2 RL algorithms (ValueIteration and QValueIteration) and 6 native quantum RL style environments (BlochSphereV0, BlochSphereV1, CompilerV0, ErrorChannelV0, ExpressibilityV0, ProbabilityV0).</p>
 <p>Check out the Installation and Quickstart guides to get started.</p>
-<p>Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.</p>
-<p>Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20.0%" />
@@ -134,8 +133,14 @@
 <td><p>-</p></td>
 <td><p>-</p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>1.0.0</strong></p></td>
+<td><p><a class="reference external" href="https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing"><img alt="colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></td>
+<td><p><a class="reference external" href="https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground"><img alt="lightning" src="https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&amp;logoColor=white" /></a></p></td>
+</tr>
 </tbody>
 </table>
+<p>Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.</p>
+<p>Lightnining AI Studio contains a Streamlit playground for no-code experimentation with the environments!</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">BASICS</span></p>
 <ul>
@@ -146,18 +151,30 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere.html">BlochSphereV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/qvalue_iteration.html">QValue Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere_v0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/bloch_sphere_v1.html">BlochSphereV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/error_channel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/expressibility.html">ExpressibilityV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/probability.html">ProbabilityV0</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">ALGORITHMS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/base_iteration.html">Base Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/qvalue_iteration.html">QValue Iteration</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/base_env.html">Base Enviornment Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/blochsphereV0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/blochsphereV1.html">BlochSphereV1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/errorchannel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/expressibility.html">ExpressibilityV0</a></li>

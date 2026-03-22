@@ -5,16 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>qrl.env.core.utils &mdash; qrl-qai 0.2.0 documentation</title>
+  <title>qrl.env.core.utils &mdash; qrl-qai 1.0.0rc0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
-      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/documentation_options.js?v=d3b94175"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -47,16 +47,26 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere.html">BlochSphereV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/qvalue_iteration.html">QValue Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere_v0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere_v1.html">BlochSphereV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/error_channel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/expressibility.html">ExpressibilityV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/probability.html">ProbabilityV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ALGORITHMS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/base_iteration.html">Base Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/qvalue_iteration.html">QValue Iteration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/base_env.html">Base Enviornment Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphereV0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphereV1.html">BlochSphereV1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/errorchannel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/expressibility.html">ExpressibilityV0</a></li>
@@ -122,6 +132,73 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">RZ</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span></div>
 
                                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">theta</span><span class="o">/</span><span class="mi">2</span><span class="p">)]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+<span class="n">STEP_PENALTY</span>  <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">SUCCESS_BONUS</span> <span class="o">=</span> <span class="mf">1.0</span>
+ 
+<span class="c1"># State index → human label</span>
+<span class="n">STATE_LABELS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|0\rangle$&quot;</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|1\rangle$&quot;</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|+\rangle$&quot;</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|-\rangle$&quot;</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|{+i}\rangle$&quot;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$|{-i}\rangle$&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+ 
+<span class="c1"># State index → Bloch vector (x, y, z)</span>
+<span class="n">STATE_BLOCH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">],</span>   <span class="c1"># |0⟩</span>
+    <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>   <span class="c1"># |1⟩</span>
+    <span class="p">[</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>   <span class="c1"># |+⟩</span>
+    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>   <span class="c1"># |-⟩</span>
+    <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>   <span class="c1"># |+i⟩</span>
+    <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>   <span class="c1"># |-i⟩</span>
+<span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+ 
+<span class="c1"># State index → statevector</span>
+<span class="n">STATE_VECTORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>                          <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">),</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>                          <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">),</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>                          <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>                         <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">],</span>                         <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span>                        <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="p">}</span>
+ 
+<span class="c1"># Gate unitaries</span>
+<span class="n">_s2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># GATE_UNITARIES = {</span>
+<span class="c1">#     &quot;H&quot;: np.array([[_s2,  _s2], [ _s2, -_s2]], dtype=complex),</span>
+<span class="c1">#     &quot;X&quot;: np.array([[0,    1  ], [ 1,    0  ]], dtype=complex),</span>
+<span class="c1">#     &quot;Z&quot;: np.array([[1,    0  ], [ 0,   -1  ]], dtype=complex),</span>
+<span class="c1">#     &quot;S&quot;: np.array([[1,    0  ], [ 0,    1j ]], dtype=complex),</span>
+<span class="c1"># }</span>
+<span class="n">ACTION_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">]</span>
+ 
+<span class="c1"># Deterministic transition table T[s, a] → s&#39;</span>
+<span class="c1"># Precomputed from verified quantum simulation (see module docstring)</span>
+<span class="n">_TRANSITIONS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="c1">#  H  X  Z  S</span>
+    <span class="p">[</span>  <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>   <span class="c1"># |0⟩</span>
+    <span class="p">[</span>  <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>   <span class="c1"># |1⟩</span>
+    <span class="p">[</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>   <span class="c1"># |+⟩</span>
+    <span class="p">[</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>   <span class="c1"># |-⟩</span>
+    <span class="p">[</span>  <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>   <span class="c1"># |+i⟩</span>
+    <span class="p">[</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>   <span class="c1"># |-i⟩</span>
+<span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+ 
+<span class="c1"># Graph layout: hexagonal arrangement mirroring the Bloch sphere</span>
+<span class="c1"># |0⟩ at top, |1⟩ at bottom, equatorial band in middle</span>
+<span class="n">_GRAPH_POS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">1.6</span><span class="p">),</span>   <span class="c1"># |0⟩  top</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="p">(</span> <span class="mf">1.4</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">),</span>   <span class="c1"># |+⟩  right-upper</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="p">(</span> <span class="mf">1.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">),</span>   <span class="c1"># |+i⟩ right-lower</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.6</span><span class="p">),</span>   <span class="c1"># |1⟩  bottom</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">),</span>   <span class="c1"># |-i⟩ left-lower</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.4</span><span class="p">,</span>  <span class="mf">0.4</span><span class="p">),</span>   <span class="c1"># |-⟩  left-upper</span>
+<span class="p">}</span>
+
 </pre></div>
 
            </div>

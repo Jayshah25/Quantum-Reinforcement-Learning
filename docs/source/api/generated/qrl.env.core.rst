@@ -1,4 +1,4 @@
-qrl.env.core
+﻿qrl.env.core
 ============
 
 .. automodule:: qrl.env.core
@@ -10,7 +10,6 @@ qrl.env.core
    :toctree:
    :recursive:
 
-   base__
    bloch_sphere
    compiler
    error_channel

@@ -89,7 +89,7 @@ class ErrorChannelV0(QuantumEnv):
         self.dev = qml.device("default.mixed", wires=n_qubits)
 
         # Action = (gate, qubit)
-        self.action_space = spaces.MultiDiscrete([n_qubits])
+        self.action_space = spaces.Discrete(n_qubits)
 
         # Observation = probs over 2^n states
         self.observation_space = spaces.Box(

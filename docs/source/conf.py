@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = "qrl-qai"
 copyright = "2025, Jay Shah"
 author = "Jay Shah"
-release = "0.3.0"
+release = "1.0.0rc0"
 
 # -- General configuration ---------------------------------------------------
 

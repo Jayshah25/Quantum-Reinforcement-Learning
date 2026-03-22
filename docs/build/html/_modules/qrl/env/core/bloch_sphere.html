@@ -5,16 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>qrl.env.core.bloch_sphere &mdash; qrl-qai 0.2.0 documentation</title>
+  <title>qrl.env.core.bloch_sphere &mdash; qrl-qai 1.0.0rc0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
-      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/documentation_options.js?v=d3b94175"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -47,16 +47,26 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere.html">BlochSphereV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/qvalue_iteration.html">QValue Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere_v0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/bloch_sphere_v1.html">BlochSphereV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/error_channel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/expressibility.html">ExpressibilityV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/probability.html">ProbabilityV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ALGORITHMS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/base_iteration.html">Base Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/qvalue_iteration.html">QValue Iteration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/base_env.html">Base Enviornment Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphereV0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/blochsphereV1.html">BlochSphereV1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/errorchannel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api/expressibility.html">ExpressibilityV0</a></li>
@@ -103,9 +113,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pennylane</span><span class="w"> </span><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">animation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpatches</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.cm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.colors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mcolors</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mlines</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base__</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumEnv</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATES</span><span class="p">,</span> <span class="n">RX</span><span class="p">,</span> <span class="n">RY</span><span class="p">,</span> <span class="n">RZ</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumEnv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">GATES</span><span class="p">,</span> <span class="n">RX</span><span class="p">,</span> <span class="n">RY</span><span class="p">,</span> <span class="n">RZ</span><span class="p">,</span> <span class="n">STATE_LABELS</span><span class="p">,</span> <span class="n">STATE_BLOCH</span><span class="p">,</span> <span class="n">STATE_VECTORS</span><span class="p">,</span> <span class="n">ACTION_NAMES</span><span class="p">,</span> <span class="n">_TRANSITIONS</span><span class="p">,</span> <span class="n">_GRAPH_POS</span>
 
 
 <div class="viewcode-block" id="BlochSphereV0">
@@ -395,6 +412,689 @@
 
 
 
+<div class="viewcode-block" id="BlochSphereV1">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BlochSphereV1</span><span class="p">(</span><span class="n">QuantumEnv</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Single-qubit Bloch sphere environment as a graph problem for reinforcement learning.</span>
+
+<span class="sd">    ``BlochSphereV1`` is a ``gymnasium.Env`` compatible environment where an agent</span>
+<span class="sd">    controls a single qubit via a discrete set of quantum gates. The qubit state is</span>
+<span class="sd">    exposed to the agent as an integer index corresponding to the discrete states </span>
+<span class="sd">    |0⟩, |1⟩, |+⟩, |-⟩, |+i⟩, |-i⟩.</span>
+
+<span class="sd">    The objective is to steer the qubit from the fixed starting initial state ``|0⟩`` to a</span>
+<span class="sd">    user defined target pure state (default ``|+⟩``) within a limited number of steps by applying</span>
+<span class="sd">    unitary gate actions.</span>
+
+<span class="sd">    </span>
+<span class="sd">    The environment is fully compatible with ``ValueIteration`` and ``QValueIteration`` from</span>
+<span class="sd">    ``qrl.algorithms``.</span>
+
+<span class="sd">    Key details</span>
+<span class="sd">    --------------</span>
+<span class="sd">    - **Action space**: Discrete set of single-qubit gates (H,X,Z,S).</span>
+<span class="sd">    - **Observation space**: Integer index corresponding to the Discrete states |0⟩, |1⟩, |+⟩, |-⟩, |+i⟩, |-i⟩.</span>
+<span class="sd">    - **Reward**: Fidelity ``|⟨target | state⟩|²`` in ``[0, 1]``.</span>
+<span class="sd">    - **Termination**: Success when reward exceeds ``reward_tolerance`` or truncation</span>
+<span class="sd">    at ``max_steps``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - **target_state** : int, optional</span>
+<span class="sd">        Target state index in [0, 5]. Defaults to 2 (|+⟩). The mapping is:</span>
+<span class="sd">        0 → |0⟩, 1 → |1⟩, 2 → |+⟩, 3 → |-⟩, 4 → |+i⟩, 5 → |-i⟩.</span>
+<span class="sd">    - **max_steps** : int, optional</span>
+<span class="sd">        Maximum number of steps per episode. Default is 10.</span>
+<span class="sd">    - **reward_tolerance** : float, optional</span>
+<span class="sd">        Fidelity threshold for successful termination. Must be in (0, 1].</span>
+<span class="sd">        Default is 0.99.</span>
+<span class="sd">    - **ffmpeg** : bool, optional</span>
+<span class="sd">        If True, animations are saved as MP4 via ffmpeg, else as GIFs.</span>
+<span class="sd">        Default is False.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    - **ValueError** : If ``target_state`` is not in [0, 5].</span>
+<span class="sd">    - **ValueError** : If ``reward_tolerance`` is not in (0, 1].</span>
+<span class="sd">    - **ValueError** : If ``ffmpeg=True`` but ffmpeg is not installed on the system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+ 
+ 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target_state</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">reward_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span>
+        <span class="n">ffmpeg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># define constants</span>
+        <span class="c1"># self.STEP_PENALTY = 0.01</span>
+        <span class="c1"># self.SUCCESS_BONUS = 1.0</span>
+ 
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">target_state</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;target_state must be an integer in [0, 5].&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">reward_tolerance</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;reward_tolerance must be in (0, 1].&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ffmpeg</span> <span class="ow">and</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ffmpeg not found. Install it or set ffmpeg=False.&quot;</span><span class="p">)</span>
+ 
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span> <span class="o">=</span> <span class="n">target_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span>          <span class="o">=</span> <span class="n">max_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_tolerance</span>   <span class="o">=</span> <span class="n">reward_tolerance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span>             <span class="o">=</span> <span class="s2">&quot;ffmpeg&quot;</span> <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;pillow&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_extension</span>   <span class="o">=</span> <span class="s2">&quot;mp4&quot;</span>    <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;gif&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span>     <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span>      <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+ 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">:</span> <span class="nb">int</span>  <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_statevector</span>       <span class="o">=</span> <span class="n">STATE_VECTORS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span> <span class="nb">int</span>         <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># sequence of state indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    
+<div class="viewcode-block" id="BlochSphereV1.reset">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the environment to the initial state.</span>
+
+<span class="sd">        The qubit is placed at state index 0 (|0⟩). Episode step count,</span>
+<span class="sd">        history, and termination flags are cleared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seed : int or None, optional</span>
+<span class="sd">            Random seed passed to the base ``gymnasium.Env`` reset. Default is None.</span>
+<span class="sd">        options : dict or None, optional</span>
+<span class="sd">            Additional options passed to the base reset. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        observation : int</span>
+<span class="sd">            Initial state index (always 0, corresponding to |0⟩).</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            Dictionary containing ``fidelity``, ``gate`` (``&quot;reset&quot;``), and</span>
+<span class="sd">            ``bloch_vector`` of the initial state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_statevector</span> <span class="o">=</span> <span class="n">STATE_VECTORS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span>      <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminated</span>   <span class="o">=</span> <span class="kc">False</span>   
+        <span class="bp">self</span><span class="o">.</span><span class="n">truncated</span>    <span class="o">=</span> <span class="kc">False</span>   
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BlochSphereV1.get_reward">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1.get_reward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the reward for the current state and update termination flags.</span>
+
+<span class="sd">        Evaluates the fidelity between the current statevector and the target</span>
+<span class="sd">        statevector. Sets ``self.terminated`` if fidelity meets or exceeds</span>
+<span class="sd">        ``reward_tolerance``, and ``self.truncated`` if the step limit is reached.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            1.0 if the current state matches the target within ``reward_tolerance``,</span>
+<span class="sd">            0.0 otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fidelity</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_tolerance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">truncated</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span>
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminated</span> <span class="k">else</span> <span class="mf">0.0</span> </div>
+
+
+<div class="viewcode-block" id="BlochSphereV1.step">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a gate action and advance the episode by one step.</span>
+
+<span class="sd">        Applies the unitary gate corresponding to ``action`` to the current</span>
+<span class="sd">        statevector, updates the discrete state index via the transition table,</span>
+<span class="sd">        increments the step counter, and appends the new state to history.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        action : int</span>
+<span class="sd">            Index into ``ACTION_NAMES`` selecting the gate to apply.</span>
+<span class="sd">            0 → H, 1 → X, 2 → Z, 3 → S.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        observation : int</span>
+<span class="sd">            New discrete state index after applying the gate.</span>
+<span class="sd">        reward : float</span>
+<span class="sd">            1.0 if the target is reached within tolerance, 0.0 otherwise.</span>
+<span class="sd">        terminated : bool</span>
+<span class="sd">            True if fidelity ≥ ``reward_tolerance``.</span>
+<span class="sd">        truncated : bool</span>
+<span class="sd">            True if ``steps`` ≥ ``max_steps``.</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            Dictionary containing ``fidelity``, ``gate`` name applied, and</span>
+<span class="sd">            ``bloch_vector`` of the resulting state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gate_name</span>         <span class="o">=</span> <span class="n">ACTION_NAMES</span><span class="p">[</span><span class="n">action</span><span class="p">]</span>
+        <span class="n">U</span>                 <span class="o">=</span> <span class="n">GATES</span><span class="p">[</span><span class="n">gate_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_statevector</span> <span class="o">=</span> <span class="n">U</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statevector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_TRANSITIONS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span>       <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">)</span>
+ 
+        <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reward</span><span class="p">()</span>
+ 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">reward</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">gate_name</span><span class="p">)</span></div>
+
+ 
+ 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fidelity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the fidelity between the current state and the target state.</span>
+
+<span class="sd">        Fidelity is defined as ``|⟨target | state⟩|²``, bounded in ``[0, 1]``.</span>
+<span class="sd">        A value of 1.0 indicates the current state is identical to the target.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Fidelity between the current statevector and the target statevector,</span>
+<span class="sd">            in the range ``[0, 1]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">target_sv</span> <span class="o">=</span> <span class="n">STATE_VECTORS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">target_sv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_statevector</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+ 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reset&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the info dictionary for the current environment state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gate : str, optional</span>
+<span class="sd">            Name of the gate most recently applied. Defaults to ``&quot;reset&quot;``</span>
+<span class="sd">            when called during environment initialization or reset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary with three keys:</span>
+<span class="sd">            - ``fidelity``    : float — current fidelity with the target state.</span>
+<span class="sd">            - ``gate``        : str   — name of the gate applied in this step.</span>
+<span class="sd">            - ``bloch_vector``: np.ndarray — Bloch vector ``(x, y, z)`` of the</span>
+<span class="sd">            current state, shape ``(3,)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;fidelity&quot;</span><span class="p">:</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_fidelity</span><span class="p">(),</span>
+            <span class="s2">&quot;gate&quot;</span><span class="p">:</span>         <span class="n">gate</span><span class="p">,</span>
+            <span class="s2">&quot;state_index&quot;</span><span class="p">:</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">,</span>
+        <span class="p">}</span>
+ 
+    <span class="c1"># reneder graph</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_true_dynamics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the state-transition graph. When agent is provided, adds a second</span>
+<span class="sd">        panel showing the agent&#39;s learned model:</span>
+<span class="sd"> </span>
+<span class="sd">          Left  — true environment dynamics</span>
+<span class="sd">          Right — agent panel:</span>
+<span class="sd">                    • Node color  : learned state value V(s) or max_a Q(s,a)</span>
+<span class="sd">                                    on a warm colormap (high = warm, low = cool)</span>
+<span class="sd">                    • Edge opacity: proportional to empirical visit count</span>
+<span class="sd">                    • Bold edges  : greedy policy argmax_a Q(s,a)</span>
+
+<span class="sd">        Ideally, the learnt target state should have minimal value function.</span>
+<span class="sd"> </span>
+<span class="sd">        Layout (both panels mirror the Bloch sphere):</span>
+<span class="sd"> </span>
+<span class="sd">                   |0⟩</span>
+<span class="sd">              |-⟩       |+⟩</span>
+<span class="sd">             |-i⟩       |+i⟩</span>
+<span class="sd">                   |1⟩</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+ 
+        <span class="n">BG</span>      <span class="o">=</span> <span class="s2">&quot;#1a1a1a&quot;</span>   <span class="c1"># figure / axes background</span>
+        <span class="n">FG</span>      <span class="o">=</span> <span class="s2">&quot;#e0e0e0&quot;</span>   <span class="c1"># titles, node labels, generic text</span>
+        <span class="n">EDGE_FG</span> <span class="o">=</span> <span class="s2">&quot;#444440&quot;</span>   <span class="c1"># base edge color on dark bg</span>
+        <span class="n">LBL_FG</span>  <span class="o">=</span> <span class="s2">&quot;#999994&quot;</span>   <span class="c1"># edge label color (base graph)</span>
+ 
+        <span class="n">has_agent</span>  <span class="o">=</span> <span class="n">agent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_agent</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No agent provided.&quot;</span><span class="p">)</span>
+        <span class="n">n_panels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">show_true_dynamics</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">has_agent</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span><span class="c1"># number of panels: 1 for true dynamics, 1 for agent1 # number of panels: 1 for true dynamics, 1 for agent</span>
+        <span class="n">fig_w</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">n_panels</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_panels</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">fig_w</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">BG</span><span class="p">)</span> <span class="c1"># figure and axes</span>
+        <span class="k">if</span> <span class="n">n_panels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+        <span class="n">ax_true</span>  <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">show_true_dynamics</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">ax_agent</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">has_agent</span>  <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">_ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">_ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">BG</span><span class="p">)</span> <span class="c1"># set background color for each axis</span>
+ 
+        <span class="c1"># shared graph structure of true environment dynamics and agent</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span> <span class="c1"># MultiDiGraph is a directed graph with multiple edges between two nodes</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span> <span class="c1"># add nodes to the graph</span>
+        <span class="n">edge_gates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ACTION_NAMES</span><span class="p">):</span>
+                <span class="n">dst</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_TRANSITIONS</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>
+                <span class="n">edge_gates</span><span class="o">.</span><span class="n">setdefault</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">dst</span><span class="p">),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span> <span class="n">gnames</span> <span class="ow">in</span> <span class="n">edge_gates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gnames</span><span class="p">))</span>
+ 
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">_GRAPH_POS</span>
+ 
+        <span class="c1"># arc midpoint helper to place text labels at the true arc midpoint for each edge</span>
+        <span class="n">_graph_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+ 
+        <span class="k">def</span><span class="w"> </span><span class="nf">_arc_midpoint</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="mf">0.10</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Return the (x, y) midpoint of the arc networkx draws.</span>
+<span class="sd"> </span>
+<span class="sd">            Regular edges: quadratic Bezier B(t=0.5) with control point</span>
+<span class="sd">            offset perpendicularly from the edge midpoint by rad × |P2-P0|.</span>
+<span class="sd"> </span>
+<span class="sd">            Self-loops (src == dst): networkx draws a small tangent loop.</span>
+<span class="sd">            We offset the label outward from the graph center so it sits</span>
+<span class="sd">            on top of the visible loop, not on the node itself.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">src</span><span class="p">])</span>
+            <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">dst</span><span class="p">])</span>
+ 
+            <span class="c1"># self-loop</span>
+            <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="n">dst</span><span class="p">:</span>
+                <span class="n">outward</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">-</span> <span class="n">_graph_center</span>
+                <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">outward</span><span class="p">)</span>
+                <span class="n">outward</span> <span class="o">=</span> <span class="n">outward</span> <span class="o">/</span> <span class="n">norm</span> <span class="k">if</span> <span class="n">norm</span> <span class="o">&gt;</span> <span class="mf">1e-9</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">outward</span> <span class="o">*</span> <span class="mf">0.52</span>
+ 
+            <span class="c1"># regular arc </span>
+            <span class="n">mid</span>    <span class="o">=</span> <span class="p">(</span><span class="n">p0</span> <span class="o">+</span> <span class="n">p2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">diff</span>   <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p0</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+            <span class="n">perp</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">diff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span> <span class="o">/</span> <span class="n">length</span>
+            <span class="n">pc</span>     <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="n">rad</span> <span class="o">*</span> <span class="n">length</span> <span class="o">*</span> <span class="n">perp</span>
+            <span class="k">return</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">p0</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">pc</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">p2</span>
+ 
+        <span class="k">def</span><span class="w"> </span><span class="nf">_label_edges</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">edge_label_map</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
+                         <span class="n">font_size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="n">LBL_FG</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Place text labels at the true arc midpoint for each edge.</span>
+<span class="sd">            edge_label_map: dict with keys that are either (src, dst) pairs</span>
+<span class="sd">            or (src, dst, key) triples (networkx MultiDiGraph convention).</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">edge_key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">edge_label_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">edge_key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge_key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="o">=</span> <span class="n">_arc_midpoint</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">rad</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                    <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">font_color</span><span class="p">,</span>
+                    <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                    <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round,pad=0.15&quot;</span><span class="p">,</span>
+                              <span class="n">fc</span><span class="o">=</span><span class="n">BG</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+                <span class="p">)</span>
+ 
+        <span class="c1"># helper: draw one graph panel </span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_draw_base</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">node_colors</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                <span class="n">node_size</span><span class="o">=</span><span class="mi">1600</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+                <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">STATE_LABELS</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;#111111&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                <span class="n">edge_color</span><span class="o">=</span><span class="n">EDGE_FG</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">arrowsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                <span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-|&gt;&quot;</span><span class="p">,</span> <span class="n">connectionstyle</span><span class="o">=</span><span class="s2">&quot;arc3,rad=0.10&quot;</span><span class="p">,</span>
+                <span class="n">min_source_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_target_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_label_edges</span><span class="p">(</span>
+                <span class="n">ax</span><span class="p">,</span>
+                <span class="n">edge_label_map</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">),</span>
+                <span class="n">font_size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+ 
+        <span class="c1"># LEFT PANEL: true dynamics (optional) </span>
+        <span class="k">if</span> <span class="n">show_true_dynamics</span> <span class="ow">and</span> <span class="n">ax_true</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">true_colors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span><span class="p">:</span>
+                    <span class="n">true_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#F5C518&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">:</span>
+                    <span class="n">true_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#E24B4A&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span><span class="p">:</span>
+                    <span class="n">true_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#3B8BD4&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#D3D1C7&quot;</span><span class="p">)</span>
+ 
+            <span class="n">_draw_base</span><span class="p">(</span><span class="n">ax_true</span><span class="p">,</span> <span class="n">true_colors</span><span class="p">,</span> <span class="s2">&quot;True environment dynamics&quot;</span><span class="p">)</span>
+ 
+            <span class="c1"># trajectory overlay</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">traj_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                <span class="n">unique_traj</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">traj_edges</span><span class="p">))</span>                
+                <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+                    <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_true</span><span class="p">,</span>
+                    <span class="n">edgelist</span><span class="o">=</span><span class="n">unique_traj</span><span class="p">,</span>
+                    <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;#BA7517&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">2.8</span><span class="p">,</span> <span class="n">arrowsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+                    <span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-|&gt;&quot;</span><span class="p">,</span> <span class="n">connectionstyle</span><span class="o">=</span><span class="s2">&quot;arc3,rad=0.10&quot;</span><span class="p">,</span>
+                    <span class="n">min_source_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_target_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="p">)</span>
+ 
+ 
+            <span class="c1"># left legend</span>
+            <span class="n">left_legend</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#E24B4A&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Current&quot;</span><span class="p">),</span>
+                <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#3B8BD4&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Target&quot;</span><span class="p">),</span>
+                <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#F5C518&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Current = target&quot;</span><span class="p">),</span>
+                <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#D3D1C7&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Other&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">left_legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#BA7517&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Trajectory&quot;</span><span class="p">))</span>
+            <span class="n">ax_true</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">left_legend</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                              <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#2a2a2a&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#555550&quot;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+ 
+        <span class="c1"># RIGHT PANEL: agent&#39;s learned model </span>
+        <span class="k">if</span> <span class="n">has_agent</span><span class="p">:</span>
+            <span class="c1"># for class ValueIteration from qrl.algorithms.classical</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;_V&quot;</span><span class="p">):</span>
+                <span class="n">values</span>     <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">_V</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+                <span class="n">agent_type</span> <span class="o">=</span> <span class="s2">&quot;VI&quot;</span>
+            <span class="c1"># for class QValueIteration from qrl.algorithms.classical</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;_Q&quot;</span><span class="p">):</span>
+                <span class="n">values</span>     <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+                <span class="n">agent_type</span> <span class="o">=</span> <span class="s2">&quot;QI&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No value function found in agent, using default values.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span><span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">values</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+                <span class="n">agent_type</span> <span class="o">=</span> <span class="s2">&quot;VI&quot;</span>
+            <span class="n">counts_sa</span>   <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="n">total_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counts_sa</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">policy</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_policy</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">policy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">panel_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Agent&#39;s learned model  (</span><span class="si">{</span><span class="n">total_steps</span><span class="si">}</span><span class="s2"> total steps)&quot;</span>
+ 
+ 
+            <span class="c1"># node colors from value function </span>
+            <span class="n">cmap</span>      <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;YlOrRd&quot;</span><span class="p">)</span>
+            <span class="n">v_min</span><span class="p">,</span> <span class="n">v_max</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">v_range</span>   <span class="o">=</span> <span class="n">v_max</span> <span class="o">-</span> <span class="n">v_min</span> <span class="k">if</span> <span class="n">v_max</span> <span class="o">&gt;</span> <span class="n">v_min</span> <span class="k">else</span> <span class="mf">1.0</span>
+            <span class="n">agent_node_colors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span><span class="p">:</span>
+                    <span class="n">agent_node_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#3B8BD4&quot;</span><span class="p">)</span>   <span class="c1"># target always blue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">norm_v</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">v_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">v_range</span>
+                    <span class="n">agent_node_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">norm_v</span><span class="p">))</span> <span class="c1"># color the nodes based on the value function</span>
+ 
+            <span class="c1"># draw base (gray edges, value-colored nodes) </span>
+            <span class="n">ax_agent</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+            <span class="n">ax_agent</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+            <span class="n">ax_agent</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">panel_title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span>
+                <span class="n">node_size</span><span class="o">=</span><span class="mi">1600</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">agent_node_colors</span><span class="p">,</span>
+                <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Value annotations below each node label</span>
+            <span class="n">val_sym</span> <span class="o">=</span> <span class="s2">&quot;V&quot;</span> <span class="k">if</span> <span class="n">agent_type</span> <span class="o">==</span> <span class="s2">&quot;VI&quot;</span> <span class="k">else</span> <span class="s2">&quot;Q&quot;</span>
+            <span class="n">value_labels</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">n</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">STATE_LABELS</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">val_sym</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span>
+                <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span>
+                <span class="n">labels</span><span class="o">=</span><span class="n">value_labels</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;#111111&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+ 
+            <span class="c1"># draw edges with opacity from visit count </span>
+            <span class="n">max_count</span> <span class="o">=</span> <span class="n">counts_sa</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">if</span> <span class="n">counts_sa</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span>
+            <span class="n">greedy_edges</span><span class="p">,</span> <span class="n">explored_edges</span><span class="p">,</span> <span class="n">unexplored_edges</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+ 
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ACTION_NAMES</span><span class="p">):</span>
+                    <span class="n">dst</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_TRANSITIONS</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="n">counts_sa</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span>
+                    <span class="n">edge</span>  <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">policy</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span>
+                        <span class="n">greedy_edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">edge</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">explored_edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">edge</span><span class="p">,</span> <span class="n">count</span> <span class="o">/</span> <span class="n">max_count</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">unexplored_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+ 
+            <span class="c1"># Unexplored: very faint</span>
+            <span class="k">if</span> <span class="n">unexplored_edges</span><span class="p">:</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+                    <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span>
+                    <span class="n">edgelist</span><span class="o">=</span><span class="n">unexplored_edges</span><span class="p">,</span>
+                    <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;#666660&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">arrowsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-|&gt;&quot;</span><span class="p">,</span>
+                    <span class="n">connectionstyle</span><span class="o">=</span><span class="s2">&quot;arc3,rad=0.10&quot;</span><span class="p">,</span>
+                    <span class="n">min_source_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_target_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="p">)</span>
+ 
+            <span class="c1"># Explored non-greedy: alpha proportional to visit count</span>
+            <span class="c1"># Draw in buckets by alpha level</span>
+            <span class="n">alpha_buckets</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">norm_count</span> <span class="ow">in</span> <span class="n">explored_edges</span><span class="p">:</span>
+                <span class="n">alpha</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">0.2</span> <span class="o">+</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">norm_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">alpha_buckets</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">edgelist</span> <span class="ow">in</span> <span class="n">alpha_buckets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+                    <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span>
+                    <span class="n">edgelist</span><span class="o">=</span><span class="n">edgelist</span><span class="p">,</span>
+                    <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">arrowsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-|&gt;&quot;</span><span class="p">,</span>
+                    <span class="n">connectionstyle</span><span class="o">=</span><span class="s2">&quot;arc3,rad=0.10&quot;</span><span class="p">,</span>
+                    <span class="n">min_source_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_target_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="p">)</span>
+ 
+            <span class="c1"># Greedy policy: bold teal, labeled with gate name</span>
+            <span class="n">greedy_edgelist</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">greedy_edges</span><span class="p">]</span>
+            <span class="n">greedy_labels</span>   <span class="o">=</span> <span class="p">{</span><span class="n">e</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">greedy_edges</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">greedy_edgelist</span><span class="p">:</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span>
+                    <span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span>
+                    <span class="n">edgelist</span><span class="o">=</span><span class="n">greedy_edgelist</span><span class="p">,</span>
+                    <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;#0F6E56&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">arrowsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                    <span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-|&gt;&quot;</span><span class="p">,</span> <span class="n">connectionstyle</span><span class="o">=</span><span class="s2">&quot;arc3,rad=0.10&quot;</span><span class="p">,</span>
+                    <span class="n">min_source_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">min_target_margin</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">_label_edges</span><span class="p">(</span>
+                    <span class="n">ax_agent</span><span class="p">,</span> <span class="n">greedy_labels</span><span class="p">,</span>
+                    <span class="n">font_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;#5DCAA5&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+ 
+            <span class="c1"># colorbar for value function </span>
+            <span class="c1"># Label: show which quantity is actually displayed</span>
+            <span class="n">value_label</span> <span class="o">=</span> <span class="s2">&quot;V(s)&quot;</span> <span class="k">if</span> <span class="n">agent_type</span> <span class="o">==</span> <span class="s2">&quot;VI&quot;</span> <span class="k">else</span> <span class="s2">&quot;max_a Q(s,a)&quot;</span>
+ 
+            <span class="c1"># Ticks: min and max only, annotated with the owning state name</span>
+            <span class="n">min_state</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+            <span class="n">max_state</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_plain</span><span class="p">(</span><span class="n">lbl</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">lbl</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">rangle&quot;</span><span class="p">,</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">min_tick</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_plain</span><span class="p">(</span><span class="n">STATE_LABELS</span><span class="p">[</span><span class="n">min_state</span><span class="p">])</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">v_min</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">max_tick</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_plain</span><span class="p">(</span><span class="n">STATE_LABELS</span><span class="p">[</span><span class="n">max_state</span><span class="p">])</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">v_max</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+ 
+            <span class="n">sm</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                <span class="n">norm</span><span class="o">=</span><span class="n">mcolors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">v_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">v_max</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span>
+            <span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax_agent</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">value_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([</span><span class="n">v_min</span><span class="p">,</span> <span class="n">v_max</span><span class="p">])</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([</span><span class="n">min_tick</span><span class="p">,</span> <span class="n">max_tick</span><span class="p">])</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_ticklabels</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+ 
+            <span class="c1"># right legend </span>
+            <span class="n">right_legend</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#3B8BD4&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Target state&quot;</span><span class="p">),</span>
+                <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#0F6E56&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Greedy policy&quot;</span><span class="p">),</span>
+                <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#888780&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Explored (alpha ∝ visits)&quot;</span><span class="p">),</span>
+                <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#D3D1C7&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Unexplored&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">ax_agent</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">right_legend</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                              <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;#2a2a2a&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;#555550&quot;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="n">FG</span><span class="p">)</span>
+ 
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">fig_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig_to_array</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig_array</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+ 
+    <span class="c1"># render: learning animation </span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fig_to_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a Matplotlib figure to a NumPy RGB array.</span>
+
+<span class="sd">        Rasterizes the figure canvas and reshapes the resulting pixel buffer</span>
+<span class="sd">        into a ``(H, W, 3)`` uint8 array suitable for use as an animation frame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fig : matplotlib.figure.Figure</span>
+<span class="sd">            The figure to convert.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            RGB pixel array of shape ``(height, width, 3)``, dtype ``uint8``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_width_height</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">tostring_rgb</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+ 
+<div class="viewcode-block" id="BlochSphereV1.render">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path_without_extension</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">ffmpeg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render accumulated graph frames as an animation and save to disk.</span>
+
+<span class="sd">        Assembles the list of graph snapshots captured by ``_render_graph()``</span>
+<span class="sd">        into a single animation. Each frame corresponds to one call to</span>
+<span class="sd">        ``_render_graph()``, producing a visual record of the agent&#39;s learning</span>
+<span class="sd">        progression over episodes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        save_path_without_extension : str</span>
+<span class="sd">            File path (without extension) where the animation will be saved.</span>
+<span class="sd">            The appropriate extension (``.mp4`` or ``.gif``) is appended</span>
+<span class="sd">            automatically based on the ``ffmpeg`` argument.</span>
+<span class="sd">        interval : int, optional</span>
+<span class="sd">            Delay between frames in milliseconds. Default is 600.</span>
+<span class="sd">        ffmpeg : bool, optional</span>
+<span class="sd">            If True, saves the animation as an MP4 using ffmpeg. If False,</span>
+<span class="sd">            saves as a GIF using Pillow. Default is False.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``_render_graph()`` has not been called and no frames are available.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            This method produces an animation file but does not return a value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No frames to render. Call _render_graph() first.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Match figure size exactly to the frame pixel dimensions</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dpi</span>  <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">,</span> <span class="n">h</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># remove all padding</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_update</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">im</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">im</span><span class="p">]</span>
+
+        <span class="n">ani</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">_update</span><span class="p">,</span>
+            <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig_array_list</span><span class="p">),</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+            <span class="n">blit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;mp4&quot;</span> <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;gif&quot;</span>
+        <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_path_without_extension</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;ffmpeg&quot;</span> <span class="k">if</span> <span class="n">ffmpeg</span> <span class="k">else</span> <span class="s2">&quot;pillow&quot;</span><span class="p">,</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Current state index (0-5).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span>
+ 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bloch_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Current Bloch vector (x, y, z).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">STATE_BLOCH</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+ 
+<div class="viewcode-block" id="BlochSphereV1.transition_table">
+<a class="viewcode-back" href="../../../../qrl.env.core.html#qrl.env.core.bloch_sphere.BlochSphereV1.transition_table">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transition_table</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deterministic state-transition table for the environment.</span>
+
+<span class="sd">        Each entry ``T[s, a]`` gives the next state index when action ``a``</span>
+<span class="sd">        is taken from state ``s``. Rows correspond to the 6 Bloch sphere</span>
+<span class="sd">        states and columns to the 4 gate actions (H, X, Z, S).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Integer array of shape ``(6, 4)`` where ``T[s, a] = s&#39;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">_TRANSITIONS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+ 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a concise string representation of the environment.</span>
+
+<span class="sd">        Displays the current state label, target state label, and the</span>
+<span class="sd">        step count relative to the maximum allowed steps.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            String of the form</span>
+<span class="sd">            ``BlochSphereV1(state=&lt;label&gt;, target=&lt;label&gt;, steps=&lt;n&gt;/&lt;max&gt;)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;BlochSphereV1(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;state=</span><span class="si">{</span><span class="n">STATE_LABELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_index</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;target=</span><span class="si">{</span><span class="n">STATE_LABELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_state_index</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;steps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 

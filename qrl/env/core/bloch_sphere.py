@@ -294,31 +294,52 @@ class BlochSphereV0(QuantumEnv):
 
 
 class BlochSphereV1(QuantumEnv):
+
     """
-    Discrete Bloch sphere environment — 6 states, 4 actions.
- 
-    Fully compatible with ``ValueIteration`` and ``QIteration`` from
-    ``qrl.agents`` — no wrapper required.
- 
+    Single-qubit Bloch sphere environment as a graph problem for reinforcement learning.
+
+    ``BlochSphereV1`` is a ``gymnasium.Env`` compatible environment where an agent
+    controls a single qubit via a discrete set of quantum gates. The qubit state is
+    exposed to the agent as an integer index corresponding to the discrete states 
+    |0⟩, |1⟩, |+⟩, |-⟩, |+i⟩, |-i⟩.
+
+    The objective is to steer the qubit from the fixed starting initial state ``|0⟩`` to a
+    user defined target pure state (default ``|+⟩``) within a limited number of steps by applying
+    unitary gate actions.
+
+    
+    The environment is fully compatible with ``ValueIteration`` and ``QValueIteration`` from
+    ``qrl.algorithms``.
+
+    Key details
+    --------------
+    - **Action space**: Discrete set of single-qubit gates (H,X,Z,S).
+    - **Observation space**: Integer index corresponding to the Discrete states |0⟩, |1⟩, |+⟩, |-⟩, |+i⟩, |-i⟩.
+    - **Reward**: Fidelity ``|⟨target | state⟩|²`` in ``[0, 1]``.
+    - **Termination**: Success when reward exceeds ``reward_tolerance`` or truncation
+    at ``max_steps``.
+
     Parameters
     ----------
-    target_state : int, optional
-        Target state index (0-5). Defaults to 2 (|+⟩). The mapping is:
-        - 0: |0⟩
-        - 1: |1⟩
-        - 2: |+⟩
-        - 3: |-⟩
-        - 4: |+i⟩
-        - 5: |-i⟩
-    max_steps : int
-        Maximum steps per episode. Default 10.
-    reward_tolerance : float
-        Fidelity threshold for success. Must be in (0, 1]. Default 0.99.
-    ffmpeg : bool
-        Use ffmpeg for bloch render animations (MP4). Default False (GIF).
+    - **target_state** : int, optional
+        Target state index in [0, 5]. Defaults to 2 (|+⟩). The mapping is:
+        0 → |0⟩, 1 → |1⟩, 2 → |+⟩, 3 → |-⟩, 4 → |+i⟩, 5 → |-i⟩.
+    - **max_steps** : int, optional
+        Maximum number of steps per episode. Default is 10.
+    - **reward_tolerance** : float, optional
+        Fidelity threshold for successful termination. Must be in (0, 1].
+        Default is 0.99.
+    - **ffmpeg** : bool, optional
+        If True, animations are saved as MP4 via ffmpeg, else as GIFs.
+        Default is False.
+
+    Raises
+    ------
+    - **ValueError** : If ``target_state`` is not in [0, 5].
+    - **ValueError** : If ``reward_tolerance`` is not in (0, 1].
+    - **ValueError** : If ``ffmpeg=True`` but ffmpeg is not installed on the system.
     """
  
-    metadata = {"render_modes": ["graph", "bloch"]}
  
     def __init__(
         self,
@@ -357,6 +378,27 @@ class BlochSphereV1(QuantumEnv):
         self.truncated: bool | None = None
     
     def reset(self, *, seed=None, options=None):
+        """
+        Reset the environment to the initial state.
+
+        The qubit is placed at state index 0 (|0⟩). Episode step count,
+        history, and termination flags are cleared.
+
+        Parameters
+        ----------
+        seed : int or None, optional
+            Random seed passed to the base ``gymnasium.Env`` reset. Default is None.
+        options : dict or None, optional
+            Additional options passed to the base reset. Default is None.
+
+        Returns
+        -------
+        observation : int
+            Initial state index (always 0, corresponding to |0⟩).
+        info : dict
+            Dictionary containing ``fidelity``, ``gate`` (``"reset"``), and
+            ``bloch_vector`` of the initial state.
+        """        
         super().reset(seed=seed)
         self._state_index = 0
         self._statevector = STATE_VECTORS[0].copy()
@@ -367,25 +409,50 @@ class BlochSphereV1(QuantumEnv):
         return 0, self._info()
 
     def get_reward(self):
+        """
+        Compute the reward for the current state and update termination flags.
+
+        Evaluates the fidelity between the current statevector and the target
+        statevector. Sets ``self.terminated`` if fidelity meets or exceeds
+        ``reward_tolerance``, and ``self.truncated`` if the step limit is reached.
+
+        Returns
+        -------
+        float
+            1.0 if the current state matches the target within ``reward_tolerance``,
+            0.0 otherwise.
+        """        
         self.terminated = self._fidelity() >= self.reward_tolerance
         self.truncated  = self.steps >= self.max_steps
         return 1.0 if self.terminated else 0.0 
 
     def step(self, action: int):
         """
-        Apply a gate and advance the episode.
- 
+        Apply a gate action and advance the episode by one step.
+
+        Applies the unitary gate corresponding to ``action`` to the current
+        statevector, updates the discrete state index via the transition table,
+        increments the step counter, and appends the new state to history.
+
         Parameters
         ----------
-        action : int   Index into ACTION_NAMES (0=H, 1=X, 2=Z, 3=S).
- 
+        action : int
+            Index into ``ACTION_NAMES`` selecting the gate to apply.
+            0 → H, 1 → X, 2 → Z, 3 → S.
+
         Returns
         -------
-        observation  : int    New state index.
-        reward       : float  Fidelity − step_penalty (+ bonus if solved).
-        terminated   : bool   Fidelity ≥ reward_tolerance.
-        truncated    : bool   steps ≥ max_steps.
-        info         : dict   {fidelity, gate, bloch_vector}.
+        observation : int
+            New discrete state index after applying the gate.
+        reward : float
+            1.0 if the target is reached within tolerance, 0.0 otherwise.
+        terminated : bool
+            True if fidelity ≥ ``reward_tolerance``.
+        truncated : bool
+            True if ``steps`` ≥ ``max_steps``.
+        info : dict
+            Dictionary containing ``fidelity``, ``gate`` name applied, and
+            ``bloch_vector`` of the resulting state.
         """
         gate_name         = ACTION_NAMES[action]
         U                 = GATES[gate_name]
@@ -400,14 +467,44 @@ class BlochSphereV1(QuantumEnv):
  
  
     def _fidelity(self) -> float:
+        """
+        Compute the fidelity between the current state and the target state.
+
+        Fidelity is defined as ``|⟨target | state⟩|²``, bounded in ``[0, 1]``.
+        A value of 1.0 indicates the current state is identical to the target.
+
+        Returns
+        -------
+        float
+            Fidelity between the current statevector and the target statevector,
+            in the range ``[0, 1]``.
+        """        
         target_sv = STATE_VECTORS[self.target_state_index]
         return float(np.abs(np.vdot(target_sv, self._statevector)) ** 2)
  
     def _info(self, gate: str = "reset") -> dict:
+        """
+        Construct the info dictionary for the current environment state.
+
+        Parameters
+        ----------
+        gate : str, optional
+            Name of the gate most recently applied. Defaults to ``"reset"``
+            when called during environment initialization or reset.
+
+        Returns
+        -------
+        dict
+            A dictionary with three keys:
+            - ``fidelity``    : float — current fidelity with the target state.
+            - ``gate``        : str   — name of the gate applied in this step.
+            - ``bloch_vector``: np.ndarray — Bloch vector ``(x, y, z)`` of the
+            current state, shape ``(3,)``.
+        """        
         return {
             "fidelity":     self._fidelity(),
             "gate":         gate,
-            "bloch_vector": STATE_BLOCH[self._state_index].copy(),
+            "state_index":  self._state_index,
         }
  
     # reneder graph
@@ -417,12 +514,14 @@ class BlochSphereV1(QuantumEnv):
         Draw the state-transition graph. When agent is provided, adds a second
         panel showing the agent's learned model:
  
-          Left  — true environment dynamics, episode trajectory overlaid.
+          Left  — true environment dynamics
           Right — agent panel:
                     • Node color  : learned state value V(s) or max_a Q(s,a)
                                     on a warm colormap (high = warm, low = cool)
                     • Edge opacity: proportional to empirical visit count
                     • Bold edges  : greedy policy argmax_a Q(s,a)
+
+        Ideally, the learnt target state should have minimal value function.
  
         Layout (both panels mirror the Bloch sphere):
  
@@ -734,11 +833,57 @@ class BlochSphereV1(QuantumEnv):
     # render: learning animation 
 
     def _fig_to_array(self, fig):
+        """
+        Convert a Matplotlib figure to a NumPy RGB array.
+
+        Rasterizes the figure canvas and reshapes the resulting pixel buffer
+        into a ``(H, W, 3)`` uint8 array suitable for use as an animation frame.
+
+        Parameters
+        ----------
+        fig : matplotlib.figure.Figure
+            The figure to convert.
+
+        Returns
+        -------
+        np.ndarray
+            RGB pixel array of shape ``(height, width, 3)``, dtype ``uint8``.
+        """        
         fig.canvas.draw()
         w, h = fig.canvas.get_width_height()
         return np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(h, w, 3)
  
     def render(self, save_path_without_extension, interval=600, ffmpeg=False):
+        """
+        Render accumulated graph frames as an animation and save to disk.
+
+        Assembles the list of graph snapshots captured by ``_render_graph()``
+        into a single animation. Each frame corresponds to one call to
+        ``_render_graph()``, producing a visual record of the agent's learning
+        progression over episodes.
+
+        Parameters
+        ----------
+        save_path_without_extension : str
+            File path (without extension) where the animation will be saved.
+            The appropriate extension (``.mp4`` or ``.gif``) is appended
+            automatically based on the ``ffmpeg`` argument.
+        interval : int, optional
+            Delay between frames in milliseconds. Default is 600.
+        ffmpeg : bool, optional
+            If True, saves the animation as an MP4 using ffmpeg. If False,
+            saves as a GIF using Pillow. Default is False.
+
+        Raises
+        ------
+        ValueError
+            If ``_render_graph()`` has not been called and no frames are available.
+
+        Returns
+        -------
+        None
+            This method produces an animation file but does not return a value.
+        """
         if not self.fig_array_list:
             raise ValueError("No frames to render. Call _render_graph() first.")
 
@@ -781,13 +926,33 @@ class BlochSphereV1(QuantumEnv):
     @staticmethod
     def transition_table() -> np.ndarray:
         """
-        Return the (6, 4) integer transition table T where T[s, a] = s'.
- 
-        Rows = states 0-5, columns = actions 0-3 (H, X, Z, S).
+        Return the deterministic state-transition table for the environment.
+
+        Each entry ``T[s, a]`` gives the next state index when action ``a``
+        is taken from state ``s``. Rows correspond to the 6 Bloch sphere
+        states and columns to the 4 gate actions (H, X, Z, S).
+
+        Returns
+        -------
+        np.ndarray
+            Integer array of shape ``(6, 4)`` where ``T[s, a] = s'``.
         """
+
         return _TRANSITIONS.copy()
  
     def __repr__(self) -> str:
+        """
+        Return a concise string representation of the environment.
+
+        Displays the current state label, target state label, and the
+        step count relative to the maximum allowed steps.
+
+        Returns
+        -------
+        str
+            String of the form
+            ``BlochSphereV1(state=<label>, target=<label>, steps=<n>/<max>)``.
+        """        
         return (
             f"BlochSphereV1("
             f"state={STATE_LABELS[self._state_index]}, "

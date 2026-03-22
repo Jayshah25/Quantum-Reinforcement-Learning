@@ -8,7 +8,10 @@ This section contains hands-on tutorials demonstrating how to use the
    :maxdepth: 1
    :caption: Tutorials
 
-   bloch_sphere
+   qvalue_iteration
+   value_iteration
+   bloch_sphere_v0
+   bloch_sphere_v1
    compiler
    error_channel
    expressibility

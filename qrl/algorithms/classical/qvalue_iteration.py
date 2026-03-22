@@ -30,7 +30,7 @@ class QValueIteration(BaseIteration):
     Parameters
     ----------
     env : gym.Env
-        Gymnasium environment with discrete observation and action spaces.
+        Gymnasium or qrl-qai environment with discrete observation and action spaces.
     gamma : float
         Discount factor in [0, 1).
     num_test_episodes : int
@@ -40,15 +40,6 @@ class QValueIteration(BaseIteration):
     dtype : torch.dtype, optional
         Defaults to float32.
 
-    Examples
-    --------
-    >>> import gymnasium as gym
-    >>> env = gym.make("FrozenLake-v1", is_slippery=True)
-    >>> agent = QValueIteration(env, gamma=0.9)
-    >>> agent.play_n_random_steps(100)
-    >>> agent.qvalue_iteration()
-    >>> agent.get_policy()
-    tensor([...])
     """
 
     def __init__(

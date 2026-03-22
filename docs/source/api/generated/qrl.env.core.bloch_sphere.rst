@@ -9,4 +9,5 @@ qrl.env.core.bloch\_sphere
    .. autosummary::
    
       BlochSphereV0
+      BlochSphereV1
    

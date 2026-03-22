@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>qrl.agents package &mdash; qrl-qai 0.2.0 documentation</title>
+  <title>qrl.agents package &mdash; qrl-qai 1.0.0rc0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=938c9ccc"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=d3b94175"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -48,16 +48,26 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/bloch_sphere.html">BlochSphereV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/probability.html">ProbabilityV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qvalue_iteration.html">QValue Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bloch_sphere_v0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/bloch_sphere_v1.html">BlochSphereV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/error_channel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/expressibility.html">ExpressibilityV0</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/compiler.html">CompilerV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/probability.html">ProbabilityV0</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ALGORITHMS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="base_iteration.html">Base Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="value_iteration.html">Value Iteration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qvalue_iteration.html">QValue Iteration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ENVIRONMENTS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="base_env.html">Base Enviornment Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blochsphere.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blochsphereV0.html">BlochSphereV0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blochsphereV1.html">BlochSphereV1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiler.html">CompilerV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="errorchannel.html">ErrorChannelV0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expressibility.html">ExpressibilityV0</a></li>
@@ -117,7 +127,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qrl.agents" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="qrl.agents.ClassicalNNAgent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qrl.agents.</span></span><span class="sig-name descname"><span class="pre">ClassicalNNAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qrl/agents/agents.html#ClassicalNNAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qrl.agents.ClassicalNNAgent" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qrl.agents.</span></span><span class="sig-name descname"><span class="pre">ClassicalNNAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qrl/agents/agents.html#ClassicalNNAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qrl.agents.ClassicalNNAgent" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qrl.agents.ClassicalNNAgent.forward">
@@ -128,7 +138,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="qrl.agents.RandomQuantumAgent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qrl.agents.</span></span><span class="sig-name descname"><span class="pre">RandomQuantumAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rotations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qrl/agents/agents.html#RandomQuantumAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qrl.agents.RandomQuantumAgent" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qrl.agents.</span></span><span class="sig-name descname"><span class="pre">RandomQuantumAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rotations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qrl/agents/agents.html#RandomQuantumAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qrl.agents.RandomQuantumAgent" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qrl.agents.RandomQuantumAgent.forward">
