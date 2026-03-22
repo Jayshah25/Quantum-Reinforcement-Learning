@@ -33,6 +33,7 @@ Lightnining AI Studio contains a Streamlit playground for no-code experimentatio
 | **0.1.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.1.0/)|
 | **0.2.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.2.0/)|
 | **0.3.0** | - | - | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.3.0/)|
+| **1.0.0** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1wsThxxrvHh0Vboftay-eFbCrdVzKO-I3?usp=sharing) | [![Open in Lightning](https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white)](https://lightning.ai/jayshah25/templates/qrl-qai-playground-1-0-0) | [Read The Docs](https://qrl-qai.readthedocs.io/en/v0.2.0/)|
 
 ---
 

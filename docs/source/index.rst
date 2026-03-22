@@ -29,15 +29,23 @@ Check out the Installation and Quickstart guides to get started.
      - \-
      - \-
    * - **1.0.0**
-     - |colab|
-     - |lightning|
+     - |colab1|
+     - |lightning1|
 
 
 .. |colab| image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/drive/1vtPB5_KRVkD3-4iiku4X8EmMpr_PoOY2?usp=sharing
 
+.. |colab1| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/drive/1wsThxxrvHh0Vboftay-eFbCrdVzKO-I3?usp=sharing
+
+
 .. |lightning| image:: https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white
    :target: https://lightning.ai/jayshah25/studios/qrl-qai-0-2-0-playground
+
+.. |lightning1| image:: https://img.shields.io/badge/_Open_in_Lightning_AI-792EE5?logo=lightning&logoColor=white
+   :target: https://lightning.ai/jayshah25/templates/qrl-qai-playground-1-0-0
+
 
 
 Additionally, each significant release has an asssociated Google Colab and Lightning AI Studio for a hassle free experience. These are especially useful for users who want to quickly test out the environments without going through the installation process.
