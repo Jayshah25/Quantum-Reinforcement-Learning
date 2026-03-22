@@ -1,5 +1,15 @@
 """Value Iteration for discrete MDPs."""
 
+'''
+Implementation of Value Iteration for discrete MDPs as ValueIteration class using PyTorch
+
+Author: Jay Shah (@Jayshah25)
+
+Contact: jay.shah@qrlqai.com
+
+License: Apache-2.0
+'''
+
 from typing import Optional, Union
 
 import gymnasium as gym

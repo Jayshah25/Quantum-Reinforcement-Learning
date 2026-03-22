@@ -1,5 +1,12 @@
-"""Q-Iteration for discrete MDPs."""
-from __future__ import annotations
+'''
+Implementation of Q-Value Iteration for discrete MDPs as QValueIteration class using PyTorch
+
+Author: Jay Shah (@Jayshah25)
+
+Contact: jay.shah@qrlqai.com
+
+License: Apache-2.0
+'''
 
 from typing import Optional, Union
 

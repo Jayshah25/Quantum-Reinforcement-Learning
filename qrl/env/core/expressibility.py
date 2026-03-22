@@ -1,6 +1,10 @@
 '''
 Implementation of ExpressibilityV0 environment
+
 Author: Jay Shah (@Jayshah25)
+
+Contact: jay.shah@qrlqai.com
+
 License: Apache-2.0
 '''
 
