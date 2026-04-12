@@ -2,4 +2,5 @@
 # Example: from .algorithm1 import Algorithm1
 from .value_iteration import ValueIteration
 from .qvalue_iteration import QValueIteration
-__all__: list[str] = ["ValueIteration", "QValueIteration"]
+from .qlearning import QLearning
+__all__: list[str] = ["ValueIteration", "QValueIteration", "QLearning"]
